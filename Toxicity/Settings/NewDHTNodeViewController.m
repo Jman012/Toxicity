@@ -102,13 +102,6 @@
     viewDissapearingToAdd = YES;
     //remove pushed view
     [self.navigationController popViewControllerAnimated:YES];
-//    [self.navigationController dismissViewControllerAnimated:YES completion:^{
-//        //send info to whatever
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"NewDHT" object:nil userInfo:@{@"dht_name": textFieldName.text, @"dht_ip": textFieldIP.text, @"dht_port": textFieldPort.text, @"dht_key": textFieldPublicKey.text}];
-//    }];
-//    [self dismissViewControllerAnimated:YES completion:^{
-//        
-//    }];
 }
 
 #pragma mark - UITableView DataSource/Delegate

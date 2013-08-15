@@ -90,7 +90,6 @@
         [tempMessage setDidFailToSend:NO];
         [messages addObject:tempMessage];
     }
-//        [messages addObject:[NSDictionary dictionaryWithObject:theMessage forKey:@"them"]];
     
     [self.tableView reloadData];
     [self scrollToBottomAnimated:YES];
@@ -113,15 +112,12 @@
 #pragma mark - Messages view delegate
 - (void)sendPressed:(UIButton *)sender withText:(NSString *)text
 {
-//    [self.messages addObject:text];
-//    [messages addObject:@{@"me": text}];
     MessageObject *tempMessage = [[MessageObject alloc] init];
     tempMessage.message = [text copy];
     tempMessage.origin = MessageLocation_Me;
     tempMessage.didFailToSend = NO;
     [messages addObject:tempMessage];
     
-//    [self.timestamps addObject:[NSDate date]];
     
     [JSMessageSoundEffect playMessageSentSound];
     
@@ -140,7 +136,6 @@
 {
     MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
     if ([tempMessage origin] == MessageLocation_Me)
-//    if ([[[messages objectAtIndex:indexPath.row] allKeys] isEqualToArray:[NSArray arrayWithObject:@"me"]])
         return JSBubbleMessageTypeOutgoing;
     else
         return JSBubbleMessageTypeIncoming;
@@ -178,14 +173,8 @@
 #pragma mark - Messages view data source
 - (NSString *)textForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    return [self.messages objectAtIndex:indexPath.row];
     MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
     return [tempMessage message];
-//    NSDictionary *dict = [messages objectAtIndex:indexPath.row];
-//    if ([self messageTypeForRowAtIndexPath:indexPath] == JSBubbleMessageTypeOutgoing)
-//        return [dict objectForKey:@"me"];
-//    else
-//        return [dict objectForKey:@"them"];
 }
 
 - (NSDate *)timestampForRowAtIndexPath:(NSIndexPath *)indexPath

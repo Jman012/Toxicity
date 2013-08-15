@@ -463,16 +463,9 @@
         [tempDict setObject:dht.dhtPort forKey:@"dht_port"];
         [tempDict setObject:dht.dhtKey forKey:@"dht_key"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ConnectWithOptions" object:nil userInfo:tempDict];
-//        [[Singleton sharedSingleton] setCurrentConnectDHT:dht];
         
 
         [self.tableView reloadData];
-//        //start the actiity indicator
-//        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-//        UIActivityIndicatorView *actView = (UIActivityIndicatorView*)[cell.contentView viewWithTag:101];
-//        [actView startAnimating];
-//        [actView setHidden:NO];
-//        cell.detailTextLabel.text = @"";
         
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }

@@ -88,23 +88,11 @@
     //this is the main loop for the tox core. ran with an NSTimer for a different thread. runs the stuff needed to let tox work (network and stuff)
     [NSTimer scheduledTimerWithTimeInterval:(1/100) target:self selector:@selector(toxCoreLoop:) userInfo:nil repeats:YES];
 
-//    /*** temp ***/
-//    char id[FRIEND_ADDRESS_SIZE * 2 + 1] = {0};
-//    size_t i;
-//    uint8_t ourAddress[FRIEND_ADDRESS_SIZE];
-//    getaddress([[Singleton sharedSingleton] toxCoreMessenger], ourAddress);
-//    for (i=0; i<FRIEND_ADDRESS_SIZE; i++) {
-//        char xx[3];
-//        snprintf(xx, sizeof(xx), "%02X",  ourAddress[i] & 0xff);
-//        strcat(id, xx);
-//    }
-//    NSLog(@"%s", id);
     
     char convertedKey[(FRIEND_ADDRESS_SIZE * 2) + 1];
     int pos = 0;
     uint8_t ourAddress1[FRIEND_ADDRESS_SIZE];
     getaddress([[Singleton sharedSingleton] toxCoreMessenger], ourAddress1);
-//    NSLog(@"from nsdata: %@", [NSData dataWithBytes:ourAddress1 length:FRIEND_ADDRESS_SIZE]);
     for (int i = 0; i < FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", ourAddress1[i] & 0xff);
     }
@@ -366,7 +354,6 @@ void print_message(Messenger *m, int friendnumber, uint8_t * string, uint16_t le
         [theMessage setOrigin:MessageLocation_Them];
         [theMessage setDidFailToSend:NO];
         [tempMessages addObject:theMessage];
-//        [tempMessages addObject:@{@"them": [NSString stringWithUTF8String:(char *)string]}];
         [[Singleton sharedSingleton] mainFriendMessages][friendnumber] = [tempMessages copy];
         
         FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];

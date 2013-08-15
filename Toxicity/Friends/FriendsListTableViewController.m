@@ -145,16 +145,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    // Return the number of rows in the section.
-//    return [_mainFriendList count];
-    
-    
-    //this is to  provide empty cells so the table view doesnt have default white ugly cells
-    //44 = default size, but one there's one or more custom cells, all efault ones go to 64 which is custom height
-//    return ceil( (tableView.bounds.size.height - ([_mainFriendList count] * 64) ) / 64) + [_mainFriendList count];
-    //i likes maths
-    
+{    
     return [_mainFriendList count];
 }
 
@@ -223,7 +214,6 @@
         NSString *end = [temp substringFromIndex:[temp length] - 4];
         NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
         cell.textLabel.text = formattedString;
-        //        cell.textLabel.text = [_mainFriendList objectAtIndex:indexPath.row][@"friend_public_key"];
     } else {
         cell.textLabel.text = tempFriend.nickname;
     }
