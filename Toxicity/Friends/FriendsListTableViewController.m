@@ -152,8 +152,15 @@
     
     //this is to  provide empty cells so the table view doesnt have default white ugly cells
     //44 = default size, but one there's one or more custom cells, all efault ones go to 64 which is custom height
-    return ceil( (tableView.bounds.size.height - ([_mainFriendList count] * 64) ) / 64) + [_mainFriendList count];
+//    return ceil( (tableView.bounds.size.height - ([_mainFriendList count] * 64) ) / 64) + [_mainFriendList count];
     //i likes maths
+    
+    return [_mainFriendList count];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    UIView *view = [[UIView alloc] init];
+    return view;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -223,6 +230,7 @@
     
     cell.detailTextLabel.text = tempFriend.statusMessage;
     
+    //Currently not working due to bug in Tox
     UIImageView *statusView;
     if (tempFriend.connectionType == ToxFriendConnectionStatus_None ||
         tempFriend.connectionType == ToxFriendConnectionStatus_Added ||
