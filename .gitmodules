@@ -1,0 +1,6 @@
+[submodule "ProjectTox-Core"]
+	path = ProjectTox-Core
+	url = https://github.com/irungentoo/ProjectTox-Core.git
+[submodule "MessagesTableViewController"]
+	path = MessagesTableViewController
+	url = https://github.com/jessesquires/MessagesTableViewController.git
