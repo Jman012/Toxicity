@@ -11,7 +11,7 @@ Tox is a FOSS (free and open source) instant messenger application aimed to incr
 
 ### Screenshots:
 
-Will add soon.
+![Screenshot 1](http://i.imgur.com/H21NQ5z.png) ![Screenshot2](http://i.imgur.com/AD2ln5g.png)
 
 ### Todo:
 
