@@ -17,7 +17,6 @@
 		B94F2C6F17AF25C0003EA6E8 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C6E17AF25C0003EA6E8 /* Default@2x.png */; };
 		B94F2C7117AF25C0003EA6E8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C7017AF25C0003EA6E8 /* Default-568h@2x.png */; };
 		B94F2C7417AF25C0003EA6E8 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C7217AF25C0003EA6E8 /* MainStoryboard.storyboard */; };
-		B94F2C7717AF25C0003EA6E8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B94F2C7617AF25C0003EA6E8 /* ViewController.m */; };
 		B97D603417B84328001C07B8 /* status-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D602C17B84328001C07B8 /* status-gray.png */; };
 		B97D603517B84328001C07B8 /* status-gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D602D17B84328001C07B8 /* status-gray@2x.png */; };
 		B97D603617B84328001C07B8 /* status-green.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D602E17B84328001C07B8 /* status-green.png */; };
@@ -230,7 +229,6 @@
 		B9BB99E817B0E41F00A1ACEC /* Singleton.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E717B0E41F00A1ACEC /* Singleton.m */; };
 		B9BB9A5B17B377BF00A1ACEC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */; };
 		B9BB9A5E17B4B20100A1ACEC /* ChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */; };
-		B9BB9A6117B6B6E200A1ACEC /* FriendListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B9BB9A5F17B6B6E100A1ACEC /* FriendListCell.xib */; };
 		B9BB9A6317B7128300A1ACEC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
@@ -249,8 +247,6 @@
 		B94F2C6E17AF25C0003EA6E8 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		B94F2C7017AF25C0003EA6E8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		B94F2C7317AF25C0003EA6E8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		B94F2C7517AF25C0003EA6E8 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		B94F2C7617AF25C0003EA6E8 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		B97D602C17B84328001C07B8 /* status-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray.png"; path = "Images/status-gray.png"; sourceTree = "<group>"; };
 		B97D602D17B84328001C07B8 /* status-gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray@2x.png"; path = "Images/status-gray@2x.png"; sourceTree = "<group>"; };
 		B97D602E17B84328001C07B8 /* status-green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-green.png"; path = "Images/status-green.png"; sourceTree = "<group>"; };
@@ -602,7 +598,6 @@
 		B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B9BB9A5C17B4B20100A1ACEC /* ChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChatWindowViewController.h; path = Friends/ChatWindowViewController.h; sourceTree = "<group>"; };
 		B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChatWindowViewController.m; path = Friends/ChatWindowViewController.m; sourceTree = "<group>"; };
-		B9BB9A6017B6B6E200A1ACEC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FriendListCell.xib; sourceTree = "<group>"; };
 		B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -660,9 +655,6 @@
 				B94F2C6917AF25C0003EA6E8 /* AppDelegate.h */,
 				B94F2C6A17AF25C0003EA6E8 /* AppDelegate.m */,
 				B94F2C7217AF25C0003EA6E8 /* MainStoryboard.storyboard */,
-				B9BB9A5F17B6B6E100A1ACEC /* FriendListCell.xib */,
-				B94F2C7517AF25C0003EA6E8 /* ViewController.h */,
-				B94F2C7617AF25C0003EA6E8 /* ViewController.m */,
 				B9BB99E517B0E3F800A1ACEC /* Singleton */,
 				B9BB99DB17B0E31100A1ACEC /* Friends */,
 				B9BB99DA17B0E2F400A1ACEC /* Settings */,
@@ -1785,7 +1777,6 @@
 				B9BB99CA17B0187D00A1ACEC /* crypto_scalarmult_curve25519.h.in in Resources */,
 				B9BB99CB17B0187D00A1ACEC /* crypto_stream_salsa20.h.in in Resources */,
 				B9BB99CC17B0187D00A1ACEC /* version.h.in in Resources */,
-				B9BB9A6117B6B6E200A1ACEC /* FriendListCell.xib in Resources */,
 				B97D603417B84328001C07B8 /* status-gray.png in Resources */,
 				B97D603517B84328001C07B8 /* status-gray@2x.png in Resources */,
 				B97D603617B84328001C07B8 /* status-green.png in Resources */,
@@ -1843,7 +1834,6 @@
 			files = (
 				B94F2C6717AF25C0003EA6E8 /* main.m in Sources */,
 				B94F2C6B17AF25C0003EA6E8 /* AppDelegate.m in Sources */,
-				B94F2C7717AF25C0003EA6E8 /* ViewController.m in Sources */,
 				B9BB994C17B0187D00A1ACEC /* crypto_auth.c in Sources */,
 				B9BB994D17B0187D00A1ACEC /* auth_hmacsha256_api.c in Sources */,
 				B9BB994E17B0187D00A1ACEC /* hmac_hmacsha256.c in Sources */,
@@ -2027,14 +2017,6 @@
 				B94F2C7317AF25C0003EA6E8 /* en */,
 			);
 			name = MainStoryboard.storyboard;
-			sourceTree = "<group>";
-		};
-		B9BB9A5F17B6B6E100A1ACEC /* FriendListCell.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B9BB9A6017B6B6E200A1ACEC /* en */,
-			);
-			name = FriendListCell.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

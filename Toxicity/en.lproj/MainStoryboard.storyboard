@@ -294,7 +294,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oeX-6O-yIg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1524" y="1562"/>
+            <point key="canvasLocation" x="1448" y="1557"/>
         </scene>
     </scenes>
     <classes>
@@ -319,7 +319,6 @@
         <class className="SettingsViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
             <relationships>
-                <relationship kind="action" name="editButtonPushed:"/>
                 <relationship kind="action" name="saveButtonPushed:"/>
             </relationships>
         </class>
