@@ -18,6 +18,8 @@ Tox is a FOSS (free and open source) instant messenger application aimed to incr
 + Redo the ! in chat to look better (currently using the avatar feature in Messages View Controller)
 + Make the connection status above the friends list work
 + Add more to the settings page (About, Clear settings, etc.)
++ Add a friend request view, not just a one time alert view
++ Reorder and remove friends
 + More
 
 ### License:
