@@ -54,7 +54,7 @@
     //dht connection status, put above table view
     //todo: make it work
     UIBarButtonItem *dhtStatus = [[UIBarButtonItem alloc] init];
-    dhtStatus.title = @"DHT Connected to LAN";
+    dhtStatus.title = @"Temporary Placeholder";
     dhtStatus.style = UIBarButtonItemStyleBordered;
     dhtStatus.width = 310;
     dhtStatus.tintColor = [UIColor colorWithRed:0.0f green:0.8f blue:0.0f alpha:1.0f];

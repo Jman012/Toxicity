@@ -146,7 +146,8 @@
     if (resolved_address != 0)
         bootstrap_ip_port.ip.i = resolved_address;
     else
-        NSLog(@"Error resolving address!");
+        return;
+//        NSLog(@"Error resolving address!");
     
     unsigned char *binary_string = hex_string_to_bin((char *)dht_key);
     DHT_bootstrap(bootstrap_ip_port, binary_string); //actual connection

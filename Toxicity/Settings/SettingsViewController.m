@@ -225,7 +225,8 @@
                     label.text = @"Status:";
                 }
                 
-                [cell.contentView addSubview:label];
+                if (shouldAddLabel)
+                    [cell.contentView addSubview:label];
                 
                 UITextField *textField;
                 BOOL shouldAddTextField;
@@ -251,7 +252,9 @@
                 }
                 
                 [textField setBorderStyle:UITextBorderStyleNone];
-                [cell.contentView addSubview:textField];
+                
+                if (shouldAddTextField)
+                    [cell.contentView addSubview:textField];
             } else {
                 //segmented control for status type
                 UISegmentedControl *statusTypeControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Online", @"Away", @"Busy", nil]];
