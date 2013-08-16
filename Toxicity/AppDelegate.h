@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ViewController.h"
 #import "Messenger.h"
 #import "network.h"
 #import "Singleton.h"

@@ -412,17 +412,18 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    DHTNodeObject *currentDHT = [[Singleton sharedSingleton] currentConnectDHT];
-    if (![currentDHT.dhtIP isEqualToString:@""] &&
-        ![currentDHT.dhtPort isEqualToString:@""] &&
-        ![currentDHT.dhtKey isEqualToString:@""]) {
-        NSLog(@"return");
-        //stop here because the current dht is either connecting or connected, so dont do anything
-        [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
-        return;
+    if (indexPath.section == 1 && indexPath.row == 0) {
+        char convertedKey[(FRIEND_ADDRESS_SIZE * 2) + 1];
+        int pos = 0;
+        uint8_t ourAddress[FRIEND_ADDRESS_SIZE];
+        getaddress([[Singleton sharedSingleton] toxCoreMessenger], ourAddress);
+        for (int i = 0; i < FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
+            sprintf(&convertedKey[pos] ,"%02X", ourAddress[i] & 0xff);
+        }
+        
+        [[UIPasteboard generalPasteboard] setString:[NSString stringWithUTF8String:convertedKey]];
     }
-    
-    if (indexPath.section == 2 && indexPath.row == 0) {
+    else if (indexPath.section == 2 && indexPath.row == 0) {
         //new dht connection
         
         //get our new dht viewcontroller
@@ -440,18 +441,16 @@
         
         [self.navigationController pushViewController:newDHTViewCont animated:YES];
     }
-    else if (indexPath.section == 1 && indexPath.row == 0) {
-        char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
-        int pos = 0;
-        uint8_t ourAddress[FRIEND_ADDRESS_SIZE];
-        getaddress([[Singleton sharedSingleton] toxCoreMessenger], ourAddress);
-        for (int i = 0; i < FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
-            sprintf(&convertedKey[pos] ,"%02X", ourAddress[i] & 0xff);
-        }
-        
-        [[UIPasteboard generalPasteboard] setString:[NSString stringWithUTF8String:convertedKey]];
-    }
     else if (indexPath.section == 2 && indexPath.row != 0) {
+        DHTNodeObject *currentDHT = [[Singleton sharedSingleton] currentConnectDHT];
+        if (![currentDHT.dhtIP isEqualToString:@""] &&
+            ![currentDHT.dhtPort isEqualToString:@""] &&
+            ![currentDHT.dhtKey isEqualToString:@""]) {
+            NSLog(@"return");
+            //stop here because the current dht is either connecting or connected, so dont do anything
+            [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+            return;
+        }
         //connect to a node
         //gets called if the cell is actually that of a node, and we are not triyng to connect to a node, and if we're not connect
         
