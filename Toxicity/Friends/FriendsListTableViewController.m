@@ -222,10 +222,7 @@
     
     //Currently not working due to bug in Tox
     UIImageView *statusView;
-    if (tempFriend.connectionType == ToxFriendConnectionStatus_None ||
-        tempFriend.connectionType == ToxFriendConnectionStatus_Added ||
-        tempFriend.connectionType == ToxFriendConnectionStatus_Requested ||
-        tempFriend.connectionType == ToxFriendConnectionStatus_Confirmed) {
+    if (tempFriend.connectionType == ToxFriendConnectionStatus_None) {
         statusView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray"]];
     } else {
         switch (tempFriend.statusType) {

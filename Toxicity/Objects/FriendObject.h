@@ -16,9 +16,6 @@ typedef enum {
 
 typedef enum {
     ToxFriendConnectionStatus_None,
-    ToxFriendConnectionStatus_Added,
-    ToxFriendConnectionStatus_Requested,
-    ToxFriendConnectionStatus_Confirmed,
     ToxFriendConnectionStatus_Online
 } ToxFriendConnectionStatus;
 

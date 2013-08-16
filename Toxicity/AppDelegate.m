@@ -86,7 +86,7 @@
     
     
     //this is the main loop for the tox core. ran with an NSTimer for a different thread. runs the stuff needed to let tox work (network and stuff)
-    [NSTimer scheduledTimerWithTimeInterval:(1/100) target:self selector:@selector(toxCoreLoop:) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:(1/10) target:self selector:@selector(toxCoreLoop:) userInfo:nil repeats:YES];
 
     
     char convertedKey[(FRIEND_ADDRESS_SIZE * 2) + 1];
@@ -435,29 +435,18 @@ void print_connectionstatuschange(Messenger *m, int friendnumber, uint8_t status
     NSLog(@"Friend Status Change: [%d]: %d", friendnumber, (int)status);
     FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
     switch (status) {
-        case NOFRIEND:
+        case 0:
             tempFriend.connectionType = ToxFriendConnectionStatus_None;
             break;
             
-        case FRIEND_ADDED:
-            tempFriend.connectionType = ToxFriendConnectionStatus_Added;
-            break;
-            
-        case FRIEND_REQUESTED:
-            tempFriend.connectionType = ToxFriendConnectionStatus_Requested;
-            break;
-            
-        case FRIEND_CONFIRMED:
-            tempFriend.connectionType = ToxFriendConnectionStatus_Confirmed;
-            break;
-            
-        case FRIEND_ONLINE:
+        case 1:
             tempFriend.connectionType = ToxFriendConnectionStatus_Online;
             break;
             
         default:
             break;
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendUserStatusChanged" object:nil];
 }
 
 unsigned char * hex_string_to_bin(char hex_string[])
