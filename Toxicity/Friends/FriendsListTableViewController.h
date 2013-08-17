@@ -13,6 +13,7 @@
 #import "Singleton.h"
 #import "ChatWindowViewController.h"
 #import "TransparentToolbar.h"
+#import "RequestsTableViewController.h"
 
 @interface FriendsListTableViewController : UITableViewController <UIAlertViewDelegate>
 {
@@ -21,6 +22,6 @@
     NSMutableArray              *_mainFriendList;
 }
 
-- (IBAction)addFriendButtonPushed:(id)sender;
+- (IBAction)requestsButtonPushed:(id)sender;
 
 @end

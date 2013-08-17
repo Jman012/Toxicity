@@ -521,24 +521,8 @@ unsigned char * hex_string_to_bin(char hex_string[])
     int num = m_addfriend_norequest([[Singleton sharedSingleton] toxCoreMessenger], key);
     
     switch (num) {
-        case FAERR_TOOLONG:
-            NSLog(@"toolong");
-            break;
-            
-        case FAERR_NOMESSAGE:
-            NSLog(@"nomessage");
-            break;
-            
-        case FAERR_OWNKEY:
-            NSLog(@"ownkey");
-            break;
-            
-        case FAERR_ALREADYSENT:
-            NSLog(@"alreadysent");
-            break;
-            
-        case FAERR_UNKNOWN:
-            NSLog(@"unknownerror");
+        case -1:
+            NSLog(@"Accepting request failed");
             break;
             
         default: //added friend successfully

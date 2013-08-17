@@ -87,6 +87,7 @@
 		B97D60D617BD7497001C07B8 /* UIColor+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D60A917BD7497001C07B8 /* UIColor+JSMessagesView.m */; };
 		B97D60D717BD7497001C07B8 /* UIImage+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D60AB17BD7497001C07B8 /* UIImage+JSMessagesView.m */; };
 		B97D60D817BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D60AD17BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m */; };
+		B97D60DC17BEFF22001C07B8 /* RequestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D60DB17BEFF22001C07B8 /* RequestsTableViewController.m */; };
 		B9BB994C17B0187D00A1ACEC /* crypto_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = B9BB980F17B0187C00A1ACEC /* crypto_auth.c */; };
 		B9BB994D17B0187D00A1ACEC /* auth_hmacsha256_api.c in Sources */ = {isa = PBXBuildFile; fileRef = B9BB981117B0187C00A1ACEC /* auth_hmacsha256_api.c */; };
 		B9BB994E17B0187D00A1ACEC /* hmac_hmacsha256.c in Sources */ = {isa = PBXBuildFile; fileRef = B9BB981417B0187C00A1ACEC /* hmac_hmacsha256.c */; };
@@ -343,6 +344,8 @@
 		B97D60AB17BD7497001C07B8 /* UIImage+JSMessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+JSMessagesView.m"; path = "MessagesTableViewController/JSMessagesTableViewController/UIImage+JSMessagesView.m"; sourceTree = "<group>"; };
 		B97D60AC17BD7497001C07B8 /* UIView+AnimationOptionsForCurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+AnimationOptionsForCurve.h"; path = "MessagesTableViewController/JSMessagesTableViewController/UIView+AnimationOptionsForCurve.h"; sourceTree = "<group>"; };
 		B97D60AD17BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+AnimationOptionsForCurve.m"; path = "MessagesTableViewController/JSMessagesTableViewController/UIView+AnimationOptionsForCurve.m"; sourceTree = "<group>"; };
+		B97D60DA17BEFF21001C07B8 /* RequestsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RequestsTableViewController.h; path = Friends/RequestsTableViewController.h; sourceTree = "<group>"; };
+		B97D60DB17BEFF22001C07B8 /* RequestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RequestsTableViewController.m; path = Friends/RequestsTableViewController.m; sourceTree = "<group>"; };
 		B9BB980F17B0187C00A1ACEC /* crypto_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = crypto_auth.c; sourceTree = "<group>"; };
 		B9BB981117B0187C00A1ACEC /* auth_hmacsha256_api.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = auth_hmacsha256_api.c; sourceTree = "<group>"; };
 		B9BB981317B0187C00A1ACEC /* api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api.h; sourceTree = "<group>"; };
@@ -1675,6 +1678,8 @@
 				B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */,
 				B97D603C17B8982C001C07B8 /* TransparentToolbar.h */,
 				B97D603D17B8982C001C07B8 /* TransparentToolbar.m */,
+				B97D60DA17BEFF21001C07B8 /* RequestsTableViewController.h */,
+				B97D60DB17BEFF22001C07B8 /* RequestsTableViewController.m */,
 			);
 			name = Friends;
 			sourceTree = "<group>";
@@ -1997,6 +2002,7 @@
 				B97D60D617BD7497001C07B8 /* UIColor+JSMessagesView.m in Sources */,
 				B97D60D717BD7497001C07B8 /* UIImage+JSMessagesView.m in Sources */,
 				B97D60D817BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m in Sources */,
+				B97D60DC17BEFF22001C07B8 /* RequestsTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
