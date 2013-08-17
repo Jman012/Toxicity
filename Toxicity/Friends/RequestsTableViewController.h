@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "Singleton.h"
 
 @interface RequestsTableViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
+{
+    NSArray     *_arrayOfRequests;
+}
 
 @end

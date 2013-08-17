@@ -274,7 +274,7 @@
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ye7-iu-FP4">
                                                     <color key="backgroundColor" red="0.39215686274509803" green="0.43137254901960786" blue="0.39215686274509803" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="75" id="iHP-DW-9aC"/>
+                                                        <constraint firstAttribute="width" constant="70" id="lns-s7-mV3"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <state key="normal" title="Accept">
@@ -287,6 +287,7 @@
                                                 </button>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Message sent w/ req" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ffb-g2-cxp">
                                                     <constraints>
+                                                        <constraint firstAttribute="width" constant="151" id="Fzy-4m-2nG"/>
                                                         <constraint firstAttribute="height" constant="25" id="pnv-FN-vpG"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -297,18 +298,17 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <constraints>
-                                            <constraint firstItem="ye7-iu-FP4" firstAttribute="leading" secondItem="Ffb-g2-cxp" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="2Ge-61-M6n"/>
+                                            <constraint firstAttribute="trailing" secondItem="ye7-iu-FP4" secondAttribute="trailing" constant="71" id="2WW-sO-Rhc"/>
                                             <constraint firstItem="EOn-ty-sZW" firstAttribute="baseline" secondItem="yiY-Ob-nhC" secondAttribute="baseline" type="default" id="4Mq-be-4VY"/>
                                             <constraint firstItem="ye7-iu-FP4" firstAttribute="baseline" secondItem="EOn-ty-sZW" secondAttribute="baseline" type="default" id="5J4-9Y-yI5"/>
                                             <constraint firstItem="ye7-iu-FP4" firstAttribute="bottom" secondItem="vVD-I8-EQY" secondAttribute="bottom" type="default" id="FqH-KE-v7J"/>
-                                            <constraint firstItem="EOn-ty-sZW" firstAttribute="centerY" secondItem="ye7-iu-FP4" secondAttribute="centerY" type="default" id="IFY-KB-ugN"/>
-                                            <constraint firstItem="yiY-Ob-nhC" firstAttribute="leading" secondItem="vVD-I8-EQY" secondAttribute="leading" constant="20" type="default" id="T7q-aW-WMx"/>
+                                            <constraint firstItem="yiY-Ob-nhC" firstAttribute="leading" secondItem="vVD-I8-EQY" secondAttribute="leading" constant="15" type="user" id="T7q-aW-WMx"/>
                                             <constraint firstAttribute="bottom" secondItem="Ffb-g2-cxp" secondAttribute="bottom" constant="6" id="VZa-1Z-Zjq"/>
                                             <constraint firstItem="EOn-ty-sZW" firstAttribute="trailing" secondItem="vVD-I8-EQY" secondAttribute="trailing" type="default" id="cNh-dY-Cmb"/>
-                                            <constraint firstItem="EOn-ty-sZW" firstAttribute="leading" secondItem="ye7-iu-FP4" secondAttribute="trailing" constant="1" type="user" id="heo-M4-Mgs"/>
+                                            <constraint firstItem="EOn-ty-sZW" firstAttribute="bottom" secondItem="vVD-I8-EQY" secondAttribute="bottom" type="default" id="lHk-Tp-XdT"/>
                                             <constraint firstItem="yiY-Ob-nhC" firstAttribute="top" secondItem="vVD-I8-EQY" secondAttribute="top" constant="10" type="user" id="lyu-Xn-i0O"/>
                                             <constraint firstItem="ye7-iu-FP4" firstAttribute="top" secondItem="vVD-I8-EQY" secondAttribute="top" type="default" id="ou2-nH-sBp"/>
-                                            <constraint firstItem="Ffb-g2-cxp" firstAttribute="leading" secondItem="vVD-I8-EQY" secondAttribute="leading" constant="20" type="default" id="tt7-ZZ-phI"/>
+                                            <constraint firstItem="Ffb-g2-cxp" firstAttribute="leading" secondItem="vVD-I8-EQY" secondAttribute="leading" constant="15" type="user" id="tt7-ZZ-phI"/>
                                             <constraint firstItem="EOn-ty-sZW" firstAttribute="top" secondItem="vVD-I8-EQY" secondAttribute="top" type="default" id="yQL-WT-RWb"/>
                                         </constraints>
                                     </tableViewCell>

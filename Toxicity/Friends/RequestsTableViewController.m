@@ -46,7 +46,22 @@
     self.toolbarItems = array;
     [self.navigationController setToolbarHidden:NO animated:YES];
     
+    [self.navigationItem setTitle:@"Friend Requests"];
+    
+    //color stuff
+    self.tableView.separatorColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
+    self.tableView.backgroundColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
+    
     [self.navigationController.toolbar setTintColor:[UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1]];
+    
+//    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    
+    
+    _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -71,6 +86,14 @@
                                               otherButtonTitles:@"Paste & Go", nil];
     [alertView setAlertViewStyle:UIAlertViewStylePlainTextInput];
     [alertView show];
+}
+
+- (void)cellAcceptButtonPressed:(id)sender {
+    
+}
+
+- (void)cellRejectButtonPressed:(id)sender {
+    
 }
 
 #pragma mark - Alert View Delegate
@@ -126,26 +149,164 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 #warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 0;
+    return [_arrayOfRequests count];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    UIView *view = [[UIView alloc] init];
+    return view;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
     
     // Configure the cell...
     
+    //do all the fancy stuff here
+    CAGradientLayer *grad = [CAGradientLayer layer];
+    grad.frame = CGRectMake(cell.bounds.origin.x, cell.bounds.origin.y + 1, cell.bounds.size.width, cell.bounds.size.height - 1);
+    UIColor *top = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.4f alpha:1.0f];
+    UIColor *bottom = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.3f alpha:1.0f];
+    grad.colors = [NSArray arrayWithObjects:(id)[top CGColor], (id)[bottom CGColor], nil];
+    grad.name = @"Gradient";
+    
+    NSArray* sublayers = [NSArray arrayWithArray:cell.contentView.layer.sublayers];
+    for (CALayer *layer in sublayers) {
+        if ([layer.name isEqualToString:@"Gradient"]) {
+            [layer removeFromSuperlayer];
+        }
+    }
+    [cell.contentView.layer insertSublayer:grad atIndex:0];
+    
+    
+    //the info
+    
+    //tags: main label=400, sublabel=401, accept=402, reject=403
+    UILabel *mainLabel;
+    if ([cell viewWithTag:400] != nil)
+        mainLabel = (UILabel *)[cell viewWithTag:400];
+    else {
+        mainLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, 176, 23)];
+        mainLabel.tag = 400;
+    }
+    
+    UILabel *messageLabel;
+    if ([cell viewWithTag:401] != nil)
+        messageLabel = (UILabel *)[cell viewWithTag:401];
+    else {
+        messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 33, 176, 25)];
+        messageLabel.tag = 401;
+    }
+    
+    UIButton *acceptButton;
+    if ([cell viewWithTag:402] != nil)
+        acceptButton = (UIButton *)[cell viewWithTag:402];
+    else {
+        acceptButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        acceptButton.tag = 402;
+    }
+    
+    UIButton *rejectButton;
+    if ([cell viewWithTag:403] != nil)
+        rejectButton = (UIButton *)[cell viewWithTag:403];
+    else {
+        rejectButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        rejectButton.tag = 403;
+    }
+
+    
+    //main label
+    NSString *temp = [_arrayOfRequests objectAtIndex:indexPath.row];
+    NSString *front = [temp substringToIndex:6];
+    NSString *end = [temp substringFromIndex:[temp length] - 6];
+    NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
+    mainLabel.text = formattedString;
+    
+    //message label todo:store & retrieve message
+    messageLabel.text = @"Tox me on tox.";
+    
+    [mainLabel setTextColor:[UIColor whiteColor]];
+    [mainLabel setBackgroundColor:[UIColor clearColor]];
+    [messageLabel setTextColor:[UIColor colorWithRed:0.55f green:0.62f blue:0.68f alpha:1.0f]];
+    [messageLabel setBackgroundColor:[UIColor clearColor]];
+    
+    cell.contentView.backgroundColor = [UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f];
+    
+    
+    mainLabel.shadowColor = [UIColor colorWithRed:0.2f green:0.2f blue:0.2f alpha:1.0f];
+    mainLabel.shadowOffset = CGSizeMake(1.0f, 1.0f);
+    messageLabel.shadowColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
+    messageLabel.shadowOffset = CGSizeMake(0.5f, 0.5f);
+    
+    messageLabel.font = [UIFont systemFontOfSize:14.0f];
+    mainLabel.font = [UIFont systemFontOfSize:18.0f];
+    
+    //buttons
+    [acceptButton setFrame:CGRectMake(179, 1, 70, 63)];
+    [rejectButton setFrame:CGRectMake(250, 1, 70, 63)];
+    [acceptButton setTitle:@"Accept" forState:UIControlStateNormal];
+    [rejectButton setTitle:@"Reject" forState:UIControlStateNormal];
+    [acceptButton addTarget:self action:@selector(cellAcceptButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [rejectButton addTarget:self action:@selector(cellRejectButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    CAGradientLayer *acceptButtonGradientLayer = [CAGradientLayer layer];
+    acceptButtonGradientLayer.frame = acceptButton.bounds;
+    UIColor *acceptTopColor = [UIColor colorWithRed:0.2f green:0.6f blue:0.2f alpha:1.0f];
+    UIColor *acceptBottomColor = [UIColor colorWithRed:0.2f green:0.4f blue:0.2f alpha:1.0f];
+    acceptButtonGradientLayer.colors = [NSArray arrayWithObjects:(id)[acceptTopColor CGColor], (id)[acceptBottomColor CGColor], nil];
+    acceptButtonGradientLayer.name = @"AcceptGradient";
+    NSArray* acceptButtonSublayers = [NSArray arrayWithArray:acceptButton.layer.sublayers];
+    for (CALayer *layer in acceptButtonSublayers) {
+        if ([layer.name isEqualToString:@"AcceptGradient"]) {
+            [layer removeFromSuperlayer];
+        }
+    }
+    [acceptButton.layer insertSublayer:acceptButtonGradientLayer atIndex:0];
+    
+    CAGradientLayer *rejectButtonGradientLayer = [CAGradientLayer layer];
+    rejectButtonGradientLayer.frame = rejectButton.bounds;
+    UIColor *rejectTopColor = [UIColor colorWithRed:0.6f green:0.2f blue:0.2f alpha:1.0f];
+    UIColor *rejectBottomColor = [UIColor colorWithRed:0.4f green:0.2f blue:0.2f alpha:1.0f];
+    rejectButtonGradientLayer.colors = [NSArray arrayWithObjects:(id)[rejectTopColor CGColor], (id)[rejectBottomColor CGColor], nil];
+    rejectButtonGradientLayer.name = @"RejectGradient";
+    NSArray* rejectButtonSublayers = [NSArray arrayWithArray:rejectButton.layer.sublayers];
+    for (CALayer *layer in rejectButtonSublayers) {
+        if ([layer.name isEqualToString:@"RejectGradient"]) {
+            [layer removeFromSuperlayer];
+        }
+    }
+    [rejectButton.layer insertSublayer:rejectButtonGradientLayer atIndex:0];
+    
+    
+    if ([cell viewWithTag:400] == nil)
+        [cell.contentView addSubview:mainLabel];
+    
+    if ([cell viewWithTag:401] == nil)
+        [cell.contentView addSubview:messageLabel];
+    
+    if ([cell viewWithTag:402] == nil)
+        [cell.contentView addSubview:acceptButton];
+    
+    if ([cell viewWithTag:403] == nil)
+        [cell.contentView addSubview:rejectButton];
+    
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 64;
 }
 
 /*

@@ -156,8 +156,8 @@
     
     if ([tempFriend.nickname isEqualToString:@""]){
         NSString *temp = tempFriend.publicKey;
-        NSString *front = [temp substringToIndex:4];
-        NSString *end = [temp substringFromIndex:[temp length] - 4];
+        NSString *front = [temp substringToIndex:6];
+        NSString *end = [temp substringFromIndex:[temp length] - 6];
         NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
         cell.textLabel.text = formattedString;
     } else {
