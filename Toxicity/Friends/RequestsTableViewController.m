@@ -77,7 +77,11 @@
 }
 
 - (void)cameraButtonPressed {
+    //get th view from the storyboard, modal it
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    QRReaderViewController *vc = (QRReaderViewController *)[sb instantiateViewControllerWithIdentifier:@"QRReaderVC"];
     
+    [self presentViewController:vc animated:YES completion:nil];
 }
 
 - (void)addButtonPressed {
