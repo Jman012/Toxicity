@@ -272,7 +272,7 @@
                                                     </state>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ye7-iu-FP4">
-                                                    <color key="backgroundColor" red="0.39215686274509803" green="0.43137254901960786" blue="0.39215686274509803" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="backgroundColor" red="0.23712694644927979" green="0.36182293295860291" blue="0.23333469033241272" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="70" id="lns-s7-mV3"/>
                                                     </constraints>
@@ -424,32 +424,6 @@
             <point key="canvasLocation" x="1448" y="1557"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="FriendsListTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FriendsListTableViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="requestsButtonPushed:"/>
-                <relationship kind="outlet" name="settingsButton" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="NewDHTNodeViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NewDHTNodeViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="connectButtonPushed:"/>
-                <relationship kind="outlet" name="connectButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="infoTableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="SettingsViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="saveButtonPushed:"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

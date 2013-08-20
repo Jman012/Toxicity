@@ -231,6 +231,14 @@
 		B9BB9A5B17B377BF00A1ACEC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */; };
 		B9BB9A5E17B4B20100A1ACEC /* ChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */; };
 		B9BB9A6317B7128300A1ACEC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */; };
+		B9D859B017C306AE005FD2D2 /* accept-button-inverted.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859A817C306AE005FD2D2 /* accept-button-inverted.png */; };
+		B9D859B117C306AE005FD2D2 /* accept-button-inverted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859A917C306AE005FD2D2 /* accept-button-inverted@2x.png */; };
+		B9D859B217C306AE005FD2D2 /* accept-button-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859AA17C306AE005FD2D2 /* accept-button-normal.png */; };
+		B9D859B317C306AE005FD2D2 /* accept-button-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859AB17C306AE005FD2D2 /* accept-button-normal@2x.png */; };
+		B9D859B417C306AE005FD2D2 /* reject-button-inverted.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859AC17C306AE005FD2D2 /* reject-button-inverted.png */; };
+		B9D859B517C306AE005FD2D2 /* reject-button-inverted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859AD17C306AE005FD2D2 /* reject-button-inverted@2x.png */; };
+		B9D859B617C306AE005FD2D2 /* reject-button-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859AE17C306AE005FD2D2 /* reject-button-normal.png */; };
+		B9D859B717C306AE005FD2D2 /* reject-button-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859AF17C306AE005FD2D2 /* reject-button-normal@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -602,6 +610,14 @@
 		B9BB9A5C17B4B20100A1ACEC /* ChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChatWindowViewController.h; path = Friends/ChatWindowViewController.h; sourceTree = "<group>"; };
 		B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChatWindowViewController.m; path = Friends/ChatWindowViewController.m; sourceTree = "<group>"; };
 		B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B9D859A817C306AE005FD2D2 /* accept-button-inverted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accept-button-inverted.png"; path = "Images/accept-button-inverted.png"; sourceTree = "<group>"; };
+		B9D859A917C306AE005FD2D2 /* accept-button-inverted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accept-button-inverted@2x.png"; path = "Images/accept-button-inverted@2x.png"; sourceTree = "<group>"; };
+		B9D859AA17C306AE005FD2D2 /* accept-button-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accept-button-normal.png"; path = "Images/accept-button-normal.png"; sourceTree = "<group>"; };
+		B9D859AB17C306AE005FD2D2 /* accept-button-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accept-button-normal@2x.png"; path = "Images/accept-button-normal@2x.png"; sourceTree = "<group>"; };
+		B9D859AC17C306AE005FD2D2 /* reject-button-inverted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "reject-button-inverted.png"; path = "Images/reject-button-inverted.png"; sourceTree = "<group>"; };
+		B9D859AD17C306AE005FD2D2 /* reject-button-inverted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "reject-button-inverted@2x.png"; path = "Images/reject-button-inverted@2x.png"; sourceTree = "<group>"; };
+		B9D859AE17C306AE005FD2D2 /* reject-button-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "reject-button-normal.png"; path = "Images/reject-button-normal.png"; sourceTree = "<group>"; };
+		B9D859AF17C306AE005FD2D2 /* reject-button-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "reject-button-normal@2x.png"; path = "Images/reject-button-normal@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -713,6 +729,14 @@
 		B97D602B17B8431A001C07B8 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				B9D859A817C306AE005FD2D2 /* accept-button-inverted.png */,
+				B9D859A917C306AE005FD2D2 /* accept-button-inverted@2x.png */,
+				B9D859AA17C306AE005FD2D2 /* accept-button-normal.png */,
+				B9D859AB17C306AE005FD2D2 /* accept-button-normal@2x.png */,
+				B9D859AC17C306AE005FD2D2 /* reject-button-inverted.png */,
+				B9D859AD17C306AE005FD2D2 /* reject-button-inverted@2x.png */,
+				B9D859AE17C306AE005FD2D2 /* reject-button-normal.png */,
+				B9D859AF17C306AE005FD2D2 /* reject-button-normal@2x.png */,
 				B97D604F17BCBE58001C07B8 /* message-not-sent.png */,
 				B97D605017BCBE58001C07B8 /* message-not-sent@2x.png */,
 				B97D604817BB33E7001C07B8 /* status-red.png */,
@@ -1827,6 +1851,14 @@
 				B97D60D217BD7497001C07B8 /* send@2x.png in Resources */,
 				B97D60D317BD7497001C07B8 /* messageReceived.aiff in Resources */,
 				B97D60D417BD7497001C07B8 /* messageSent.aiff in Resources */,
+				B9D859B017C306AE005FD2D2 /* accept-button-inverted.png in Resources */,
+				B9D859B117C306AE005FD2D2 /* accept-button-inverted@2x.png in Resources */,
+				B9D859B217C306AE005FD2D2 /* accept-button-normal.png in Resources */,
+				B9D859B317C306AE005FD2D2 /* accept-button-normal@2x.png in Resources */,
+				B9D859B417C306AE005FD2D2 /* reject-button-inverted.png in Resources */,
+				B9D859B517C306AE005FD2D2 /* reject-button-inverted@2x.png in Resources */,
+				B9D859B617C306AE005FD2D2 /* reject-button-normal.png in Resources */,
+				B9D859B717C306AE005FD2D2 /* reject-button-normal@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

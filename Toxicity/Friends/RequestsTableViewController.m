@@ -89,11 +89,11 @@
 }
 
 - (void)cellAcceptButtonPressed:(id)sender {
-    
+    NSLog(@"accept");
 }
 
 - (void)cellRejectButtonPressed:(id)sender {
-    
+    NSLog(@"reject");
 }
 
 #pragma mark - Alert View Delegate
@@ -261,10 +261,16 @@
     [rejectButton setTitle:@"Reject" forState:UIControlStateNormal];
     [acceptButton addTarget:self action:@selector(cellAcceptButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [rejectButton addTarget:self action:@selector(cellRejectButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    CAGradientLayer *acceptButtonGradientLayer = [CAGradientLayer layer];
+    [acceptButton setBackgroundImage:[UIImage imageNamed:@"accept-button-normal"] forState:UIControlStateNormal];
+    [rejectButton setBackgroundImage:[UIImage imageNamed:@"reject-button-normal"] forState:UIControlStateNormal];
+    [acceptButton setBackgroundImage:[UIImage imageNamed:@"accept-button-inverted"] forState:UIControlStateHighlighted];
+    [rejectButton setBackgroundImage:[UIImage imageNamed:@"reject-button-inverted"] forState:UIControlStateHighlighted];
+    /*CAGradientLayer *acceptButtonGradientLayer = [CAGradientLayer layer];
     acceptButtonGradientLayer.frame = acceptButton.bounds;
-    UIColor *acceptTopColor = [UIColor colorWithRed:0.2f green:0.6f blue:0.2f alpha:1.0f];
-    UIColor *acceptBottomColor = [UIColor colorWithRed:0.2f green:0.4f blue:0.2f alpha:1.0f];
+//    UIColor *acceptTopColor = [UIColor colorWithRed:0.2f green:0.6f blue:0.2f alpha:1.0f];
+//    UIColor *acceptBottomColor = [UIColor colorWithRed:0.2f green:0.4f blue:0.2f alpha:1.0f];
+    UIColor *acceptTopColor = [UIColor colorWithHue:0.333f saturation:0.5f brightness:0.5f alpha:1.0f];
+    UIColor *acceptBottomColor = [UIColor colorWithHue:0.333f saturation:0.5f brightness:0.4f alpha:1.0f];
     acceptButtonGradientLayer.colors = [NSArray arrayWithObjects:(id)[acceptTopColor CGColor], (id)[acceptBottomColor CGColor], nil];
     acceptButtonGradientLayer.name = @"AcceptGradient";
     NSArray* acceptButtonSublayers = [NSArray arrayWithArray:acceptButton.layer.sublayers];
@@ -277,8 +283,8 @@
     
     CAGradientLayer *rejectButtonGradientLayer = [CAGradientLayer layer];
     rejectButtonGradientLayer.frame = rejectButton.bounds;
-    UIColor *rejectTopColor = [UIColor colorWithRed:0.6f green:0.2f blue:0.2f alpha:1.0f];
-    UIColor *rejectBottomColor = [UIColor colorWithRed:0.4f green:0.2f blue:0.2f alpha:1.0f];
+    UIColor *rejectTopColor = [UIColor colorWithHue:0.0f saturation:0.5f brightness:0.5f alpha:1.0f];
+    UIColor *rejectBottomColor = [UIColor colorWithHue:0.0f saturation:0.5f brightness:0.4f alpha:1.0f];
     rejectButtonGradientLayer.colors = [NSArray arrayWithObjects:(id)[rejectTopColor CGColor], (id)[rejectBottomColor CGColor], nil];
     rejectButtonGradientLayer.name = @"RejectGradient";
     NSArray* rejectButtonSublayers = [NSArray arrayWithArray:rejectButton.layer.sublayers];
@@ -287,7 +293,7 @@
             [layer removeFromSuperlayer];
         }
     }
-    [rejectButton.layer insertSublayer:rejectButtonGradientLayer atIndex:0];
+    [rejectButton.layer insertSublayer:rejectButtonGradientLayer atIndex:0];*/
     
     
     if ([cell viewWithTag:400] == nil)
@@ -350,15 +356,9 @@
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+/*- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
-}
+    
+}*/
 
 @end
