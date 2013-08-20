@@ -33,6 +33,8 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetFriendRequest) name:@"FriendRequestReceived" object:nil];
+    
     UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
                                                                                   target:self
                                                                                   action:@selector(cameraButtonPressed)];
@@ -90,10 +92,32 @@
 
 - (void)cellAcceptButtonPressed:(id)sender {
     NSLog(@"accept");
+    UIButton *button = (UIButton *)sender;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"AcceptedFriendRequest" object:nil userInfo:@{@"key_to_accept":[button titleForState:UIControlStateDisabled]}];
+    
+    [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:[button titleForState:UIControlStateDisabled]];
+    
+    _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
+    [self.tableView reloadData];
 }
 
 - (void)cellRejectButtonPressed:(id)sender {
     NSLog(@"reject");
+    UIButton *button = (UIButton *)sender;
+    
+    [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:[button titleForState:UIControlStateDisabled]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RejectedFriendRequest" object:nil userInfo:@{@"key_to_accept":[button titleForState:UIControlStateDisabled]}];
+
+    
+    _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
+    [self.tableView reloadData];
+}
+
+- (void)didGetFriendRequest {
+    NSLog(@"got request");
+    
+    _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
+    [self.tableView reloadData];
 }
 
 #pragma mark - Alert View Delegate
@@ -155,7 +179,6 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
     return [_arrayOfRequests count];
 }
@@ -265,6 +288,12 @@
     [rejectButton setBackgroundImage:[UIImage imageNamed:@"reject-button-normal"] forState:UIControlStateNormal];
     [acceptButton setBackgroundImage:[UIImage imageNamed:@"accept-button-inverted"] forState:UIControlStateHighlighted];
     [rejectButton setBackgroundImage:[UIImage imageNamed:@"reject-button-inverted"] forState:UIControlStateHighlighted];
+    
+    //hide the key in the "title"
+    [acceptButton setTitle:[_arrayOfRequests objectAtIndex:indexPath.row] forState:UIControlStateDisabled];
+    [rejectButton setTitle:[_arrayOfRequests objectAtIndex:indexPath.row] forState:UIControlStateDisabled];
+    
+    
     /*CAGradientLayer *acceptButtonGradientLayer = [CAGradientLayer layer];
     acceptButtonGradientLayer.frame = acceptButton.bounds;
 //    UIColor *acceptTopColor = [UIColor colorWithRed:0.2f green:0.6f blue:0.2f alpha:1.0f];

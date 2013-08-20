@@ -20,6 +20,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusTypeChanged) name:@"UserStatusTypeChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addFriend:) name:@"AddFriend" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessage:) name:@"SendMessage" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(acceptFriendRequest:) name:@"AcceptedFriendRequest" object:nil];
     
     //user defaults is the easy way to save info between app launches. dont have to read a file manually, etc. basically a plist
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
@@ -297,6 +298,39 @@
 
 }
 
+- (void)acceptFriendRequest:(NSNotification *)notification {
+    NSData *data = [[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:[notification userInfo][@"key_to_accept"]];
+    
+    uint8_t *key = (uint8_t *)[data bytes];
+    
+    int num = m_addfriend_norequest([[Singleton sharedSingleton] toxCoreMessenger], key);
+    
+    switch (num) {
+        case -1:
+            NSLog(@"Accepting request failed");
+            break;
+            
+        default: //added friend successfully
+        {
+            //friend added through accept request
+            FriendObject *tempFriend = [[FriendObject alloc] init];
+            [tempFriend setPublicKey:[[notification userInfo][@"key_to_accept"] substringToIndex:(CLIENT_ID_SIZE * 2)]];
+            NSLog(@"new friend key: %@", [tempFriend publicKey]);
+            [tempFriend setNickname:@""];
+            [tempFriend setStatusMessage:@"Accepted..."];
+            
+            [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
+            [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
+            [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
+            
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
+            
+            break;
+        }
+    }
+}
+
 #pragma mark - Tox Core call backs and stuff
 
 void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *userdata) {
@@ -319,13 +353,13 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
     //the pending dictionary has the object as nsdata bytes of the bin version of the publickey, and the dict key is the nsstring of said publickey
     [[[Singleton sharedSingleton] pendingFriendRequests] setObject:[NSData dataWithBytes:public_key length:CLIENT_ID_SIZE]
                                                             forKey:[NSString stringWithUTF8String:convertedKey]];
-    NSLog(@"%@", [[Singleton sharedSingleton] pendingFriendRequests]);
-    UIAlertView *requestAlert = [[UIAlertView alloc] initWithTitle:@"Friend Request"
+    /*UIAlertView *requestAlert = [[UIAlertView alloc] initWithTitle:@"Friend Request"
                                                            message:[NSString stringWithUTF8String:convertedKey]
                                                           delegate:(AppDelegate*)[[UIApplication sharedApplication] delegate]
                                                  cancelButtonTitle:@"Accept"
                                                  otherButtonTitles:@"Reject", nil];
-    [requestAlert show];
+    [requestAlert show];*/
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendRequestReceived" object:nil];
     
     
 }
@@ -509,7 +543,7 @@ unsigned char * hex_string_to_bin(char hex_string[])
 
 #pragma mark - Alert View Delegate
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+/*- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
         return;
     }
@@ -544,6 +578,6 @@ unsigned char * hex_string_to_bin(char hex_string[])
             break;
         }
     }
-}
+}*/
 
 @end

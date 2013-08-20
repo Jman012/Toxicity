@@ -38,6 +38,9 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendListUpdate) name:@"FriendAdded" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendListUpdate) name:@"FriendUserStatusChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"FriendRequestReceived" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"AcceptedFriendRequest" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"RejectedFriendRequest" object:nil];
     
     settingsButton.title = @"\u2699";
     UIFont *f1 = [UIFont fontWithName:@"Helvetica" size:24.0f];
@@ -80,6 +83,16 @@
 
 - (void)friendListUpdate {
     [self.tableView reloadData];
+}
+
+- (void)updateRequestsButton {
+    //update the name of the button
+    int count = [[[[Singleton sharedSingleton] pendingFriendRequests] allKeys] count];
+    if (count > 0) {
+        self.navigationItem.rightBarButtonItem.title = [NSString stringWithFormat:@"Requests (%d)", count];
+    } else {
+        self.navigationItem.rightBarButtonItem.title = @"Requests";
+    }
 }
 
 #pragma mark - Table view data source
