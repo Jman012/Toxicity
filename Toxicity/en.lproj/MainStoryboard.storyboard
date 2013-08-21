@@ -475,40 +475,15 @@
         </scene>
     </scenes>
     <classes>
-        <class className="FriendsListTableViewController" superclassName="UITableViewController">
+        <class className="FriendsListTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FriendsListTableViewController.h"/>
             <relationships>
                 <relationship kind="action" name="requestsButtonPushed:"/>
                 <relationship kind="outlet" name="settingsButton" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="NewDHTNodeViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NewDHTNodeViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="connectButtonPushed:"/>
-                <relationship kind="outlet" name="connectButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="infoTableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
         <class className="QRReaderViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/QRReaderViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancelButtonPushed:"/>
-                <relationship kind="outlet" name="readerView" candidateClass="ZBarReaderView"/>
-            </relationships>
-        </class>
-        <class className="SettingsViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="editButtonPushed:"/>
-                <relationship kind="action" name="saveButtonPushed:"/>
-            </relationships>
-        </class>
-        <class className="ZBarReaderView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ZBarReaderView.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

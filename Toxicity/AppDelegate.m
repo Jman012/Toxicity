@@ -22,6 +22,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessage:) name:@"SendMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(acceptFriendRequest:) name:@"AcceptedFriendRequest" object:nil];
     
+    // force view class to load so it may be referenced directly from NIB
+    [ZBarReaderView class];
+    
     //user defaults is the easy way to save info between app launches. dont have to read a file manually, etc. basically a plist
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     

@@ -10,6 +10,7 @@
 #import "Messenger.h"
 #import "network.h"
 #import "Singleton.h"
+#import "ZBarReaderView.h"
 
 #include <unistd.h>
 #define c_sleep(x) usleep(1000*x)
