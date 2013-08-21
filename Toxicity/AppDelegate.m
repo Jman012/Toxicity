@@ -245,6 +245,18 @@
             NSLog(@"unknownerror");
             break;
             
+        case FAERR_BADCHECKSUM:
+            NSLog(@"badchecksum");
+            break;
+            
+        case FAERR_SETNEWNOSPAM:
+            NSLog(@"setnewnospam");
+            break;
+            
+        case FAERR_NOMEM:
+            NSLog(@"nomem");
+            break;
+            
         default: //added friend successfully
         {
             //add friend to singleton array, for use throughout the app
@@ -367,8 +379,7 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
 void print_message(Messenger *m, int friendnumber, uint8_t * string, uint16_t length, void *userdata) {
     NSLog(@"Message from [%d]: %s", friendnumber, string);
     
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    [dict setObject:[NSString stringWithUTF8String:(char *)string] forKey:@"message"];
+    
     uint8_t tempKey[CLIENT_ID_SIZE];
     getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
     
@@ -377,8 +388,17 @@ void print_message(Messenger *m, int friendnumber, uint8_t * string, uint16_t le
     for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
     }
+    
+    if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+        
+    } else {
+        return;
+    }
+    
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    [dict setObject:[NSString stringWithUTF8String:(char *)string] forKey:@"message"];
     [dict setObject:[NSString stringWithUTF8String:convertedKey] forKey:@"their_public_key"];
-    NSLog(@"MEssage key: %@", [NSString stringWithUTF8String:convertedKey]);
+    NSLog(@"Message key: %@", [NSString stringWithUTF8String:convertedKey]);
     
     //add to singleton
     //if the message coming through is not to the currently opened chat window, then uialertview it
@@ -411,6 +431,22 @@ void print_action(Messenger *m, int friendnumber, uint8_t * action, uint16_t len
 void print_nickchange(Messenger *m, int friendnumber, uint8_t * string, uint16_t length, void *userdata) {
     NSLog(@"Nick Change from [%d]: %s", friendnumber, string);
     
+    uint8_t tempKey[CLIENT_ID_SIZE];
+    getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
+    
+    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    int pos = 0;
+    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+        sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
+    }
+    
+    if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+        
+    } else {
+        return;
+    }
+
+    
     FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
     [tempFriend setNickname:[NSString stringWithUTF8String:(char *)string]];
     
@@ -421,6 +457,22 @@ void print_nickchange(Messenger *m, int friendnumber, uint8_t * string, uint16_t
 void print_statuschange(Messenger *m, int friendnumber,  uint8_t * string, uint16_t length, void *userdata) {
     NSLog(@"Status change from [%d]: %s", friendnumber, string);
     
+    uint8_t tempKey[CLIENT_ID_SIZE];
+    getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
+    
+    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    int pos = 0;
+    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+        sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
+    }
+    
+    if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+        
+    } else {
+        return;
+    }
+
+    
     FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
     [tempFriend setStatusMessage:[NSString stringWithUTF8String:(char *)string]];
     
@@ -429,6 +481,22 @@ void print_statuschange(Messenger *m, int friendnumber,  uint8_t * string, uint1
 }
 
 void print_userstatuschange(Messenger *m, int friendnumber, USERSTATUS kind, void *userdata) {
+    uint8_t tempKey[CLIENT_ID_SIZE];
+    getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
+    
+    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    int pos = 0;
+    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+        sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
+    }
+    
+    if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+        
+    } else {
+        return;
+    }
+
+    
     FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
     switch (kind) {
         case USERSTATUS_AWAY:
@@ -467,6 +535,22 @@ void print_userstatuschange(Messenger *m, int friendnumber, USERSTATUS kind, voi
 
 void print_connectionstatuschange(Messenger *m, int friendnumber, uint8_t status, void *userdata) {
     NSLog(@"Friend Status Change: [%d]: %d", friendnumber, (int)status);
+    
+    uint8_t tempKey[CLIENT_ID_SIZE];
+    getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
+    
+    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    int pos = 0;
+    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+        sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
+    }
+    
+    if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+        
+    } else {
+        return;
+    }
+
     FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
     switch (status) {
         case 0:

@@ -49,4 +49,18 @@
     return sharedInstance;
 }
 
++ (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey {
+    
+    if (!(theNumber < [[[Singleton sharedSingleton] mainFriendList] count])) {
+        return NO;
+    }
+    
+    FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:theNumber];
+    if ([theKey isEqualToString:tempFriend.publicKey]) {
+        return YES;
+    }
+    
+    return NO;
+}
+
 @end

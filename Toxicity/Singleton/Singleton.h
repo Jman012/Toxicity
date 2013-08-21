@@ -57,5 +57,6 @@
 @property (nonatomic, assign) Messenger *toxCoreMessenger;
 
 + (Singleton *)sharedSingleton;
++ (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey;
 
 @end
