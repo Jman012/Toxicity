@@ -57,6 +57,5 @@
 @property (nonatomic, assign) Messenger *toxCoreMessenger;
 
 + (Singleton *)sharedSingleton;
-+ (void)giveNewFriendMessagesForIndex:(NSUInteger)theIndex;
 
 @end

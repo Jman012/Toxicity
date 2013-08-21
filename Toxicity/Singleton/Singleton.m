@@ -10,8 +10,6 @@
 #import "Messenger.h"
 #import "network.h"
 
-static Singleton *shared = NULL;
-
 @implementation Singleton
 
 @synthesize dhtNodeList, currentConnectDHT, userNick, userStatusMessage, userStatusType, pendingFriendRequests, mainFriendList, mainFriendMessages, currentlyOpenedFriendNumber, toxCoreMessenger;
@@ -41,23 +39,14 @@ static Singleton *shared = NULL;
 
 + (Singleton *)sharedSingleton
 {
-
-    {
-        if ( !shared || shared == NULL )
-        {
-            // allocate the shared instance, because it hasn't been done yet
-            shared = [[Singleton alloc] init];
-        }
-        
-        return shared;
-    }
-}
-
-+ (void)giveNewFriendMessagesForIndex:(NSUInteger)theIndex {
-    if (!shared || shared == NULL)
-        return;
+    static id sharedInstance = nil;
     
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    
+    return sharedInstance;
 }
-
 
 @end
