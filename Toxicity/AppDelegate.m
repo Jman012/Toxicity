@@ -134,6 +134,16 @@
     
 }
 
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    NSLog(@"URL: %@", url);
+    
+    if ([Singleton friendPublicKeyIsValid:url.host]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"AddFriend" object:nil userInfo:@{@"new_friend_key": url.host}];
+    }
+    
+    return YES;
+}
+
 #pragma mark - NSNotificationCenter methods
 
 - (void)connectToDHTWithIP:(NSNotification *)notification {

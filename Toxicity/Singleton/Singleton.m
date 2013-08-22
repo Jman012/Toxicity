@@ -63,4 +63,40 @@
     return NO;
 }
 
++ (BOOL)friendPublicKeyIsValid:(NSString *)theKey {
+    //validate
+    NSError *error = NULL;
+    NSRegularExpression *regexKey = [NSRegularExpression regularExpressionWithPattern:@"^[0-9A-Fa-f]+$" options:NSRegularExpressionCaseInsensitive error:&error];
+    NSUInteger matchKey = [regexKey numberOfMatchesInString:theKey options:0 range:NSMakeRange(0, [theKey length])];
+    if ([theKey length] != (FRIEND_ADDRESS_SIZE * 2) || matchKey == 0) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The Public Key isn't valid!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+        [alert show];
+        return NO;
+    }
+    
+    char convertedKey[(FRIEND_ADDRESS_SIZE * 2) + 1];
+    int pos = 0;
+    uint8_t ourAddress[FRIEND_ADDRESS_SIZE];
+    getaddress([[Singleton sharedSingleton] toxCoreMessenger], ourAddress);
+    for (int i = 0; i < FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
+        sprintf(&convertedKey[pos] ,"%02X", ourAddress[i] & 0xff);
+    }
+    if ([[NSString stringWithUTF8String:convertedKey] isEqualToString:theKey]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You can't add your own key, silly!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+        [alert show];
+        return NO;
+    }
+    
+    //todo: check to make sure it's not that of a friend already added
+    for (FriendObject *tempFriend in [[Singleton sharedSingleton] mainFriendList]) {
+        if ([[tempFriend.publicKeyWithNoSpam uppercaseString] isEqualToString:[theKey uppercaseString]]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You've already added that friend!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+            [alert show];
+            return NO;
+        }
+    }
+    
+    return YES;
+}
+
 @end

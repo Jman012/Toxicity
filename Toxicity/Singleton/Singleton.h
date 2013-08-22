@@ -58,5 +58,6 @@
 
 + (Singleton *)sharedSingleton;
 + (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey;
++ (BOOL)friendPublicKeyIsValid:(NSString *)theKey;
 
 @end
