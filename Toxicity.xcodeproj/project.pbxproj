@@ -42,7 +42,6 @@
 		B97D607017BD7466001C07B8 /* net_crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = B97D606017BD7466001C07B8 /* net_crypto.c */; };
 		B97D607117BD7466001C07B8 /* network.c in Sources */ = {isa = PBXBuildFile; fileRef = B97D606217BD7466001C07B8 /* network.c */; };
 		B97D607217BD7466001C07B8 /* ping.c in Sources */ = {isa = PBXBuildFile; fileRef = B97D606517BD7466001C07B8 /* ping.c */; };
-		B97D607317BD7466001C07B8 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = B97D606717BD7466001C07B8 /* timer.c */; };
 		B97D607417BD7466001C07B8 /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = B97D606917BD7466001C07B8 /* util.c */; };
 		B97D60AE17BD7497001C07B8 /* JSBubbleMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D607617BD7497001C07B8 /* JSBubbleMessageCell.m */; };
 		B97D60AF17BD7497001C07B8 /* JSBubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D607817BD7497001C07B8 /* JSBubbleView.m */; };
@@ -304,8 +303,6 @@
 		B97D606417BD7466001C07B8 /* packets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = packets.h; path = "ProjectTox-Core/core/packets.h"; sourceTree = "<group>"; };
 		B97D606517BD7466001C07B8 /* ping.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ping.c; path = "ProjectTox-Core/core/ping.c"; sourceTree = "<group>"; };
 		B97D606617BD7466001C07B8 /* ping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ping.h; path = "ProjectTox-Core/core/ping.h"; sourceTree = "<group>"; };
-		B97D606717BD7466001C07B8 /* timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = timer.c; path = "ProjectTox-Core/core/timer.c"; sourceTree = "<group>"; };
-		B97D606817BD7466001C07B8 /* timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = timer.h; path = "ProjectTox-Core/core/timer.h"; sourceTree = "<group>"; };
 		B97D606917BD7466001C07B8 /* util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = util.c; path = "ProjectTox-Core/core/util.c"; sourceTree = "<group>"; };
 		B97D606A17BD7466001C07B8 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = "ProjectTox-Core/core/util.h"; sourceTree = "<group>"; };
 		B97D607517BD7497001C07B8 /* JSBubbleMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSBubbleMessageCell.h; path = MessagesTableViewController/JSMessagesTableViewController/JSBubbleMessageCell.h; sourceTree = "<group>"; };
@@ -769,8 +766,6 @@
 				B97D606417BD7466001C07B8 /* packets.h */,
 				B97D606517BD7466001C07B8 /* ping.c */,
 				B97D606617BD7466001C07B8 /* ping.h */,
-				B97D606717BD7466001C07B8 /* timer.c */,
-				B97D606817BD7466001C07B8 /* timer.h */,
 				B97D606917BD7466001C07B8 /* util.c */,
 				B97D606A17BD7466001C07B8 /* util.h */,
 			);
@@ -2142,7 +2137,6 @@
 				B97D607017BD7466001C07B8 /* net_crypto.c in Sources */,
 				B97D607117BD7466001C07B8 /* network.c in Sources */,
 				B97D607217BD7466001C07B8 /* ping.c in Sources */,
-				B97D607317BD7466001C07B8 /* timer.c in Sources */,
 				B97D607417BD7466001C07B8 /* util.c in Sources */,
 				B97D60AE17BD7497001C07B8 /* JSBubbleMessageCell.m in Sources */,
 				B97D60AF17BD7497001C07B8 /* JSBubbleView.m in Sources */,

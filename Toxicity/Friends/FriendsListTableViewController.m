@@ -191,7 +191,6 @@
     
     cell.detailTextLabel.text = tempFriend.statusMessage;
     
-    //Currently not working due to bug in Tox
     UIImageView *statusView;
     if (tempFriend.connectionType == ToxFriendConnectionStatus_None) {
         statusView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray"]];

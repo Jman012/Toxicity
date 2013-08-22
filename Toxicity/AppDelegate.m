@@ -164,7 +164,7 @@
 //        NSLog(@"Error resolving address!");
     
     unsigned char *binary_string = hex_string_to_bin((char *)dht_key);
-    DHT_bootstrap(bootstrap_ip_port, binary_string); //actual connection
+    DHT_bootstrap([[Singleton sharedSingleton] toxCoreMessenger]->dht, bootstrap_ip_port, binary_string); //actual connection
     free(binary_string);
     
     
@@ -594,7 +594,7 @@ unsigned char * hex_string_to_bin(char hex_string[])
 
 - (void)toxCoreLoop:(NSTimer *)timer {
     
-    if (on == 0 && DHT_isconnected()) {
+    if (on == 0 && DHT_isconnected([[Singleton sharedSingleton] toxCoreMessenger]->dht)) {
         NSLog(@"DHT Connected!");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTConnected" object:nil];
         DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
@@ -602,7 +602,7 @@ unsigned char * hex_string_to_bin(char hex_string[])
         on = 1;
     }
     
-    if (on == 1 && !DHT_isconnected()) {
+    if (on == 1 && !DHT_isconnected([[Singleton sharedSingleton] toxCoreMessenger]->dht)) {
         NSLog(@"DHT Disconnected!");
         //gotta clear the currently connected dht since we're no longer connected
         DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
@@ -622,7 +622,7 @@ unsigned char * hex_string_to_bin(char hex_string[])
 #pragma mark - NSTimer method
 
 - (void)connectionTimeoutTimerDidEnd {
-    if (DHT_isconnected()) {
+    if (DHT_isconnected([[Singleton sharedSingleton] toxCoreMessenger]->dht)) {
         //don't do anything, the toxCoreLoop will have changed the boolen in currentConnectDHT and posted the notification
     } else {
         //connection timeout
