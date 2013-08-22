@@ -134,7 +134,7 @@
     
     NSArray* sublayers = [NSArray arrayWithArray:cell.contentView.layer.sublayers];
     for (CALayer *layer in sublayers) {
-        if ([layer.name isEqualToString:@"Gradient"]) {
+        if ([layer.name isEqualToString:@"Gradient"] || [layer.name isEqualToString:@"Background"]) {
             [layer removeFromSuperlayer];
         }
     }
@@ -143,7 +143,7 @@
     CALayer *bgLayer = [CALayer layer];
     bgLayer.frame = cell.bounds;
     bgLayer.backgroundColor = [[UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f] CGColor];
-    bgLayer.name = @"Gradient";
+    bgLayer.name = @"Background";
     [cell.contentView.layer insertSublayer:bgLayer atIndex:0];
     
     [cell.textLabel setTextColor:[UIColor whiteColor]];

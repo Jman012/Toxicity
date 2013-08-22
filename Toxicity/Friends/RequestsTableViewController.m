@@ -61,10 +61,18 @@
     
     
     _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
+    
+    
+    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToPopView)];
+    swipeRight.cancelsTouchesInView = NO;
+    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.view addGestureRecognizer:swipeRight];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    
+    [self.navigationController setToolbarHidden:NO animated:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -75,6 +83,11 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)swipeToPopView {
+    //user swiped from left to right, should pop the view back to friends list
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)cameraButtonPressed {

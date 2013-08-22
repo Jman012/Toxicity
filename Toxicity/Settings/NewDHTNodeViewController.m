@@ -37,6 +37,12 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(submitInfoAndClose)];
     addButton.title = @"Add";
     self.navigationItem.rightBarButtonItem = addButton;
+    
+    
+    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToPopView)];
+    swipeRight.cancelsTouchesInView = NO;
+    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.view addGestureRecognizer:swipeRight];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -53,6 +59,11 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"NewDHT" object:nil userInfo:dict];
     }
+}
+
+- (void)swipeToPopView {
+    //user swiped from left to right, should pop the view back to friends list
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Handle Connect

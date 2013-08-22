@@ -60,12 +60,20 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"NewMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lastMessageFailed) name:@"LastMessageFailedToSend" object:nil];
     
-	// Do any additional setup after loading the view.
+    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToPopView)];
+    swipeRight.cancelsTouchesInView = NO;
+    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.view addGestureRecognizer:swipeRight];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [[Singleton sharedSingleton] mainFriendMessages][friendIndex] = [messages mutableCopy];
     [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:-1];
+}
+
+- (void)swipeToPopView {
+    //user swiped from left to right, should pop the view back to friends list
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Notifications Center stuff
