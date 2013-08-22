@@ -99,4 +99,15 @@
     return YES;
 }
 
++ (void)saveFriendListInUserDefaults {
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (FriendObject *arrayFriend in [[Singleton sharedSingleton] mainFriendList]) {
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:[arrayFriend copy]];
+        [array addObject:data];
+    }
+    [prefs setObject:array forKey:@"friend_list"];
+    [prefs synchronize];
+}
+
 @end

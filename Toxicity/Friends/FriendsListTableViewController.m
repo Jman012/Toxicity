@@ -255,6 +255,9 @@
         
             [[[Singleton sharedSingleton] mainFriendList] removeObjectAtIndex:indexPath.row];
             [[[Singleton sharedSingleton] mainFriendMessages] removeObjectAtIndex:indexPath.row];
+            
+            //save in user defaults
+            [Singleton saveFriendListInUserDefaults];
         } else {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Something went wrong with deleting the friend! Tox Core issue." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
             [alert show];

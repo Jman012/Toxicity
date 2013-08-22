@@ -88,6 +88,21 @@
         m_set_statusmessage([[Singleton sharedSingleton] toxCoreMessenger], (uint8_t *)[[[Singleton sharedSingleton] userStatusMessage] UTF8String], strlen([[[Singleton sharedSingleton] userStatusMessage] UTF8String]) + 1);
     }
     
+    //loads friend list
+    if ([prefs objectForKey:@"friend_list"] == nil) {
+        
+    } else {
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        for (NSData *data in [prefs objectForKey:@"friend_list"]) {
+            FriendObject *tempFriend = (FriendObject *)[NSKeyedUnarchiver unarchiveObjectWithData:data];
+            [array addObject:tempFriend];
+            
+            int num = m_addfriend_norequest([[Singleton sharedSingleton] toxCoreMessenger], hex_string_to_bin((char *)[tempFriend.publicKeyWithNoSpam UTF8String]));
+            [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
+        }
+        [[Singleton sharedSingleton] setMainFriendList:array];
+    }
+    
     
     //this is the main loop for the tox core. ran with an NSTimer for a different thread. runs the stuff needed to let tox work (network and stuff)
     [NSTimer scheduledTimerWithTimeInterval:(1/10) target:self selector:@selector(toxCoreLoop:) userInfo:nil repeats:YES];
@@ -282,6 +297,9 @@
             [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
             [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
             
+            //save in user defaults
+            [Singleton saveFriendListInUserDefaults];
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
             break;
         }
@@ -346,8 +364,9 @@
             
             [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
             [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
-            [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
             
+            //save in user defaults
+            [Singleton saveFriendListInUserDefaults];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
             
@@ -463,6 +482,9 @@ void print_nickchange(Messenger *m, int friendnumber, uint8_t * string, uint16_t
     FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
     [tempFriend setNickname:[NSString stringWithUTF8String:(char *)string]];
     
+    //save in user defaults
+    [Singleton saveFriendListInUserDefaults];
+    
     //for now
     [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
 }
@@ -488,6 +510,9 @@ void print_statuschange(Messenger *m, int friendnumber,  uint8_t * string, uint1
     
     FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
     [tempFriend setStatusMessage:[NSString stringWithUTF8String:(char *)string]];
+    
+    //save in user defaults
+    [Singleton saveFriendListInUserDefaults];
     
     //for now
     [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
