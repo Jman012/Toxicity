@@ -34,6 +34,7 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetFriendRequest) name:@"FriendRequestReceived" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToFriendsList) name:@"QRReaderDidAddFriend" object:nil];
     
     UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
                                                                                   target:self
@@ -122,6 +123,10 @@
     
     _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
     [self.tableView reloadData];
+}
+
+- (void)returnToFriendsList {
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 #pragma mark - Alert View Delegate

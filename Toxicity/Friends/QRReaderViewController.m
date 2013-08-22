@@ -102,7 +102,9 @@
         //actually add friend
         [[NSNotificationCenter defaultCenter] postNotificationName:@"AddFriend" object:nil userInfo:@{@"new_friend_key": symbol.data}];
         
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"QRReaderDidAddFriend" object:nil];
+        }];
     }
 }
 
