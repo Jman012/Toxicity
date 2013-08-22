@@ -92,7 +92,7 @@
         
         //todo: check to make sure it's not that of a friend already added
         for (FriendObject *tempFriend in [[Singleton sharedSingleton] mainFriendList]) {
-            if ([[tempFriend.publicKey lowercaseString] isEqualToString:[symbol.data lowercaseString]]) {
+            if ([[tempFriend.publicKeyWithNoSpam uppercaseString] isEqualToString:[symbol.data uppercaseString]]) {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You've already added that friend!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
                 [alert show];
                 return;

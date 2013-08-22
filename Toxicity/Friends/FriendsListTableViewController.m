@@ -124,8 +124,6 @@
     static NSString *CellIdentifier = @"FriendListCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    // Configure the cell...
-    
     //do all the fancy stuff here
     CAGradientLayer *grad = [CAGradientLayer layer];
     grad.frame = CGRectMake(cell.bounds.origin.x, cell.bounds.origin.y + 1, cell.bounds.size.width, cell.bounds.size.height - 1);
@@ -142,13 +140,18 @@
     }
     [cell.contentView.layer insertSublayer:grad atIndex:0];
     
+    CALayer *bgLayer = [CALayer layer];
+    bgLayer.frame = cell.bounds;
+    bgLayer.backgroundColor = [[UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f] CGColor];
+    bgLayer.name = @"Gradient";
+    [cell.contentView.layer insertSublayer:bgLayer atIndex:0];
+    
     [cell.textLabel setTextColor:[UIColor whiteColor]];
     [cell.textLabel setBackgroundColor:[UIColor clearColor]];
     [cell.detailTextLabel setTextColor:[UIColor colorWithRed:0.55f green:0.62f blue:0.68f alpha:1.0f]];
     [cell.detailTextLabel setBackgroundColor:[UIColor clearColor]];
     
     cell.contentView.backgroundColor = [UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f];
-    
     
     cell.textLabel.shadowColor = [UIColor colorWithRed:0.2f green:0.2f blue:0.2f alpha:1.0f];
     cell.textLabel.shadowOffset = CGSizeMake(1.0f, 1.0f);
@@ -165,6 +168,9 @@
     
     /***************/
     
+    for (UIView *view in [cell.contentView subviews]) {
+        [view removeFromSuperview];
+    }
     
     //only do this stuff if it's an actual friend cell, not a blank one
     if ([_mainFriendList count] <= indexPath.row) {
@@ -213,7 +219,7 @@
                 break;
         }
     }
-    statusView.frame = CGRectMake(cell.contentView.bounds.size.width - 16, 0, statusView.frame.size.width, statusView.frame.size.height);
+    statusView.frame = CGRectMake(cell.bounds.size.width - 16, 0, statusView.frame.size.width, statusView.frame.size.height);
     
     [cell.contentView addSubview:statusView];
     
