@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DHTNodeObject.h"
 #import "FriendObject.h"
-#import "Messenger.h"
+#include "tox.h"
 #import "MessageObject.h"
 
 @interface Singleton : NSObject
@@ -42,7 +42,7 @@
     
     
     //with new core, we need to hold an instance of messenger
-    Messenger           *toxCoreMessenger;
+    Tox                 *toxCoreMessenger;
 }
 
 @property (nonatomic, strong) NSMutableArray *dhtNodeList;
@@ -54,7 +54,7 @@
 @property (nonatomic, strong) NSMutableArray *mainFriendList;
 @property (nonatomic, strong) NSMutableArray *mainFriendMessages;
 @property (nonatomic, assign) NSInteger currentlyOpenedFriendNumber;
-@property (nonatomic, assign) Messenger *toxCoreMessenger;
+@property (nonatomic, assign) Tox *toxCoreMessenger;
 
 + (Singleton *)sharedSingleton;
 + (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey;

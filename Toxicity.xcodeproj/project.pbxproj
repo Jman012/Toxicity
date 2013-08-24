@@ -248,6 +248,7 @@
 		B9D859E017C34542005FD2D2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859DF17C34542005FD2D2 /* CoreVideo.framework */; };
 		B9D859E217C34553005FD2D2 /* libiconv.2.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */; };
 		B9D859E517C34B83005FD2D2 /* QRReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D859E417C34B83005FD2D2 /* QRReaderViewController.m */; };
+		B9D85A1717C840FA005FD2D2 /* tox.c in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A1517C840FA005FD2D2 /* tox.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -656,6 +657,8 @@
 		B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.4.0.dylib; path = usr/lib/libiconv.2.4.0.dylib; sourceTree = SDKROOT; };
 		B9D859E317C34B83005FD2D2 /* QRReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QRReaderViewController.h; path = Friends/QRReaderViewController.h; sourceTree = "<group>"; };
 		B9D859E417C34B83005FD2D2 /* QRReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QRReaderViewController.m; path = Friends/QRReaderViewController.m; sourceTree = "<group>"; };
+		B9D85A1517C840FA005FD2D2 /* tox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tox.c; path = "ProjectTox-Core/core/tox.c"; sourceTree = "<group>"; };
+		B9D85A1617C840FA005FD2D2 /* tox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tox.h; path = "ProjectTox-Core/core/tox.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -749,6 +752,8 @@
 		B94F2C8317AF5BDB003EA6E8 /* ProjectTox-Core */ = {
 			isa = PBXGroup;
 			children = (
+				B9D85A1517C840FA005FD2D2 /* tox.c */,
+				B9D85A1617C840FA005FD2D2 /* tox.h */,
 				B97D605617BD7466001C07B8 /* DHT.c */,
 				B97D605717BD7466001C07B8 /* DHT.h */,
 				B97D605817BD7466001C07B8 /* friend_requests.c */,
@@ -2151,6 +2156,7 @@
 				B97D60D817BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m in Sources */,
 				B97D60DC17BEFF22001C07B8 /* RequestsTableViewController.m in Sources */,
 				B9D859E517C34B83005FD2D2 /* QRReaderViewController.m in Sources */,
+				B9D85A1717C840FA005FD2D2 /* tox.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2285,7 +2291,7 @@
 					"\"$(SRCROOT)/ZBarSDK\"",
 				);
 				MACH_O_TYPE = mh_execute;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

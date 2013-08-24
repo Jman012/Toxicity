@@ -7,10 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Messenger.h"
-#import "network.h"
 #import "Singleton.h"
 #import "ZBarReaderView.h"
+
+#include "tox.h"
+
+//for the resolve_addr()
+#include <netdb.h>
 
 #include <unistd.h>
 #define c_sleep(x) usleep(1000*x)

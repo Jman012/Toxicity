@@ -8,12 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-#import "Messenger.h"
-#import "network.h"
 #import "Singleton.h"
 #import "ChatWindowViewController.h"
 #import "TransparentToolbar.h"
 #import "RequestsTableViewController.h"
+#include "tox.h"
 
 @interface FriendsListTableViewController : UITableViewController <UIAlertViewDelegate>
 {

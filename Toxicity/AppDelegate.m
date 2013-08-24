@@ -41,15 +41,15 @@
     }
     
     //start messenger here for LAN discorvery without pesky dht. required for tox core
-    [[Singleton sharedSingleton] setToxCoreMessenger:initMessenger()];
+    [[Singleton sharedSingleton] setToxCoreMessenger:tox_new()];
     
     //load public/private key. key is held in NSData bytes in the user defaults
     if ([prefs objectForKey:@"self_key"] == nil) {
         NSLog(@"loading new key");
         //load a new key
-        int size = Messenger_size([[Singleton sharedSingleton] toxCoreMessenger]);
+        int size = tox_size([[Singleton sharedSingleton] toxCoreMessenger]);
         uint8_t *data = malloc(size);
-        Messenger_save([[Singleton sharedSingleton] toxCoreMessenger], data);
+        tox_save([[Singleton sharedSingleton] toxCoreMessenger], data);
         
         //save to userdefaults
         NSData *theKey = [NSData dataWithBytes:data length:size];
@@ -63,29 +63,29 @@
         //key already made, laod it from memory
         NSData *theKey = [prefs objectForKey:@"self_key"];
         
-        int size = Messenger_size([[Singleton sharedSingleton] toxCoreMessenger]);
+        int size = tox_size([[Singleton sharedSingleton] toxCoreMessenger]);
         uint8_t *data = (uint8_t *)[theKey bytes];
         
-        Messenger_load([[Singleton sharedSingleton] toxCoreMessenger], data, size);
+        tox_load([[Singleton sharedSingleton] toxCoreMessenger], data, size);
     }
     
     //callbacks
-    m_callback_friendrequest([[Singleton sharedSingleton] toxCoreMessenger], print_request, NULL);
-    m_callback_friendmessage([[Singleton sharedSingleton] toxCoreMessenger], print_message, NULL);
-    m_callback_action([[Singleton sharedSingleton] toxCoreMessenger], print_action, NULL);
-    m_callback_namechange([[Singleton sharedSingleton] toxCoreMessenger], print_nickchange, NULL);
-    m_callback_statusmessage([[Singleton sharedSingleton] toxCoreMessenger], print_statuschange, NULL);
-    m_callback_connectionstatus([[Singleton sharedSingleton] toxCoreMessenger], print_connectionstatuschange, NULL);
-    m_callback_userstatus([[Singleton sharedSingleton] toxCoreMessenger], print_userstatuschange, NULL);
+    tox_callback_friendrequest([[Singleton sharedSingleton] toxCoreMessenger], print_request, NULL);
+    tox_callback_friendmessage([[Singleton sharedSingleton] toxCoreMessenger], print_message, NULL);
+    tox_callback_action([[Singleton sharedSingleton] toxCoreMessenger], print_action, NULL);
+    tox_callback_namechange([[Singleton sharedSingleton] toxCoreMessenger], print_nickchange, NULL);
+    tox_callback_statusmessage([[Singleton sharedSingleton] toxCoreMessenger], print_statuschange, NULL);
+    tox_callback_connectionstatus([[Singleton sharedSingleton] toxCoreMessenger], print_connectionstatuschange, NULL);
+    tox_callback_userstatus([[Singleton sharedSingleton] toxCoreMessenger], print_userstatuschange, NULL);
     
     //load nick and statusmsg. user defaults
     if ([prefs objectForKey:@"self_nick"] != nil) {
         [[Singleton sharedSingleton] setUserNick:[prefs objectForKey:@"self_nick"]];
-        setname([[Singleton sharedSingleton] toxCoreMessenger], (uint8_t *)[[[Singleton sharedSingleton] userNick] UTF8String], strlen([[[Singleton sharedSingleton] userNick] UTF8String]) + 1);
+        tox_setname([[Singleton sharedSingleton] toxCoreMessenger], (uint8_t *)[[[Singleton sharedSingleton] userNick] UTF8String], strlen([[[Singleton sharedSingleton] userNick] UTF8String]) + 1);
     }
     if ([prefs objectForKey:@"self_status_message"] != nil) {
         [[Singleton sharedSingleton] setUserStatusMessage:[prefs objectForKey:@"self_status_message"]];
-        m_set_statusmessage([[Singleton sharedSingleton] toxCoreMessenger], (uint8_t *)[[[Singleton sharedSingleton] userStatusMessage] UTF8String], strlen([[[Singleton sharedSingleton] userStatusMessage] UTF8String]) + 1);
+        tox_set_statusmessage([[Singleton sharedSingleton] toxCoreMessenger], (uint8_t *)[[[Singleton sharedSingleton] userStatusMessage] UTF8String], strlen([[[Singleton sharedSingleton] userStatusMessage] UTF8String]) + 1);
     }
     
     //loads friend list
@@ -97,7 +97,7 @@
             FriendObject *tempFriend = (FriendObject *)[NSKeyedUnarchiver unarchiveObjectWithData:data];
             [array addObject:tempFriend];
             
-            int num = m_addfriend_norequest([[Singleton sharedSingleton] toxCoreMessenger], hex_string_to_bin((char *)[tempFriend.publicKeyWithNoSpam UTF8String]));
+            int num = tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreMessenger], hex_string_to_bin((char *)[tempFriend.publicKeyWithNoSpam UTF8String]));
             [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
         }
         [[Singleton sharedSingleton] setMainFriendList:array];
@@ -105,14 +105,14 @@
     
     
     //this is the main loop for the tox core. ran with an NSTimer for a different thread. runs the stuff needed to let tox work (network and stuff)
-    [NSTimer scheduledTimerWithTimeInterval:(1/10) target:self selector:@selector(toxCoreLoop:) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:(1/2) target:self selector:@selector(toxCoreLoop:) userInfo:nil repeats:YES];
 
     
-    char convertedKey[(FRIEND_ADDRESS_SIZE * 2) + 1];
+    char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
     int pos = 0;
-    uint8_t ourAddress1[FRIEND_ADDRESS_SIZE];
-    getaddress([[Singleton sharedSingleton] toxCoreMessenger], ourAddress1);
-    for (int i = 0; i < FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
+    uint8_t ourAddress1[TOX_FRIEND_ADDRESS_SIZE];
+    tox_getaddress([[Singleton sharedSingleton] toxCoreMessenger], ourAddress1);
+    for (int i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", ourAddress1[i] & 0xff);
     }
     NSLog(@"%s", convertedKey);
@@ -169,7 +169,8 @@
     
     
     //used from toxic source, this tells tox core to make a connection into the dht network
-    IP_Port bootstrap_ip_port;
+    
+    tox_IP_Port bootstrap_ip_port;
     bootstrap_ip_port.port = htons(atoi(dht_port));
     int resolved_address = resolve_addr(dht_ip);
     if (resolved_address != 0)
@@ -179,7 +180,7 @@
 //        NSLog(@"Error resolving address!");
     
     unsigned char *binary_string = hex_string_to_bin((char *)dht_key);
-    DHT_bootstrap([[Singleton sharedSingleton] toxCoreMessenger]->dht, bootstrap_ip_port, binary_string); //actual connection
+    tox_bootstrap([[Singleton sharedSingleton] toxCoreMessenger], bootstrap_ip_port, binary_string); //actual connection
     free(binary_string);
     
     
@@ -202,7 +203,7 @@
     char *newNick = (char *)[[[Singleton sharedSingleton] userNick] UTF8String];
     
     //submit new nick to core
-    setname([[Singleton sharedSingleton] toxCoreMessenger], (uint8_t *)newNick, strlen(newNick) + 1);
+    tox_setname([[Singleton sharedSingleton] toxCoreMessenger], (uint8_t *)newNick, strlen(newNick) + 1);
     
     //save to user defaults
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
@@ -214,7 +215,7 @@
     char *newStatus = (char *)[[[Singleton sharedSingleton] userStatusMessage] UTF8String];
 
     //submit new status to core
-    m_set_statusmessage([[Singleton sharedSingleton] toxCoreMessenger], (uint8_t *)newStatus, strlen(newStatus) + 1);
+    tox_set_statusmessage([[Singleton sharedSingleton] toxCoreMessenger], (uint8_t *)newStatus, strlen(newStatus) + 1);
     
     //save to user defaults
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
@@ -223,25 +224,25 @@
 }
 
 - (void)userStatusTypeChanged {
-    USERSTATUS statusType = USERSTATUS_INVALID;
+    TOX_USERSTATUS statusType = TOX_USERSTATUS_INVALID;
     switch ([[Singleton sharedSingleton] userStatusType]) {
         case ToxFriendUserStatus_None:
-            statusType = USERSTATUS_NONE;
+            statusType = TOX_USERSTATUS_NONE;
             break;
             
         case ToxFriendUserStatus_Away:
-            statusType = USERSTATUS_AWAY;
+            statusType = TOX_USERSTATUS_AWAY;
             break;
             
         case ToxFriendUserStatus_Busy:
-            statusType = USERSTATUS_BUSY;
+            statusType = TOX_USERSTATUS_BUSY;
             break;
             
         default:
-            statusType = USERSTATUS_INVALID;
+            statusType = TOX_USERSTATUS_INVALID;
             break;
     }
-    m_set_userstatus([[Singleton sharedSingleton] toxCoreMessenger], statusType);
+    tox_set_userstatus([[Singleton sharedSingleton] toxCoreMessenger], statusType);
 }
 
 - (void)addFriend:(NSNotification *)notification {
@@ -251,37 +252,37 @@
     
     uint8_t *binID = hex_string_to_bin((char *)[theirKey UTF8String]);
     
-    int num = m_addfriend([[Singleton sharedSingleton] toxCoreMessenger], binID, (uint8_t *)"Toxicity for iOS", strlen("Toxicity for iOS") + 1);
+    int num = tox_addfriend([[Singleton sharedSingleton] toxCoreMessenger], binID, (uint8_t *)"Toxicity for iOS", strlen("Toxicity for iOS") + 1);
     switch (num) {
-        case FAERR_TOOLONG:
+        case TOX_FAERR_TOOLONG:
             NSLog(@"toolong");
             break;
             
-        case FAERR_NOMESSAGE:
+        case TOX_FAERR_NOMESSAGE:
             NSLog(@"nomessage");
             break;
             
-        case FAERR_OWNKEY:
+        case TOX_FAERR_OWNKEY:
             NSLog(@"ownkey");
             break;
             
-        case FAERR_ALREADYSENT:
+        case TOX_FAERR_ALREADYSENT:
             NSLog(@"alreadysent");
             break;
             
-        case FAERR_UNKNOWN:
+        case TOX_FAERR_UNKNOWN:
             NSLog(@"unknownerror");
             break;
             
-        case FAERR_BADCHECKSUM:
+        case TOX_FAERR_BADCHECKSUM:
             NSLog(@"badchecksum");
             break;
             
-        case FAERR_SETNEWNOSPAM:
+        case TOX_FAERR_SETNEWNOSPAM:
             NSLog(@"setnewnospam");
             break;
             
-        case FAERR_NOMEM:
+        case TOX_FAERR_NOMEM:
             NSLog(@"nomem");
             break;
             
@@ -290,7 +291,7 @@
             //add friend to singleton array, for use throughout the app
             FriendObject *tempFriend = [[FriendObject alloc] init];
             [tempFriend setPublicKeyWithNoSpam:[notification userInfo][@"new_friend_key"]];
-            [tempFriend setPublicKey:[[notification userInfo][@"new_friend_key"] substringToIndex:(CLIENT_ID_SIZE * 2)]];
+            [tempFriend setPublicKey:[[notification userInfo][@"new_friend_key"] substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
             NSLog(@"new friend key: %@", [tempFriend publicKey]);
             [tempFriend setStatusMessage:@"Sending request..."];
             
@@ -315,12 +316,12 @@
     NSLog(@"Sending Message: %@", theMessage);
     
     //use the client id from the core to make sure we're sending it to the right person
-    uint8_t key[CLIENT_ID_SIZE];
-    getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendNum, key);
+    uint8_t key[TOX_CLIENT_ID_SIZE];
+    tox_getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendNum, key);
     
-    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
     int pos = 0;
-    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", key[i] & 0xff);
     }
 
@@ -328,7 +329,7 @@
         //send message
         char *utf8Message = (char *)[theMessage UTF8String];
         NSLog(@"Continuing: %s; %d", utf8Message, (int)strlen(utf8Message));
-        int num = m_sendmessage([[Singleton sharedSingleton] toxCoreMessenger], friendNum, (uint8_t *)utf8Message, strlen(utf8Message)+1);
+        int num = tox_sendmessage([[Singleton sharedSingleton] toxCoreMessenger], friendNum, (uint8_t *)utf8Message, strlen(utf8Message)+1);
         
         if (num == 0) {
             NSLog(@"Failed to put message in send queue!");
@@ -346,7 +347,7 @@
     
     uint8_t *key = (uint8_t *)[data bytes];
     
-    int num = m_addfriend_norequest([[Singleton sharedSingleton] toxCoreMessenger], key);
+    int num = tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreMessenger], key);
     
     switch (num) {
         case -1:
@@ -357,7 +358,7 @@
         {
             //friend added through accept request
             FriendObject *tempFriend = [[FriendObject alloc] init];
-            [tempFriend setPublicKey:[[notification userInfo][@"key_to_accept"] substringToIndex:(CLIENT_ID_SIZE * 2)]];
+            [tempFriend setPublicKey:[[notification userInfo][@"key_to_accept"] substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
             NSLog(@"new friend key: %@", [tempFriend publicKey]);
             [tempFriend setNickname:@""];
             [tempFriend setStatusMessage:@"Accepted..."];
@@ -387,15 +388,15 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
     
     //convert the bin key to a char key. reverse of hex_string_to_bin. used in a lot of places
     //todo: make it a function
-    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
     int pos = 0;
-    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", public_key[i] & 0xff);
     }
     
     //we got a friend request, so we have to store it!
     //the pending dictionary has the object as nsdata bytes of the bin version of the publickey, and the dict key is the nsstring of said publickey
-    [[[Singleton sharedSingleton] pendingFriendRequests] setObject:[NSData dataWithBytes:public_key length:CLIENT_ID_SIZE]
+    [[[Singleton sharedSingleton] pendingFriendRequests] setObject:[NSData dataWithBytes:public_key length:TOX_CLIENT_ID_SIZE]
                                                             forKey:[NSString stringWithUTF8String:convertedKey]];
     /*UIAlertView *requestAlert = [[UIAlertView alloc] initWithTitle:@"Friend Request"
                                                            message:[NSString stringWithUTF8String:convertedKey]
@@ -408,16 +409,16 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
     
 }
 
-void print_message(Messenger *m, int friendnumber, uint8_t * string, uint16_t length, void *userdata) {
+void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, void *userdata) {
     NSLog(@"Message from [%d]: %s", friendnumber, string);
     
     
-    uint8_t tempKey[CLIENT_ID_SIZE];
-    getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
+    uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+    tox_getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
     
-    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
     int pos = 0;
-    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
     }
     
@@ -455,20 +456,20 @@ void print_message(Messenger *m, int friendnumber, uint8_t * string, uint16_t le
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessage" object:nil userInfo:dict];
 }
 
-void print_action(Messenger *m, int friendnumber, uint8_t * action, uint16_t length, void *userdata) {
+void print_action(Tox *m, int friendnumber, uint8_t * action, uint16_t length, void *userdata) {
     //todo: this
     print_message(m, friendnumber, action, length, userdata);
 }
 
-void print_nickchange(Messenger *m, int friendnumber, uint8_t * string, uint16_t length, void *userdata) {
+void print_nickchange(Tox *m, int friendnumber, uint8_t * string, uint16_t length, void *userdata) {
     NSLog(@"Nick Change from [%d]: %s", friendnumber, string);
     
-    uint8_t tempKey[CLIENT_ID_SIZE];
-    getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
+    uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+    tox_getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
     
-    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
     int pos = 0;
-    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
     }
     
@@ -489,15 +490,15 @@ void print_nickchange(Messenger *m, int friendnumber, uint8_t * string, uint16_t
     [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
 }
 
-void print_statuschange(Messenger *m, int friendnumber,  uint8_t * string, uint16_t length, void *userdata) {
+void print_statuschange(Tox *m, int friendnumber,  uint8_t * string, uint16_t length, void *userdata) {
     NSLog(@"Status change from [%d]: %s", friendnumber, string);
     
-    uint8_t tempKey[CLIENT_ID_SIZE];
-    getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
+    uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+    tox_getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
     
-    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
     int pos = 0;
-    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
     }
     
@@ -518,13 +519,13 @@ void print_statuschange(Messenger *m, int friendnumber,  uint8_t * string, uint1
     [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
 }
 
-void print_userstatuschange(Messenger *m, int friendnumber, USERSTATUS kind, void *userdata) {
-    uint8_t tempKey[CLIENT_ID_SIZE];
-    getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
+void print_userstatuschange(Tox *m, int friendnumber, TOX_USERSTATUS kind, void *userdata) {
+    uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+    tox_getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
     
-    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
     int pos = 0;
-    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
     }
     
@@ -537,28 +538,28 @@ void print_userstatuschange(Messenger *m, int friendnumber, USERSTATUS kind, voi
     
     FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
     switch (kind) {
-        case USERSTATUS_AWAY:
+        case TOX_USERSTATUS_AWAY:
         {
             [tempFriend setStatusType:ToxFriendUserStatus_Away];
             NSLog(@"User status change: away");
             break;
         }
             
-        case USERSTATUS_BUSY:
+        case TOX_USERSTATUS_BUSY:
         {
             [tempFriend setStatusType:ToxFriendUserStatus_Busy];
             NSLog(@"User status change: busy");
             break;
         }
             
-        case USERSTATUS_INVALID:
+        case TOX_USERSTATUS_INVALID:
         {
             [tempFriend setStatusType:ToxFriendUserStatus_None];
             NSLog(@"User status change: invalid");
             break;
         }
             
-        case USERSTATUS_NONE:
+        case TOX_USERSTATUS_NONE:
         {
             [tempFriend setStatusType:ToxFriendUserStatus_None];
             NSLog(@"User status change: none");
@@ -571,15 +572,15 @@ void print_userstatuschange(Messenger *m, int friendnumber, USERSTATUS kind, voi
     [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendUserStatusChanged" object:nil];
 }
 
-void print_connectionstatuschange(Messenger *m, int friendnumber, uint8_t status, void *userdata) {
+void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void *userdata) {
     NSLog(@"Friend Status Change: [%d]: %d", friendnumber, (int)status);
     
-    uint8_t tempKey[CLIENT_ID_SIZE];
-    getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
+    uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+    tox_getclient_id([[Singleton sharedSingleton] toxCoreMessenger], friendnumber, tempKey);
     
-    char convertedKey[(CLIENT_ID_SIZE * 2) + 1];
+    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
     int pos = 0;
-    for (int i = 0; i < CLIENT_ID_SIZE; ++i, pos += 2) {
+    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
     }
     
@@ -617,9 +618,49 @@ unsigned char * hex_string_to_bin(char hex_string[])
     return val;
 }
 
+/*
+ resolve_addr():
+ address should represent IPv4 or a hostname with A record
+ 
+ returns a data in network byte order that can be used to set IP.i or IP_Port.ip.i
+ returns 0 on failure
+ 
+ TODO: Fix ipv6 support
+ */
+uint32_t resolve_addr(const char *address)
+{
+    struct addrinfo *server = NULL;
+    struct addrinfo  hints;
+    int              rc;
+    uint32_t         addr;
+    
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family   = AF_INET;    // IPv4 only right now.
+    hints.ai_socktype = SOCK_DGRAM; // type of socket Tox uses.
+    
+    rc = getaddrinfo(address, "echo", &hints, &server);
+    
+    // Lookup failed.
+    if (rc != 0) {
+        return 0;
+    }
+    
+    // IPv4 records only..
+    if (server->ai_family != AF_INET) {
+        freeaddrinfo(server);
+        return 0;
+    }
+    
+    
+    addr = ((struct sockaddr_in *)server->ai_addr)->sin_addr.s_addr;
+    
+    freeaddrinfo(server);
+    return addr;
+}
+
 - (void)toxCoreLoop:(NSTimer *)timer {
     
-    if (on == 0 && DHT_isconnected([[Singleton sharedSingleton] toxCoreMessenger]->dht)) {
+    if (on == 0 && tox_isconnected([[Singleton sharedSingleton] toxCoreMessenger])) {
         NSLog(@"DHT Connected!");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTConnected" object:nil];
         DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
@@ -627,7 +668,7 @@ unsigned char * hex_string_to_bin(char hex_string[])
         on = 1;
     }
     
-    if (on == 1 && !DHT_isconnected([[Singleton sharedSingleton] toxCoreMessenger]->dht)) {
+    if (on == 1 && !tox_isconnected([[Singleton sharedSingleton] toxCoreMessenger])) {
         NSLog(@"DHT Disconnected!");
         //gotta clear the currently connected dht since we're no longer connected
         DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
@@ -641,13 +682,13 @@ unsigned char * hex_string_to_bin(char hex_string[])
         on = 0;
     }
     
-    doMessenger([[Singleton sharedSingleton] toxCoreMessenger]);
+    tox_do([[Singleton sharedSingleton] toxCoreMessenger]);
 }
 
 #pragma mark - NSTimer method
 
 - (void)connectionTimeoutTimerDidEnd {
-    if (DHT_isconnected([[Singleton sharedSingleton] toxCoreMessenger]->dht)) {
+    if (tox_isconnected([[Singleton sharedSingleton] toxCoreMessenger])) {
         //don't do anything, the toxCoreLoop will have changed the boolen in currentConnectDHT and posted the notification
     } else {
         //connection timeout

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Singleton.h"
 #import "ZBarSDK.h"
-#import "Messenger.h"
+#include "tox.h"
 
 @interface QRReaderViewController : UIViewController <ZBarReaderViewDelegate>
 {

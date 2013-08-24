@@ -247,8 +247,8 @@
         //delete the friend from the table view, singleton, and messenger instance
         [self.tableView beginUpdates];
         
-        Messenger *m = [[Singleton sharedSingleton] toxCoreMessenger];
-        int num = m_delfriend(m, indexPath.row);
+        Tox *m = [[Singleton sharedSingleton] toxCoreMessenger];
+        int num = tox_delfriend(m, indexPath.row);
         
         if (num == 0) {
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];

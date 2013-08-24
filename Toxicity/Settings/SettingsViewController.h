@@ -9,8 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "NewDHTNodeViewController.h"
 #import "Singleton.h"
-#import "Messenger.h"
-#import "network.h"
+#include "tox.h"
 
 @interface SettingsViewController : UITableViewController <UITabBarControllerDelegate, UITableViewDataSource, UITextFieldDelegate>
 {
