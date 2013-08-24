@@ -327,9 +327,14 @@
 
     if ([[NSString stringWithUTF8String:convertedKey] isEqualToString:theirKey]) {
         //send message
-        char *utf8Message = (char *)[theMessage UTF8String];
-        NSLog(@"Continuing: %s; %d", utf8Message, (int)strlen(utf8Message));
-        int num = tox_sendmessage([[Singleton sharedSingleton] toxCoreMessenger], friendNum, (uint8_t *)utf8Message, strlen(utf8Message)+1);
+        int num;
+        if([[theMessage substringToIndex:4] isEqualToString:@"/me "]) {
+            char *utf8Action = (char *)[[theMessage substringFromIndex:4] UTF8String];
+            num = tox_sendaction([[Singleton sharedSingleton] toxCoreMessenger], friendNum, (uint8_t *)utf8Action, strlen(utf8Action)+1);
+        } else {
+            char *utf8Message = (char *)[theMessage UTF8String];
+            num = tox_sendmessage([[Singleton sharedSingleton] toxCoreMessenger], friendNum, (uint8_t *)utf8Message, strlen(utf8Message)+1);
+        }
         
         if (num == 0) {
             NSLog(@"Failed to put message in send queue!");
