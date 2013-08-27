@@ -70,6 +70,7 @@
     
     [self updateRequestsButton];
     
+    [self.tableView registerClass:[FriendCell class] forCellReuseIdentifier:@"FriendListCell"];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -122,95 +123,46 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"FriendListCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    FriendCell *cell = (FriendCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    //do all the fancy stuff here
-    CAGradientLayer *grad = [CAGradientLayer layer];
-    grad.frame = CGRectMake(cell.bounds.origin.x, cell.bounds.origin.y + 1, cell.bounds.size.width, cell.bounds.size.height - 1);
-    UIColor *top = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.4f alpha:1.0f];
-    UIColor *bottom = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.3f alpha:1.0f];
-    grad.colors = [NSArray arrayWithObjects:(id)[top CGColor], (id)[bottom CGColor], nil];
-    grad.name = @"Gradient";
-    
-    NSArray* sublayers = [NSArray arrayWithArray:cell.contentView.layer.sublayers];
-    for (CALayer *layer in sublayers) {
-        if ([layer.name isEqualToString:@"Gradient"] || [layer.name isEqualToString:@"Background"]) {
-            [layer removeFromSuperlayer];
-        }
-    }
-    [cell.contentView.layer insertSublayer:grad atIndex:0];
-    
-    CALayer *bgLayer = [CALayer layer];
-    bgLayer.frame = cell.bounds;
-    bgLayer.backgroundColor = [[UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f] CGColor];
-    bgLayer.name = @"Background";
-    [cell.contentView.layer insertSublayer:bgLayer atIndex:0];
-    
-    [cell.textLabel setTextColor:[UIColor whiteColor]];
-    [cell.textLabel setBackgroundColor:[UIColor clearColor]];
-    [cell.detailTextLabel setTextColor:[UIColor colorWithRed:0.55f green:0.62f blue:0.68f alpha:1.0f]];
-    [cell.detailTextLabel setBackgroundColor:[UIColor clearColor]];
-    
-    cell.contentView.backgroundColor = [UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f];
-    
-    cell.textLabel.shadowColor = [UIColor colorWithRed:0.2f green:0.2f blue:0.2f alpha:1.0f];
-    cell.textLabel.shadowOffset = CGSizeMake(1.0f, 1.0f);
-    cell.detailTextLabel.shadowColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
-    cell.detailTextLabel.shadowOffset = CGSizeMake(0.5f, 0.5f);
-    
-    cell.textLabel.font = [UIFont systemFontOfSize:18.0f];
-    
-    
-    //and here only give the cells info if it's actually in our array
-    cell.textLabel.text = @"";
-    cell.detailTextLabel.text = @"";
-    
-    
-    /***************/
-    
-    for (UIView *view in [cell.contentView subviews]) {
-        [view removeFromSuperview];
-    }
-    
-    //only do this stuff if it's an actual friend cell, not a blank one
-    if ([_mainFriendList count] <= indexPath.row) {
-        return  cell;
-    }
     
     FriendObject *tempFriend = [_mainFriendList objectAtIndex:indexPath.row];
     
+    //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
+    //e.g., AF4E32...B6C899
     if ([tempFriend.nickname isEqualToString:@""]){
         NSString *temp = tempFriend.publicKey;
         NSString *front = [temp substringToIndex:6];
         NSString *end = [temp substringFromIndex:[temp length] - 6];
         NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
-        cell.textLabel.text = formattedString;
+        cell.nickLabel.text = formattedString;
     } else {
-        cell.textLabel.text = tempFriend.nickname;
+        cell.nickLabel.text = tempFriend.nickname;
     }
     
-    cell.detailTextLabel.text = tempFriend.statusMessage;
+    //the custom cell automatically changes the height of double line messages
+    cell.messageLabelText = tempFriend.statusMessage;
     
-    UIImageView *statusView;
+    //change the color. the custo mcell will actually change the image
     if (tempFriend.connectionType == ToxFriendConnectionStatus_None) {
-        statusView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray"]];
+        cell.statusColor = FriendCellStatusColor_Gray;
     } else {
         switch (tempFriend.statusType) {
             case ToxFriendUserStatus_Away:
             {
-                statusView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-yellow"]];
+                cell.statusColor = FriendCellStatusColor_Yellow;
                 break;
             }
                 
             case ToxFriendUserStatus_Busy:
             {
-                statusView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-red"]];
+                cell.statusColor = FriendCellStatusColor_Red;
                 break;
             }
                 
             case ToxFriendUserStatus_None:
             {
-                statusView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-green"]];
+                cell.statusColor = FriendCellStatusColor_Green;
                 break;
             }
                 
@@ -218,10 +170,6 @@
                 break;
         }
     }
-    statusView.frame = CGRectMake(cell.bounds.size.width - 16, 0, statusView.frame.size.width, statusView.frame.size.height);
-    
-    [cell.contentView addSubview:statusView];
-    
     
     return cell;
 }
@@ -289,40 +237,8 @@
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    NSArray* sublayers = [NSArray arrayWithArray:cell.contentView.layer.sublayers];
-    for (CALayer *layer in sublayers) {
-        if ([layer.name isEqualToString:@"Gradient"]) {
-            CAGradientLayer *gradLayer = (CAGradientLayer *)layer;
-            UIColor *top = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.3f alpha:1.0f];
-            UIColor *bottom = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.4f alpha:1.0f];
-            gradLayer.colors = [NSArray arrayWithObjects:(id)[top CGColor], (id)[bottom CGColor], nil];
-        }
-    }
-}
-
-- (void)tableView:(UITableView *)tableView didUnhighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    NSArray* sublayers = [NSArray arrayWithArray:cell.contentView.layer.sublayers];
-    for (CALayer *layer in sublayers) {
-        if ([layer.name isEqualToString:@"Gradient"]) {
-            CAGradientLayer *gradLayer = (CAGradientLayer *)layer;
-            UIColor *top = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.4f alpha:1.0f];
-            UIColor *bottom = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.3f alpha:1.0f];
-            gradLayer.colors = [NSArray arrayWithObjects:(id)[top CGColor], (id)[bottom CGColor], nil];
-        }
-    }
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([_mainFriendList count] <= indexPath.row) {
-        return;
-    }
-    
     ChatWindowViewController *chatVC = [[ChatWindowViewController alloc] initWithFriendIndex:indexPath.row];
     [self.navigationController pushViewController:chatVC animated:YES];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];

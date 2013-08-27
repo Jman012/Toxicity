@@ -86,7 +86,6 @@
 		B97D60D617BD7497001C07B8 /* UIColor+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D60A917BD7497001C07B8 /* UIColor+JSMessagesView.m */; };
 		B97D60D717BD7497001C07B8 /* UIImage+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D60AB17BD7497001C07B8 /* UIImage+JSMessagesView.m */; };
 		B97D60D817BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D60AD17BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m */; };
-		B97D60DC17BEFF22001C07B8 /* RequestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D60DB17BEFF22001C07B8 /* RequestsTableViewController.m */; };
 		B9BB994C17B0187D00A1ACEC /* crypto_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = B9BB980F17B0187C00A1ACEC /* crypto_auth.c */; };
 		B9BB994D17B0187D00A1ACEC /* auth_hmacsha256_api.c in Sources */ = {isa = PBXBuildFile; fileRef = B9BB981117B0187C00A1ACEC /* auth_hmacsha256_api.c */; };
 		B9BB994E17B0187D00A1ACEC /* hmac_hmacsha256.c in Sources */ = {isa = PBXBuildFile; fileRef = B9BB981417B0187C00A1ACEC /* hmac_hmacsha256.c */; };
@@ -247,8 +246,10 @@
 		B9D859DE17C3453B005FD2D2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859DD17C3453B005FD2D2 /* CoreMedia.framework */; };
 		B9D859E017C34542005FD2D2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859DF17C34542005FD2D2 /* CoreVideo.framework */; };
 		B9D859E217C34553005FD2D2 /* libiconv.2.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */; };
-		B9D859E517C34B83005FD2D2 /* QRReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D859E417C34B83005FD2D2 /* QRReaderViewController.m */; };
 		B9D85A1717C840FA005FD2D2 /* tox.c in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A1517C840FA005FD2D2 /* tox.c */; };
+		B9D85A1D17CB08BF005FD2D2 /* FriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A1C17CB08BF005FD2D2 /* FriendCell.m */; };
+		B9D85A2217CB0942005FD2D2 /* QRReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A1F17CB0942005FD2D2 /* QRReaderViewController.m */; };
+		B9D85A2317CB0942005FD2D2 /* RequestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A2117CB0942005FD2D2 /* RequestsTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -360,8 +361,6 @@
 		B97D60AB17BD7497001C07B8 /* UIImage+JSMessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+JSMessagesView.m"; path = "MessagesTableViewController/JSMessagesTableViewController/UIImage+JSMessagesView.m"; sourceTree = "<group>"; };
 		B97D60AC17BD7497001C07B8 /* UIView+AnimationOptionsForCurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+AnimationOptionsForCurve.h"; path = "MessagesTableViewController/JSMessagesTableViewController/UIView+AnimationOptionsForCurve.h"; sourceTree = "<group>"; };
 		B97D60AD17BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+AnimationOptionsForCurve.m"; path = "MessagesTableViewController/JSMessagesTableViewController/UIView+AnimationOptionsForCurve.m"; sourceTree = "<group>"; };
-		B97D60DA17BEFF21001C07B8 /* RequestsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RequestsTableViewController.h; path = Friends/RequestsTableViewController.h; sourceTree = "<group>"; };
-		B97D60DB17BEFF22001C07B8 /* RequestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RequestsTableViewController.m; path = Friends/RequestsTableViewController.m; sourceTree = "<group>"; };
 		B9BB980F17B0187C00A1ACEC /* crypto_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = crypto_auth.c; sourceTree = "<group>"; };
 		B9BB981117B0187C00A1ACEC /* auth_hmacsha256_api.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = auth_hmacsha256_api.c; sourceTree = "<group>"; };
 		B9BB981317B0187C00A1ACEC /* api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api.h; sourceTree = "<group>"; };
@@ -655,10 +654,14 @@
 		B9D859DD17C3453B005FD2D2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		B9D859DF17C34542005FD2D2 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.4.0.dylib; path = usr/lib/libiconv.2.4.0.dylib; sourceTree = SDKROOT; };
-		B9D859E317C34B83005FD2D2 /* QRReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QRReaderViewController.h; path = Friends/QRReaderViewController.h; sourceTree = "<group>"; };
-		B9D859E417C34B83005FD2D2 /* QRReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QRReaderViewController.m; path = Friends/QRReaderViewController.m; sourceTree = "<group>"; };
 		B9D85A1517C840FA005FD2D2 /* tox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tox.c; path = "ProjectTox-Core/core/tox.c"; sourceTree = "<group>"; };
 		B9D85A1617C840FA005FD2D2 /* tox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tox.h; path = "ProjectTox-Core/core/tox.h"; sourceTree = "<group>"; };
+		B9D85A1B17CB08BF005FD2D2 /* FriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendCell.h; path = Friends/FriendCell.h; sourceTree = "<group>"; };
+		B9D85A1C17CB08BF005FD2D2 /* FriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendCell.m; path = Friends/FriendCell.m; sourceTree = "<group>"; };
+		B9D85A1E17CB0942005FD2D2 /* QRReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QRReaderViewController.h; path = Requests/QRReaderViewController.h; sourceTree = "<group>"; };
+		B9D85A1F17CB0942005FD2D2 /* QRReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QRReaderViewController.m; path = Requests/QRReaderViewController.m; sourceTree = "<group>"; };
+		B9D85A2017CB0942005FD2D2 /* RequestsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RequestsTableViewController.h; path = Requests/RequestsTableViewController.h; sourceTree = "<group>"; };
+		B9D85A2117CB0942005FD2D2 /* RequestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RequestsTableViewController.m; path = Requests/RequestsTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -727,6 +730,7 @@
 				B94F2C7217AF25C0003EA6E8 /* MainStoryboard.storyboard */,
 				B9BB99E517B0E3F800A1ACEC /* Singleton */,
 				B9BB99DB17B0E31100A1ACEC /* Friends */,
+				B9D85A1A17CB079E005FD2D2 /* Requests */,
 				B9BB99DA17B0E2F400A1ACEC /* Settings */,
 				B97D603F17B95121001C07B8 /* Objects */,
 				B97D602B17B8431A001C07B8 /* Images */,
@@ -1753,10 +1757,8 @@
 				B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */,
 				B97D603C17B8982C001C07B8 /* TransparentToolbar.h */,
 				B97D603D17B8982C001C07B8 /* TransparentToolbar.m */,
-				B97D60DA17BEFF21001C07B8 /* RequestsTableViewController.h */,
-				B97D60DB17BEFF22001C07B8 /* RequestsTableViewController.m */,
-				B9D859E317C34B83005FD2D2 /* QRReaderViewController.h */,
-				B9D859E417C34B83005FD2D2 /* QRReaderViewController.m */,
+				B9D85A1B17CB08BF005FD2D2 /* FriendCell.h */,
+				B9D85A1C17CB08BF005FD2D2 /* FriendCell.m */,
 			);
 			name = Friends;
 			sourceTree = "<group>";
@@ -1862,6 +1864,17 @@
 				B9D859D517C3450E005FD2D2 /* zbar-samples.png */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		B9D85A1A17CB079E005FD2D2 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				B9D85A1E17CB0942005FD2D2 /* QRReaderViewController.h */,
+				B9D85A1F17CB0942005FD2D2 /* QRReaderViewController.m */,
+				B9D85A2017CB0942005FD2D2 /* RequestsTableViewController.h */,
+				B9D85A2117CB0942005FD2D2 /* RequestsTableViewController.m */,
+			);
+			name = Requests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2154,9 +2167,10 @@
 				B97D60D617BD7497001C07B8 /* UIColor+JSMessagesView.m in Sources */,
 				B97D60D717BD7497001C07B8 /* UIImage+JSMessagesView.m in Sources */,
 				B97D60D817BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m in Sources */,
-				B97D60DC17BEFF22001C07B8 /* RequestsTableViewController.m in Sources */,
-				B9D859E517C34B83005FD2D2 /* QRReaderViewController.m in Sources */,
 				B9D85A1717C840FA005FD2D2 /* tox.c in Sources */,
+				B9D85A1D17CB08BF005FD2D2 /* FriendCell.m in Sources */,
+				B9D85A2217CB0942005FD2D2 /* QRReaderViewController.m in Sources */,
+				B9D85A2317CB0942005FD2D2 /* RequestsTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

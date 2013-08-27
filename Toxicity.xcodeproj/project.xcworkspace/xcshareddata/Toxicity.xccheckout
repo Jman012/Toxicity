@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>F334DB6A-1E16-4314-B8D9-D1BF2E18467F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Toxicity</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>3449C73A-94A4-4D0B-A03A-7A83354336B9</key>
+		<string>https://github.com/irungentoo/ProjectTox-Core.git</string>
+		<key>434A9D8E-D84C-4D35-84B3-4B86F0E3E2FC</key>
+		<string>https://github.com/jessesquires/MessagesTableViewController.git</string>
+		<key>9C06D627-5004-46AE-98D7-44F26A6443C5</key>
+		<string>https://github.com/Jman012/Toxicity.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Toxicity.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>3449C73A-94A4-4D0B-A03A-7A83354336B9</key>
+		<string>../../ProjectTox-Core</string>
+		<key>434A9D8E-D84C-4D35-84B3-4B86F0E3E2FC</key>
+		<string>../../MessagesTableViewController</string>
+		<key>9C06D627-5004-46AE-98D7-44F26A6443C5</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/Jman012/Toxicity.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>9C06D627-5004-46AE-98D7-44F26A6443C5</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>9C06D627-5004-46AE-98D7-44F26A6443C5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Toxicity</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>3449C73A-94A4-4D0B-A03A-7A83354336B9</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ProjectTox-Core</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>434A9D8E-D84C-4D35-84B3-4B86F0E3E2FC</string>
+			<key>IDESourceControlWCCName</key>
+			<string>MessagesTableViewController</string>
+		</dict>
+	</array>
+</dict>
+</plist>

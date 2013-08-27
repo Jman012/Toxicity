@@ -12,6 +12,8 @@
 #import "ChatWindowViewController.h"
 #import "TransparentToolbar.h"
 #import "RequestsTableViewController.h"
+#import "FriendCell.h"
+
 #include "tox.h"
 
 @interface FriendsListTableViewController : UITableViewController <UIAlertViewDelegate>
