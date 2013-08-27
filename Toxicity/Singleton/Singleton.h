@@ -42,7 +42,7 @@
     
     
     //with new core, we need to hold an instance of messenger
-    Tox                 *toxCoreMessenger;
+    Tox                 *toxCoreInstance;
 }
 
 @property (nonatomic, strong) NSMutableArray *dhtNodeList;
@@ -54,7 +54,7 @@
 @property (nonatomic, strong) NSMutableArray *mainFriendList;
 @property (nonatomic, strong) NSMutableArray *mainFriendMessages;
 @property (nonatomic, assign) NSInteger currentlyOpenedFriendNumber;
-@property (nonatomic, assign) Tox *toxCoreMessenger;
+@property (nonatomic, assign) Tox *toxCoreInstance;
 
 + (Singleton *)sharedSingleton;
 + (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey;

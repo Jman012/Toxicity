@@ -195,7 +195,7 @@
         //delete the friend from the table view, singleton, and messenger instance
         [self.tableView beginUpdates];
         
-        Tox *m = [[Singleton sharedSingleton] toxCoreMessenger];
+        Tox *m = [[Singleton sharedSingleton] toxCoreInstance];
         int num = tox_delfriend(m, indexPath.row);
         
         if (num == 0) {

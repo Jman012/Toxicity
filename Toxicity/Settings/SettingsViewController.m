@@ -419,7 +419,7 @@
         char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
         int pos = 0;
         uint8_t ourAddress[TOX_FRIEND_ADDRESS_SIZE];
-        tox_getaddress([[Singleton sharedSingleton] toxCoreMessenger], ourAddress);
+        tox_getaddress([[Singleton sharedSingleton] toxCoreInstance], ourAddress);
         for (int i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
             sprintf(&convertedKey[pos] ,"%02X", ourAddress[i] & 0xff);
         }
