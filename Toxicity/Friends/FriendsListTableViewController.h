@@ -21,6 +21,8 @@
     IBOutlet UIBarButtonItem    *settingsButton;
     
     NSMutableArray              *_mainFriendList;
+    
+    TransparentToolbar          *connectionStatusToolbar;
 }
 
 - (IBAction)requestsButtonPushed:(id)sender;

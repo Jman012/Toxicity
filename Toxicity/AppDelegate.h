@@ -11,6 +11,7 @@
 #import "ZBarReaderView.h"
 
 #include "tox.h"
+#include "Messenger.h"
 
 //for the resolve_addr()
 #include <netdb.h>
@@ -24,6 +25,8 @@
     
     //used for tox
     int             on;
+    
+    NSOperationQueue    *toxOpQueue;
 }
 
 @property (strong, nonatomic) UIWindow *window;

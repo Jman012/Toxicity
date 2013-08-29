@@ -42,6 +42,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"AcceptedFriendRequest" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"RejectedFriendRequest" object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView) name:@"DHTConnected" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView) name:@"DHTDisconnected" object:nil];
+    
     settingsButton.title = @"\u2699";
     UIFont *f1 = [UIFont fontWithName:@"Helvetica" size:24.0f];
     NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:f1, UITextAttributeFont, nil];
@@ -57,16 +60,21 @@
     //dht connection status, put above table view
     //todo: make it work
     UIBarButtonItem *dhtStatus = [[UIBarButtonItem alloc] init];
-    dhtStatus.title = @"Temporary Placeholder";
+    if (tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
+        dhtStatus.title = @"Connected to Network";
+        dhtStatus.tintColor = [UIColor colorWithRed:0.0f green:0.6f blue:0.0f alpha:1.0f];
+    } else {
+        dhtStatus.title = @"Not Connected";
+        dhtStatus.tintColor = [UIColor colorWithRed:0.6f green:0.0f blue:0.0f alpha:1.0f];
+    }
     dhtStatus.style = UIBarButtonItemStyleBordered;
     dhtStatus.width = 310;
-    dhtStatus.tintColor = [UIColor colorWithRed:0.0f green:0.8f blue:0.0f alpha:1.0f];
     
-    TransparentToolbar *toolbar = [[TransparentToolbar alloc] initWithFrame:CGRectMake(0, -55, self.tableView.bounds.size.width, 44)];
-    [toolbar setItems:[NSArray arrayWithObject:dhtStatus]];
+    connectionStatusToolbar = [[TransparentToolbar alloc] initWithFrame:CGRectMake(0, -55, self.tableView.bounds.size.width, 44)];
+    [connectionStatusToolbar setItems:[NSArray arrayWithObject:dhtStatus]];
     
     
-    [self.tableView addSubview:toolbar];
+    [self.tableView addSubview:connectionStatusToolbar];
     
     [self updateRequestsButton];
     
@@ -100,6 +108,21 @@
     } else {
         self.navigationItem.rightBarButtonItem.title = @"Requests";
     }
+}
+     
+- (void)updateConnectionStatusView {
+    UIBarButtonItem *dhtStatus = [[UIBarButtonItem alloc] init];
+    if (tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
+        dhtStatus.title = @"Connected to Network";
+        dhtStatus.tintColor = [UIColor colorWithRed:0.0f green:0.6f blue:0.0f alpha:1.0f];
+    } else {
+        dhtStatus.title = @"Not Connected";
+        dhtStatus.tintColor = [UIColor colorWithRed:0.6f green:0.0f blue:0.0f alpha:1.0f];
+    }
+    dhtStatus.style = UIBarButtonItemStyleBordered;
+    dhtStatus.width = 310;
+    
+    [connectionStatusToolbar setItems:[NSArray arrayWithObject:dhtStatus]];
 }
 
 #pragma mark - Table view data source
@@ -207,7 +230,7 @@
             //save in user defaults
             [Singleton saveFriendListInUserDefaults];
         } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Something went wrong with deleting the friend! Tox Core issue." delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Something went wrong with deleting the friend! Tox Core issue." delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
             [alert show];
         }
         
