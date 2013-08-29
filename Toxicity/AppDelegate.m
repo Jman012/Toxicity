@@ -262,6 +262,7 @@
     uint8_t *binID = hex_string_to_bin((char *)[theirKey UTF8String]);
     
     int num = tox_addfriend([[Singleton sharedSingleton] toxCoreInstance], binID, (uint8_t *)"Toxicity for iOS", strlen("Toxicity for iOS") + 1);
+    free(binID);
     switch (num) {
         case TOX_FAERR_TOOLONG:
             NSLog(@"toolong");
