@@ -109,13 +109,13 @@
     
     
     //this is the main loop for the tox core. ran with an NSTimer for a different thread. runs the stuff needed to let tox work (network and stuff)
-//    toxOpQueue = [[NSOperationQueue alloc] init];
-//    NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(toxCoreLoop:) object:nil];
-//    [toxOpQueue addOperation:operation];
+    //    toxOpQueue = [[NSOperationQueue alloc] init];
+    //    NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(toxCoreLoop:) object:nil];
+    //    [toxOpQueue addOperation:operation];
     [self performSelectorInBackground:@selector(toxCoreLoop:) withObject:nil];
     
-//    [NSTimer scheduledTimerWithTimeInterval:(1/2) target:self selector:@selector(toxCoreLoop:) userInfo:nil repeats:YES];
-
+    //    [NSTimer scheduledTimerWithTimeInterval:(1/2) target:self selector:@selector(toxCoreLoop:) userInfo:nil repeats:YES];
+    
     
     char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
     int pos = 0;
@@ -128,7 +128,7 @@
     
     return YES;
 }
-							
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -137,7 +137,7 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
@@ -155,7 +155,7 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     
-    tox_kill([[Singleton sharedSingleton] toxCoreInstance]);
+    //    tox_kill([[Singleton sharedSingleton] toxCoreInstance]);
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
@@ -186,7 +186,7 @@
         bootstrap_ip_port.ip.i = resolved_address;
     else
         return;
-//        NSLog(@"Error resolving address!");
+    //        NSLog(@"Error resolving address!");
     
     unsigned char *binary_string = hex_string_to_bin((char *)dht_key);
     tox_bootstrap([[Singleton sharedSingleton] toxCoreInstance], bootstrap_ip_port, binary_string); //actual connection
@@ -222,7 +222,7 @@
 
 - (void)userStatusChanged:(NSNotification *)notification {
     char *newStatus = (char *)[[[Singleton sharedSingleton] userStatusMessage] UTF8String];
-
+    
     //submit new status to core
     tox_set_statusmessage([[Singleton sharedSingleton] toxCoreInstance], (uint8_t *)newStatus, strlen(newStatus) + 1);
     
@@ -334,7 +334,7 @@
     for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
         sprintf(&convertedKey[pos] ,"%02X", key[i] & 0xff);
     }
-
+    
     if ([[NSString stringWithUTF8String:convertedKey] isEqualToString:theirKey]) {
         //send message
         int num;
@@ -354,7 +354,7 @@
         //todo: tell chat window vc that it failed
         NSLog(@"Failed to send, mismatched friendnum and id");
     }
-
+    
 }
 
 - (void)acceptFriendRequest:(NSNotification *)notification {
@@ -396,83 +396,83 @@
 void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *userdata) {
     printf("got request");
     dispatch_sync(dispatch_get_main_queue(), ^{
-    NSLog(@"Friend Request! From:");
-    
-    for (int i=0; i<32; i++) {
-        printf("%02X", public_key[i] & 0xff);
-    }
-    printf("\n");
-    
-    //convert the bin key to a char key. reverse of hex_string_to_bin. used in a lot of places
-    //todo: make it a function
-    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
-    int pos = 0;
-    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
-        sprintf(&convertedKey[pos] ,"%02X", public_key[i] & 0xff);
-    }
-    
-    //we got a friend request, so we have to store it!
-    //the pending dictionary has the object as nsdata bytes of the bin version of the publickey, and the dict key is the nsstring of said publickey
-    [[[Singleton sharedSingleton] pendingFriendRequests] setObject:[NSData dataWithBytes:public_key length:TOX_CLIENT_ID_SIZE]
-                                                            forKey:[NSString stringWithUTF8String:convertedKey]];
-    /*UIAlertView *requestAlert = [[UIAlertView alloc] initWithTitle:@"Friend Request"
-                                                           message:[NSString stringWithUTF8String:convertedKey]
-                                                          delegate:(AppDelegate*)[[UIApplication sharedApplication] delegate]
-                                                 cancelButtonTitle:@"Accept"
-                                                 otherButtonTitles:@"Reject", nil];
-    [requestAlert show];*/
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendRequestReceived" object:nil];
-    
+        NSLog(@"Friend Request! From:");
+        
+        for (int i=0; i<32; i++) {
+            printf("%02X", public_key[i] & 0xff);
+        }
+        printf("\n");
+        
+        //convert the bin key to a char key. reverse of hex_string_to_bin. used in a lot of places
+        //todo: make it a function
+        char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
+        int pos = 0;
+        for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
+            sprintf(&convertedKey[pos] ,"%02X", public_key[i] & 0xff);
+        }
+        
+        //we got a friend request, so we have to store it!
+        //the pending dictionary has the object as nsdata bytes of the bin version of the publickey, and the dict key is the nsstring of said publickey
+        [[[Singleton sharedSingleton] pendingFriendRequests] setObject:[NSData dataWithBytes:public_key length:TOX_CLIENT_ID_SIZE]
+                                                                forKey:[NSString stringWithUTF8String:convertedKey]];
+        /*UIAlertView *requestAlert = [[UIAlertView alloc] initWithTitle:@"Friend Request"
+         message:[NSString stringWithUTF8String:convertedKey]
+         delegate:(AppDelegate*)[[UIApplication sharedApplication] delegate]
+         cancelButtonTitle:@"Accept"
+         otherButtonTitles:@"Reject", nil];
+         [requestAlert show];*/
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendRequestReceived" object:nil];
+        
     });
 }
 
 void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, void *userdata) {
     printf("got message %d", friendnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
-    NSLog(@"Message from [%d]: %s", friendnumber, string);
-    
-    
-    uint8_t tempKey[TOX_CLIENT_ID_SIZE];
-    tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
-    
-    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
-    int pos = 0;
-    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
-        sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
-    }
-    
-    if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+        NSLog(@"Message from [%d]: %s", friendnumber, string);
         
-    } else {
-        return;
-    }
-    
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    [dict setObject:[NSString stringWithUTF8String:(char *)string] forKey:@"message"];
-    [dict setObject:[NSString stringWithUTF8String:convertedKey] forKey:@"their_public_key"];
-    NSLog(@"Message key: %@", [NSString stringWithUTF8String:convertedKey]);
-    
-    //add to singleton
-    //if the message coming through is not to the currently opened chat window, then uialertview it
-    if (friendnumber != [[Singleton sharedSingleton] currentlyOpenedFriendNumber]) {
-        NSMutableArray *tempMessages = [[[[Singleton sharedSingleton] mainFriendMessages] objectAtIndex:friendnumber] mutableCopy];
-        MessageObject *theMessage = [[MessageObject alloc] init];
-        [theMessage setMessage:[NSString stringWithUTF8String:(char *)string]];
-        [theMessage setOrigin:MessageLocation_Them];
-        [theMessage setDidFailToSend:NO];
-        [tempMessages addObject:theMessage];
-        [[Singleton sharedSingleton] mainFriendMessages][friendnumber] = [tempMessages copy];
         
-        FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
-        UIAlertView *messageAlert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Message from: %@", tempFriend.nickname]
-                                                               message:[NSString stringWithUTF8String:(char *)string]
-                                                              delegate:nil
-                                                     cancelButtonTitle:@"Okay"
-                                                     otherButtonTitles:nil];
-        [messageAlert show];
-    }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessage" object:nil userInfo:dict];
+        uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+        tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
+        
+        char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
+        int pos = 0;
+        for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
+            sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
+        }
+        
+        if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+            
+        } else {
+            return;
+        }
+        
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+        [dict setObject:[NSString stringWithUTF8String:(char *)string] forKey:@"message"];
+        [dict setObject:[NSString stringWithUTF8String:convertedKey] forKey:@"their_public_key"];
+        NSLog(@"Message key: %@", [NSString stringWithUTF8String:convertedKey]);
+        
+        //add to singleton
+        //if the message coming through is not to the currently opened chat window, then uialertview it
+        if (friendnumber != [[Singleton sharedSingleton] currentlyOpenedFriendNumber]) {
+            NSMutableArray *tempMessages = [[[[Singleton sharedSingleton] mainFriendMessages] objectAtIndex:friendnumber] mutableCopy];
+            MessageObject *theMessage = [[MessageObject alloc] init];
+            [theMessage setMessage:[NSString stringWithUTF8String:(char *)string]];
+            [theMessage setOrigin:MessageLocation_Them];
+            [theMessage setDidFailToSend:NO];
+            [tempMessages addObject:theMessage];
+            [[Singleton sharedSingleton] mainFriendMessages][friendnumber] = [tempMessages copy];
+            
+            FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
+            UIAlertView *messageAlert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Message from: %@", tempFriend.nickname]
+                                                                   message:[NSString stringWithUTF8String:(char *)string]
+                                                                  delegate:nil
+                                                         cancelButtonTitle:@"Okay"
+                                                         otherButtonTitles:nil];
+            [messageAlert show];
+        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessage" object:nil userInfo:dict];
     });
 }
 
@@ -486,157 +486,157 @@ void print_action(Tox *m, int friendnumber, uint8_t * action, uint16_t length, v
 void print_nickchange(Tox *m, int friendnumber, uint8_t * string, uint16_t length, void *userdata) {
     printf("got nick %d", friendnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
-    NSLog(@"Nick Change from [%d]: %s", friendnumber, string);
-    
-    uint8_t tempKey[TOX_CLIENT_ID_SIZE];
-    tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
-    
-    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
-    int pos = 0;
-    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
-        sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
-    }
-    
-    if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+        NSLog(@"Nick Change from [%d]: %s", friendnumber, string);
         
-    } else {
-        return;
-    }
-
-    
-    FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
-    [tempFriend setNickname:[NSString stringWithUTF8String:(char *)string]];
-    
-    //save in user defaults
-    [Singleton saveFriendListInUserDefaults];
-    
-    //for now
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
+        uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+        tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
+        
+        char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
+        int pos = 0;
+        for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
+            sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
+        }
+        
+        if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+            
+        } else {
+            return;
+        }
+        
+        
+        FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
+        [tempFriend setNickname:[NSString stringWithUTF8String:(char *)string]];
+        
+        //save in user defaults
+        [Singleton saveFriendListInUserDefaults];
+        
+        //for now
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
     });
 }
 
 void print_statuschange(Tox *m, int friendnumber,  uint8_t * string, uint16_t length, void *userdata) {
     printf("got status %d", friendnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
-    NSLog(@"Status change from [%d]: %s", friendnumber, string);
-    
-    uint8_t tempKey[TOX_CLIENT_ID_SIZE];
-    tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
-    
-    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
-    int pos = 0;
-    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
-        sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
-    }
-    
-    if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+        NSLog(@"Status change from [%d]: %s", friendnumber, string);
         
-    } else {
-        return;
-    }
-
-    
-    FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
-    [tempFriend setStatusMessage:[NSString stringWithUTF8String:(char *)string]];
-    
-    //save in user defaults
-    [Singleton saveFriendListInUserDefaults];
-    
-    //for now
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
+        uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+        tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
+        
+        char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
+        int pos = 0;
+        for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
+            sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
+        }
+        
+        if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+            
+        } else {
+            return;
+        }
+        
+        
+        FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
+        [tempFriend setStatusMessage:[NSString stringWithUTF8String:(char *)string]];
+        
+        //save in user defaults
+        [Singleton saveFriendListInUserDefaults];
+        
+        //for now
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
     });
 }
 
 void print_userstatuschange(Tox *m, int friendnumber, TOX_USERSTATUS kind, void *userdata) {
     printf("got userstatus %d", friendnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
-    uint8_t tempKey[TOX_CLIENT_ID_SIZE];
-    tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
-    
-    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
-    int pos = 0;
-    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
-        sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
-    }
-    
-    if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+        uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+        tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
         
-    } else {
-        return;
-    }
-
-    
-    FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
-    switch (kind) {
-        case TOX_USERSTATUS_AWAY:
-        {
-            [tempFriend setStatusType:ToxFriendUserStatus_Away];
-            NSLog(@"User status change: away");
-            break;
+        char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
+        int pos = 0;
+        for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
+            sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
         }
+        
+        if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
             
-        case TOX_USERSTATUS_BUSY:
-        {
-            [tempFriend setStatusType:ToxFriendUserStatus_Busy];
-            NSLog(@"User status change: busy");
-            break;
+        } else {
+            return;
         }
-            
-        case TOX_USERSTATUS_INVALID:
-        {
-            [tempFriend setStatusType:ToxFriendUserStatus_None];
-            NSLog(@"User status change: invalid");
-            break;
+        
+        
+        FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
+        switch (kind) {
+            case TOX_USERSTATUS_AWAY:
+            {
+                [tempFriend setStatusType:ToxFriendUserStatus_Away];
+                NSLog(@"User status change: away");
+                break;
+            }
+                
+            case TOX_USERSTATUS_BUSY:
+            {
+                [tempFriend setStatusType:ToxFriendUserStatus_Busy];
+                NSLog(@"User status change: busy");
+                break;
+            }
+                
+            case TOX_USERSTATUS_INVALID:
+            {
+                [tempFriend setStatusType:ToxFriendUserStatus_None];
+                NSLog(@"User status change: invalid");
+                break;
+            }
+                
+            case TOX_USERSTATUS_NONE:
+            {
+                [tempFriend setStatusType:ToxFriendUserStatus_None];
+                NSLog(@"User status change: none");
+                break;
+            }
+                
+            default:
+                break;
         }
-            
-        case TOX_USERSTATUS_NONE:
-        {
-            [tempFriend setStatusType:ToxFriendUserStatus_None];
-            NSLog(@"User status change: none");
-            break;
-        }
-            
-        default:
-            break;
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendUserStatusChanged" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendUserStatusChanged" object:nil];
     });
 }
 
 void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void *userdata) {
     printf("got connection change %d", friendnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
-    NSLog(@"Friend Status Change: [%d]: %d", friendnumber, (int)status);
-    
-    uint8_t tempKey[TOX_CLIENT_ID_SIZE];
-    tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
-    
-    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
-    int pos = 0;
-    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
-        sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
-    }
-    
-    if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
+        NSLog(@"Friend Status Change: [%d]: %d", friendnumber, (int)status);
         
-    } else {
-        return;
-    }
-
-    FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
-    switch (status) {
-        case 0:
-            tempFriend.connectionType = ToxFriendConnectionStatus_None;
-            break;
+        uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+        tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
+        
+        char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
+        int pos = 0;
+        for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
+            sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
+        }
+        
+        if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
             
-        case 1:
-            tempFriend.connectionType = ToxFriendConnectionStatus_Online;
-            break;
-            
-        default:
-            break;
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendUserStatusChanged" object:nil];
+        } else {
+            return;
+        }
+        
+        FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
+        switch (status) {
+            case 0:
+                tempFriend.connectionType = ToxFriendConnectionStatus_None;
+                break;
+                
+            case 1:
+                tempFriend.connectionType = ToxFriendConnectionStatus_Online;
+                break;
+                
+            default:
+                break;
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendUserStatusChanged" object:nil];
     });
 }
 
@@ -693,49 +693,59 @@ uint32_t resolve_addr(const char *address)
 }
 
 - (void)toxCoreLoop:(NSTimer *)timer {
-//    NSLog(@"Core loop");
-    dispatch_sync(dispatch_get_main_queue(), ^{
+    
+    while (TRUE) {
+        //    NSLog(@"Core loop");
         if (on == 0 && tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
-            NSLog(@"DHT Connected!");
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTConnected" object:nil];
-            DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
-            [tempDHT setConnectionStatus:ToxDHTNodeConnectionStatus_Connected];
-            on = 1;
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                NSLog(@"DHT Connected!");
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTConnected" object:nil];
+                DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
+                [tempDHT setConnectionStatus:ToxDHTNodeConnectionStatus_Connected];
+                on = 1;
+            });
         }
         
         if (on == 1 && !tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
             NSLog(@"DHT Disconnected!");
-            //gotta clear the currently connected dht since we're no longer connected
-            DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
-            [tempDHT setDhtName:@""];
-            [tempDHT setDhtIP:@""];
-            [tempDHT setDhtPort:@""];
-            [tempDHT setDhtKey:@""];
-            [tempDHT setConnectionStatus:ToxDHTNodeConnectionStatus_NotConnected];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTDisconnected" object:nil];
-            on = 0;
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                //gotta clear the currently connected dht since we're no longer connected
+                DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
+                [tempDHT setDhtName:@""];
+                [tempDHT setDhtIP:@""];
+                [tempDHT setDhtPort:@""];
+                [tempDHT setDhtKey:@""];
+                [tempDHT setConnectionStatus:ToxDHTNodeConnectionStatus_NotConnected];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTDisconnected" object:nil];
+                on = 0;
+            });
         }
-    });
-    
-    
-    tox_do([[Singleton sharedSingleton] toxCoreInstance]);
-    
-    static int lastCount = 0;
-    Messenger *m = (Messenger *)[[Singleton sharedSingleton] toxCoreInstance];
-    uint32_t i;
-    uint64_t temp_time = unix_time();
-    uint16_t count = 0;
-    for(i = 0; i < LCLIENT_LIST; ++i) {
-        if (!(m->dht->close_clientlist[i].timestamp + 70 <= temp_time))
-            ++count;
+        
+        
+        tox_do([[Singleton sharedSingleton] toxCoreInstance]);
+        
+        static int lastCount = 0;
+        Messenger *m = (Messenger *)[[Singleton sharedSingleton] toxCoreInstance];
+        uint32_t i;
+        uint64_t temp_time = unix_time();
+        uint16_t count = 0;
+        for(i = 0; i < LCLIENT_LIST; ++i) {
+            if (!(m->dht->close_clientlist[i].timestamp + 70 <= temp_time))
+                ++count;
+        }
+        if (count != lastCount) {
+            NSLog(@"****Nodes connected: %d", count);
+        }
+        lastCount = count;
+        //0.1s
+        //    usleep(100000);
+        //0.01s
+        usleep(10000);
+        //        [self toxCoreLoop:nil];
+        
     }
-    if (count != lastCount) {
-        NSLog(@"****Nodes connected: %d", count);
-    }
-    lastCount = count;
-    usleep(100000);
-    [self toxCoreLoop:nil];
 }
 
 #pragma mark - NSTimer method
@@ -752,7 +762,7 @@ uint32_t resolve_addr(const char *address)
         [tempDHT setDhtPort:@""];
         [tempDHT setDhtKey:@""];
         [tempDHT setConnectionStatus:ToxDHTNodeConnectionStatus_NotConnected];
-
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTFailedToConnect" object:nil];
     }
 }
@@ -760,40 +770,40 @@ uint32_t resolve_addr(const char *address)
 #pragma mark - Alert View Delegate
 
 /*- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        return;
-    }
-    
-    NSData *data = [[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:[alertView message]];
-    
-    uint8_t *key = (uint8_t *)[data bytes];
-    
-    int num = m_addfriend_norequest([[Singleton sharedSingleton] toxCoreMessenger], key);
-    
-    switch (num) {
-        case -1:
-            NSLog(@"Accepting request failed");
-            break;
-            
-        default: //added friend successfully
-        {
-            //friend added through accept request
-            FriendObject *tempFriend = [[FriendObject alloc] init];
-            [tempFriend setPublicKey:[[alertView message] substringToIndex:(CLIENT_ID_SIZE * 2)]];
-            NSLog(@"new friend key: %@", [tempFriend publicKey]);
-            [tempFriend setNickname:@""];
-            [tempFriend setStatusMessage:@"Accepted..."];
-            
-            [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
-            [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
-            [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
-            
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
-
-            break;
-        }
-    }
-}*/
+ if (buttonIndex == 1) {
+ return;
+ }
+ 
+ NSData *data = [[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:[alertView message]];
+ 
+ uint8_t *key = (uint8_t *)[data bytes];
+ 
+ int num = m_addfriend_norequest([[Singleton sharedSingleton] toxCoreMessenger], key);
+ 
+ switch (num) {
+ case -1:
+ NSLog(@"Accepting request failed");
+ break;
+ 
+ default: //added friend successfully
+ {
+ //friend added through accept request
+ FriendObject *tempFriend = [[FriendObject alloc] init];
+ [tempFriend setPublicKey:[[alertView message] substringToIndex:(CLIENT_ID_SIZE * 2)]];
+ NSLog(@"new friend key: %@", [tempFriend publicKey]);
+ [tempFriend setNickname:@""];
+ [tempFriend setStatusMessage:@"Accepted..."];
+ 
+ [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
+ [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
+ [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
+ 
+ 
+ [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
+ 
+ break;
+ }
+ }
+ }*/
 
 @end
