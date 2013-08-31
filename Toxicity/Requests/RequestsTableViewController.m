@@ -115,8 +115,15 @@
     
     [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:[button titleForState:UIControlStateDisabled]];
     
+    
+    [self.tableView beginUpdates];
+    
+    [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:([button tag] - 402) inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
     _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
-    [self.tableView reloadData];
+    
+    [self.tableView endUpdates];
+    
+//    [self.tableView reloadData];
 }
 
 - (void)cellRejectButtonPressed:(id)sender {
@@ -127,8 +134,14 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RejectedFriendRequest" object:nil userInfo:@{@"key_to_accept":[button titleForState:UIControlStateDisabled]}];
 
     
+    [self.tableView beginUpdates];
+    
+    [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:([button tag] - 900) inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
     _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
-    [self.tableView reloadData];
+    
+    [self.tableView endUpdates];
+    
+//    [self.tableView reloadData];
 }
 
 - (void)didGetFriendRequest {
@@ -226,19 +239,19 @@
     }
     
     UIButton *acceptButton;
-    if ([cell viewWithTag:402] != nil)
-        acceptButton = (UIButton *)[cell viewWithTag:402];
+    if ([cell viewWithTag:402 + indexPath.row] != nil)
+        acceptButton = (UIButton *)[cell viewWithTag:402 + indexPath.row];
     else {
         acceptButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        acceptButton.tag = 402;
+        acceptButton.tag = 402 + indexPath.row;
     }
     
     UIButton *rejectButton;
-    if ([cell viewWithTag:403] != nil)
-        rejectButton = (UIButton *)[cell viewWithTag:403];
+    if ([cell viewWithTag:900 + indexPath.row] != nil)
+        rejectButton = (UIButton *)[cell viewWithTag:900 + indexPath.row];
     else {
         rejectButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        rejectButton.tag = 403;
+        rejectButton.tag = 900 + indexPath.row;
     }
 
     
@@ -322,10 +335,10 @@
     if ([cell viewWithTag:401] == nil)
         [cell.contentView addSubview:messageLabel];
     
-    if ([cell viewWithTag:402] == nil)
+    if ([cell viewWithTag:402 + indexPath.row] == nil)
         [cell.contentView addSubview:acceptButton];
     
-    if ([cell viewWithTag:403] == nil)
+    if ([cell viewWithTag:900 + indexPath.row] == nil)
         [cell.contentView addSubview:rejectButton];
     
     return cell;

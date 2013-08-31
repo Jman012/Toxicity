@@ -26,7 +26,7 @@
     //used for tox
     int             on;
     
-    NSOperationQueue    *toxOpQueue;
+    NSThread        *toxMainThread;
 }
 
 @property (strong, nonatomic) UIWindow *window;
@@ -35,6 +35,6 @@
 - (void)userNickChanged:(NSNotification *)notification;
 - (void)userStatusChanged:(NSNotification *)notification;
 unsigned char * hex_string_to_bin(char hex_string[]);
-- (void)toxCoreLoop:(NSTimer *)timer;
+- (void)toxCoreLoop;
 
 @end

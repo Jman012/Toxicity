@@ -109,13 +109,10 @@
     
     
     //this is the main loop for the tox core. ran with an NSTimer for a different thread. runs the stuff needed to let tox work (network and stuff)
-    //    toxOpQueue = [[NSOperationQueue alloc] init];
-    //    NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(toxCoreLoop:) object:nil];
-    //    [toxOpQueue addOperation:operation];
-    [self performSelectorInBackground:@selector(toxCoreLoop:) withObject:nil];
-    
-    //    [NSTimer scheduledTimerWithTimeInterval:(1/2) target:self selector:@selector(toxCoreLoop:) userInfo:nil repeats:YES];
-    
+//    [self performSelectorInBackground:@selector(toxCoreLoop:) withObject:[NSNumber numberWithBool:NO]];
+    toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
+    [[toxMainThread threadDictionary] setObject:[NSNumber numberWithBool:NO] forKey:@"ToxicityIsInBackground"];
+    [toxMainThread start];
     
     char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
     int pos = 0;
@@ -133,12 +130,17 @@
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
+    [[toxMainThread threadDictionary] setObject:[NSNumber numberWithBool:YES] forKey:@"ToxicityIsInBackground"];
+
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    [[toxMainThread threadDictionary] setObject:[NSNumber numberWithBool:YES] forKey:@"ToxicityIsInBackground"];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -149,6 +151,8 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    [[toxMainThread threadDictionary] setObject:[NSNumber numberWithBool:NO] forKey:@"ToxicityIsInBackground"];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -692,10 +696,10 @@ uint32_t resolve_addr(const char *address)
     return addr;
 }
 
-- (void)toxCoreLoop:(NSTimer *)timer {
+- (void)toxCoreLoop {
     
     while (TRUE) {
-        //    NSLog(@"Core loop");
+//        NSLog(@"Core loop");
         if (on == 0 && tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
             dispatch_sync(dispatch_get_main_queue(), ^{
                 NSLog(@"DHT Connected!");
@@ -726,6 +730,7 @@ uint32_t resolve_addr(const char *address)
         
         tox_do([[Singleton sharedSingleton] toxCoreInstance]);
         
+        //print when the number of connected clients changes
         static int lastCount = 0;
         Messenger *m = (Messenger *)[[Singleton sharedSingleton] toxCoreInstance];
         uint32_t i;
@@ -739,11 +744,18 @@ uint32_t resolve_addr(const char *address)
             NSLog(@"****Nodes connected: %d", count);
         }
         lastCount = count;
-        //0.1s
-        //    usleep(100000);
-        //0.01s
-        usleep(10000);
-        //        [self toxCoreLoop:nil];
+        
+        
+        //sleep depending if we're open of closed
+        NSNumber *isRunningInBackground = [[toxMainThread threadDictionary] objectForKey:@"ToxicityIsInBackground"];
+        if ([isRunningInBackground boolValue] == YES) {
+            //1.0s
+            usleep(1000000);
+        } else {
+            //0.01s
+            usleep(10000);
+        }
+        
         
     }
 }
