@@ -42,8 +42,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"AcceptedFriendRequest" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"RejectedFriendRequest" object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView) name:@"DHTConnected" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView) name:@"DHTDisconnected" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView:) name:@"DHTConnected" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView:) name:@"DHTDisconnected" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView:) name:@"NewNumberOfConnectedNodes" object:nil];
     
     settingsButton.title = @"\u2699";
     UIFont *f1 = [UIFont fontWithName:@"Helvetica" size:24.0f];
@@ -110,10 +111,14 @@
     }
 }
      
-- (void)updateConnectionStatusView {
+- (void)updateConnectionStatusView:(NSNotification *)notificaton {
     UIBarButtonItem *dhtStatus = [[UIBarButtonItem alloc] init];
     if (tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
-        dhtStatus.title = @"Connected to Network";
+        if ([notificaton object] == nil || ![notificaton object]) {
+            dhtStatus.title = @"Connected to Network";
+        } else {
+            dhtStatus.title = [NSString stringWithFormat:@"Connected to Network: %d", [[notificaton object] integerValue]];
+        }
         dhtStatus.tintColor = [UIColor colorWithRed:0.0f green:0.6f blue:0.0f alpha:1.0f];
     } else {
         dhtStatus.title = @"Not Connected";

@@ -742,6 +742,9 @@ uint32_t resolve_addr(const char *address)
         }
         if (count != lastCount) {
             NSLog(@"****Nodes connected: %d", count);
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"NewNumberOfConnectedNodes" object:[NSNumber numberWithInt:count]];
+            });
         }
         lastCount = count;
         
@@ -752,8 +755,8 @@ uint32_t resolve_addr(const char *address)
             //1.0s
             usleep(1000000);
         } else {
-            //0.01s
-            usleep(10000);
+            //0.05s
+            usleep(50000);
         }
         
         

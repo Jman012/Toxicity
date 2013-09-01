@@ -356,7 +356,6 @@
 		B9AF750E17CF21E500015E9B /* net_crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = net_crypto.h; path = "ProjectTox-Core/toxcore/net_crypto.h"; sourceTree = "<group>"; };
 		B9AF750F17CF21E500015E9B /* network.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = network.c; path = "ProjectTox-Core/toxcore/network.c"; sourceTree = "<group>"; };
 		B9AF751017CF21E500015E9B /* network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network.h; path = "ProjectTox-Core/toxcore/network.h"; sourceTree = "<group>"; };
-		B9AF751117CF21E500015E9B /* packets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = packets.h; path = "ProjectTox-Core/toxcore/packets.h"; sourceTree = "<group>"; };
 		B9AF751217CF21E500015E9B /* ping.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ping.c; path = "ProjectTox-Core/toxcore/ping.c"; sourceTree = "<group>"; };
 		B9AF751317CF21E500015E9B /* ping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ping.h; path = "ProjectTox-Core/toxcore/ping.h"; sourceTree = "<group>"; };
 		B9AF751417CF21E500015E9B /* tox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tox.c; path = "ProjectTox-Core/toxcore/tox.c"; sourceTree = "<group>"; };
@@ -770,7 +769,6 @@
 				B9AF750E17CF21E500015E9B /* net_crypto.h */,
 				B9AF750F17CF21E500015E9B /* network.c */,
 				B9AF751017CF21E500015E9B /* network.h */,
-				B9AF751117CF21E500015E9B /* packets.h */,
 				B9AF751217CF21E500015E9B /* ping.c */,
 				B9AF751317CF21E500015E9B /* ping.h */,
 				B9AF751417CF21E500015E9B /* tox.c */,
