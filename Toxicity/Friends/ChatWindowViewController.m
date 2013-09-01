@@ -121,10 +121,17 @@
 - (void)sendPressed:(UIButton *)sender withText:(NSString *)text
 {
     MessageObject *tempMessage = [[MessageObject alloc] init];
-    if ([[text substringToIndex:4] isEqualToString:@"/me "]) {
-        tempMessage.message = [[NSString alloc] initWithFormat:@"* %@", [text substringFromIndex:4]];
-    } else {
-        tempMessage.message = [text copy];
+    
+    if ([text length] >= 5) {
+        //only check for the "/me " if the message is 5 or more characters in length.
+        //5 because we can't send a blank action
+        //text:"/me " the action would be ""
+        //text:"/me h" the action would be "h"
+        if ([[text substringToIndex:4] isEqualToString:@"/me "]) {
+            tempMessage.message = [[NSString alloc] initWithFormat:@"* %@", [text substringFromIndex:4]];
+        } else {
+            tempMessage.message = [text copy];
+        }
     }
     tempMessage.origin = MessageLocation_Me;
     tempMessage.didFailToSend = NO;

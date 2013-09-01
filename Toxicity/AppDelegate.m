@@ -342,9 +342,15 @@
     if ([[NSString stringWithUTF8String:convertedKey] isEqualToString:theirKey]) {
         //send message
         int num;
-        if([[theMessage substringToIndex:4] isEqualToString:@"/me "]) {
-            char *utf8Action = (char *)[[theMessage substringFromIndex:4] UTF8String];
-            num = tox_sendaction([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Action, strlen(utf8Action)+1);
+        
+        if ([theMessage length] >= 5) {
+            if([[theMessage substringToIndex:4] isEqualToString:@"/me "]) {
+                char *utf8Action = (char *)[[theMessage substringFromIndex:4] UTF8String];
+                num = tox_sendaction([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Action, strlen(utf8Action)+1);
+            } else {
+                char *utf8Message = (char *)[theMessage UTF8String];
+                num = tox_sendmessage([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message)+1);
+            }
         } else {
             char *utf8Message = (char *)[theMessage UTF8String];
             num = tox_sendmessage([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message)+1);
