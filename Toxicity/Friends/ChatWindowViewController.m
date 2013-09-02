@@ -132,6 +132,8 @@
         } else {
             tempMessage.message = [text copy];
         }
+    } else {
+        tempMessage.message = [text copy];
     }
     tempMessage.origin = MessageLocation_Me;
     tempMessage.didFailToSend = NO;
