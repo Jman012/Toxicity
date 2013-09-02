@@ -36,5 +36,6 @@
 - (void)userStatusChanged:(NSNotification *)notification;
 unsigned char * hex_string_to_bin(char hex_string[]);
 - (void)toxCoreLoop;
+- (int)deleteFriend:(int)theFriendNumber;
 
 @end

@@ -13,6 +13,7 @@
 #import "TransparentToolbar.h"
 #import "RequestsTableViewController.h"
 #import "FriendCell.h"
+#import "AppDelegate.h"
 
 #include "tox.h"
 

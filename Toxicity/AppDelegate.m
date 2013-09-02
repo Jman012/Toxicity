@@ -401,6 +401,30 @@
     }
 }
 
+- (int)deleteFriend:(int)theFriendNumber {
+    
+    //thread safety: cancel our thread, delete friend, restart thread
+    [toxMainThread cancel];
+    
+    //wait until it's not working
+    while ([toxMainThread isExecuting] == YES) {
+        //wait a millisecond before checking again
+        usleep(1000);
+    }
+    
+    //thread is now stopped, safe to remove friend
+    int num = tox_delfriend([[Singleton sharedSingleton] toxCoreInstance], theFriendNumber);
+    
+    //all done, woo! restart thread
+    toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
+    [[toxMainThread threadDictionary] setObject:[NSNumber numberWithBool:NO] forKey:@"ToxicityIsInBackground"];
+    [toxMainThread start];
+    
+    //and return delfriend's number
+    return num;
+    
+}
+
 #pragma mark - Tox Core call backs and stuff
 
 void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *userdata) {
@@ -705,6 +729,10 @@ uint32_t resolve_addr(const char *address)
 - (void)toxCoreLoop {
     
     while (TRUE) {
+        if ([[NSThread currentThread] isCancelled]) {
+            [NSThread exit];
+        }
+        
 //        NSLog(@"Core loop");
         if (on == 0 && tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
             dispatch_sync(dispatch_get_main_queue(), ^{

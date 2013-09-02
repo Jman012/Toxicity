@@ -221,12 +221,15 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         //delete the friend from the table view, singleton, and messenger instance
-        [self.tableView beginUpdates];
         
-        Tox *m = [[Singleton sharedSingleton] toxCoreInstance];
-        int num = tox_delfriend(m, indexPath.row);
+//        Tox *m = [[Singleton sharedSingleton] toxCoreInstance];
+//        int num = tox_delfriend(m, indexPath.row);
+        AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        int num = [ourDelegate deleteFriend:indexPath.row];
         
         if (num == 0) {
+            [self.tableView beginUpdates];
+
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
             [[[Singleton sharedSingleton] mainFriendList] removeObjectAtIndex:indexPath.row];
@@ -234,12 +237,13 @@
             
             //save in user defaults
             [Singleton saveFriendListInUserDefaults];
+            
+            [self.tableView endUpdates];
         } else {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Something went wrong with deleting the friend! Tox Core issue." delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
             [alert show];
         }
         
-        [self.tableView endUpdates];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
