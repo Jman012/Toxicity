@@ -111,7 +111,6 @@
     //this is the main loop for the tox core. ran with an NSTimer for a different thread. runs the stuff needed to let tox work (network and stuff)
 //    [self performSelectorInBackground:@selector(toxCoreLoop:) withObject:[NSNumber numberWithBool:NO]];
     toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
-    [[toxMainThread threadDictionary] setObject:[NSNumber numberWithBool:NO] forKey:@"ToxicityIsInBackground"];
     [toxMainThread start];
     
     char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
@@ -131,8 +130,13 @@
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     
-    [[toxMainThread threadDictionary] setObject:[NSNumber numberWithBool:YES] forKey:@"ToxicityIsInBackground"];
 
+    [toxMainThread cancel];
+    //wait until it's not working
+    while ([toxMainThread isExecuting] == YES) {
+        //wait a millisecond before checking again
+        usleep(1000);
+    }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -140,7 +144,14 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
-    [[toxMainThread threadDictionary] setObject:[NSNumber numberWithBool:YES] forKey:@"ToxicityIsInBackground"];
+    
+    
+    [toxMainThread cancel];
+    //wait until it's not working
+    while ([toxMainThread isExecuting] == YES) {
+        //wait a millisecond before checking again
+        usleep(1000);
+    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -152,14 +163,23 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    [[toxMainThread threadDictionary] setObject:[NSNumber numberWithBool:NO] forKey:@"ToxicityIsInBackground"];
+    toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
+    [toxMainThread start];
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     
-    //    tox_kill([[Singleton sharedSingleton] toxCoreInstance]);
+    
+    [toxMainThread cancel];
+    //wait until it's not working
+    while ([toxMainThread isExecuting] == YES) {
+        //wait a millisecond before checking again
+        usleep(1000);
+    }
+    tox_kill([[Singleton sharedSingleton] toxCoreInstance]);
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
@@ -417,7 +437,6 @@
     
     //all done, woo! restart thread
     toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
-    [[toxMainThread threadDictionary] setObject:[NSNumber numberWithBool:NO] forKey:@"ToxicityIsInBackground"];
     [toxMainThread start];
     
     //and return delfriend's number
@@ -783,15 +802,7 @@ uint32_t resolve_addr(const char *address)
         lastCount = count;
         
         
-        //sleep depending if we're open of closed
-        NSNumber *isRunningInBackground = [[toxMainThread threadDictionary] objectForKey:@"ToxicityIsInBackground"];
-        if ([isRunningInBackground boolValue] == YES) {
-            //1.0s
-            usleep(1000000);
-        } else {
-            //0.05s
-            usleep(50000);
-        }
+        usleep(50000);
         
         
     }
