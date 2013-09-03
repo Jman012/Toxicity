@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "Singleton.h"
 #import "QRReaderViewController.h"
+#import "AppDelegate.h"
 
 @interface RequestsTableViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 {

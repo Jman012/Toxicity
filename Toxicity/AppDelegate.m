@@ -13,15 +13,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectToDHTWithIP:) name:@"ConnectWithOptions" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userNickChanged:) name:@"UserNickChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusChanged:) name:@"UserStatusMessageChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusTypeChanged) name:@"UserStatusTypeChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addFriend:) name:@"AddFriend" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessage:) name:@"SendMessage" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(acceptFriendRequest:) name:@"AcceptedFriendRequest" object:nil];
-    
+        
     // force view class to load so it may be referenced directly from NIB
     [ZBarReaderView class];
     
@@ -186,19 +178,19 @@
     NSLog(@"URL: %@", url);
     
     if ([Singleton friendPublicKeyIsValid:url.host]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"AddFriend" object:nil userInfo:@{@"new_friend_key": url.host}];
+        [self addFriend:url.host];
     }
     
     return YES;
 }
 
-#pragma mark - NSNotificationCenter methods
+#pragma mark - NSNotificationCenter method
 
-- (void)connectToDHTWithIP:(NSNotification *)notification {
-    NSLog(@"Connect to %@ %@ %@", notification.userInfo[@"dht_ip"], notification.userInfo[@"dht_port"], notification.userInfo[@"dht_key"]);
-    const char *dht_ip = [notification.userInfo[@"dht_ip"] UTF8String];
-    const char *dht_port = [notification.userInfo[@"dht_port"] UTF8String];
-    const char *dht_key = [notification.userInfo[@"dht_key"] UTF8String];
+- (void)connectToDHTWithIP:(DHTNodeObject *)theDHTInfo {
+    NSLog(@"Connecting to %@ %@ %@", [theDHTInfo dhtIP], [theDHTInfo dhtPort], [theDHTInfo dhtKey]);
+    const char *dht_ip = [[theDHTInfo dhtIP] UTF8String];
+    const char *dht_port = [[theDHTInfo dhtPort] UTF8String];
+    const char *dht_key = [[theDHTInfo dhtKey] UTF8String];
     
     
     //used from toxic source, this tells tox core to make a connection into the dht network
@@ -218,10 +210,11 @@
     
     
     //add the connection info to the singleton, then a timer if the connection doesnt work
-    [[[Singleton sharedSingleton] currentConnectDHT] setDhtName:[notification userInfo][@"dht_name"]];
-    [[[Singleton sharedSingleton] currentConnectDHT] setDhtIP:[notification userInfo][@"dht_ip"]];
-    [[[Singleton sharedSingleton] currentConnectDHT] setDhtPort:[notification userInfo][@"dht_port"]];
-    [[[Singleton sharedSingleton] currentConnectDHT] setDhtKey:[notification userInfo][@"dht_key"]];
+    [[Singleton sharedSingleton] setCurrentConnectDHT:[theDHTInfo copy]];
+//    [[[Singleton sharedSingleton] currentConnectDHT] setDhtName:[notification userInfo][@"dht_name"]];
+//    [[[Singleton sharedSingleton] currentConnectDHT] setDhtIP:[notification userInfo][@"dht_ip"]];
+//    [[[Singleton sharedSingleton] currentConnectDHT] setDhtPort:[notification userInfo][@"dht_port"]];
+//    [[[Singleton sharedSingleton] currentConnectDHT] setDhtKey:[notification userInfo][@"dht_key"]];
     [[[Singleton sharedSingleton] currentConnectDHT] setConnectionStatus:ToxDHTNodeConnectionStatus_Connecting];
     
     
@@ -232,7 +225,7 @@
     
 }
 
-- (void)userNickChanged:(NSNotification *)notification {
+- (void)userNickChanged {
     char *newNick = (char *)[[[Singleton sharedSingleton] userNick] UTF8String];
     
     //submit new nick to core
@@ -244,7 +237,7 @@
     [prefs synchronize];
 }
 
-- (void)userStatusChanged:(NSNotification *)notification {
+- (void)userStatusChanged {
     char *newStatus = (char *)[[[Singleton sharedSingleton] userStatusMessage] UTF8String];
     
     //submit new status to core
@@ -278,10 +271,9 @@
     tox_set_userstatus([[Singleton sharedSingleton] toxCoreInstance], statusType);
 }
 
-- (void)addFriend:(NSNotification *)notification {
+- (void)addFriend:(NSString *)theirKey {
     //this is called from the friendslist vc, the add button
     //sends a request to the key
-    NSString *theirKey = [notification userInfo][@"new_friend_key"];
     
     uint8_t *binID = hex_string_to_bin((char *)[theirKey UTF8String]);
     
@@ -324,8 +316,8 @@
         {
             //add friend to singleton array, for use throughout the app
             FriendObject *tempFriend = [[FriendObject alloc] init];
-            [tempFriend setPublicKeyWithNoSpam:[notification userInfo][@"new_friend_key"]];
-            [tempFriend setPublicKey:[[notification userInfo][@"new_friend_key"] substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
+            [tempFriend setPublicKeyWithNoSpam:theirKey];
+            [tempFriend setPublicKey:[theirKey substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
             NSLog(@"new friend key: %@", [tempFriend publicKey]);
             [tempFriend setStatusMessage:@"Sending request..."];
             
@@ -341,11 +333,11 @@
     }
 }
 
-- (void)sendMessage:(NSNotification *)notification {
+- (void)sendMessage:(NSDictionary *)messageDict {
     //send a message to a friend, called primarily from the caht window vc
-    NSString *theirKey = [notification userInfo][@"friend_public_key"];
-    NSString *theMessage = [notification userInfo][@"message"];
-    NSUInteger friendNum = [[notification userInfo][@"friend_number"] integerValue];
+    NSString *theirKey = messageDict[@"friend_public_key"];
+    NSString *theMessage = messageDict[@"message"];
+    NSUInteger friendNum = [messageDict[@"friend_number"] integerValue];
     
     NSLog(@"Sending Message: %@", theMessage);
     
@@ -387,8 +379,8 @@
     
 }
 
-- (void)acceptFriendRequest:(NSNotification *)notification {
-    NSData *data = [[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:[notification userInfo][@"key_to_accept"]];
+- (void)acceptFriendRequest:(NSString *)theKeyToAccept {
+    NSData *data = [[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:theKeyToAccept];
     
     uint8_t *key = (uint8_t *)[data bytes];
     
@@ -403,7 +395,7 @@
         {
             //friend added through accept request
             FriendObject *tempFriend = [[FriendObject alloc] init];
-            [tempFriend setPublicKey:[[notification userInfo][@"key_to_accept"] substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
+            [tempFriend setPublicKey:[theKeyToAccept substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
             NSLog(@"new friend key: %@", [tempFriend publicKey]);
             [tempFriend setNickname:@""];
             [tempFriend setStatusMessage:@"Accepted..."];

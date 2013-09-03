@@ -116,14 +116,18 @@
         //they changed their name
         
         [[Singleton sharedSingleton] setUserNick:[nameTextField text]];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UserNickChanged" object:nil];
+        
+        AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [ourDelegate userNickChanged];
+        
     }
     
     if (![statusTextField.text isEqualToString:[[Singleton sharedSingleton] userStatusMessage]]) {
         //they changed their name
         
         [[Singleton sharedSingleton] setUserStatusMessage:[statusTextField text]];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UserStatusMessageChanged" object:nil];
+        AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [ourDelegate userStatusChanged];
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -457,14 +461,9 @@
         //connect to a node
         //gets called if the cell is actually that of a node, and we are not triyng to connect to a node, and if we're not connect
         
-        //attempt connection
-        DHTNodeObject *dht = [[_dhtNodeList objectAtIndex:(indexPath.row - 1)] copy];
-        NSMutableDictionary *tempDict = [[NSMutableDictionary alloc] init];
-        [tempDict setObject:dht.dhtName forKey:@"dht_name"];
-        [tempDict setObject:dht.dhtIP forKey:@"dht_ip"];
-        [tempDict setObject:dht.dhtPort forKey:@"dht_port"];
-        [tempDict setObject:dht.dhtKey forKey:@"dht_key"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ConnectWithOptions" object:nil userInfo:tempDict];
+        //attempt connection        
+        AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [ourDelegate connectToDHTWithIP:[[_dhtNodeList objectAtIndex:(indexPath.row - 1)] copy]];
         
 
         [self.tableView reloadData];
@@ -551,14 +550,16 @@
         //they changed their name
         
         [[Singleton sharedSingleton] setUserNick:[nameTextField text]];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UserNickChanged" object:nil];
+        AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [ourDelegate userNickChanged];
     }
     
     if (![statusTextField.text isEqualToString:[[Singleton sharedSingleton] userStatusMessage]]) {
         //they changed their name
         
         [[Singleton sharedSingleton] setUserStatusMessage:[statusTextField text]];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UserStatusMessageChanged" object:nil];
+        AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [ourDelegate userStatusChanged];
     }
 }
 
@@ -581,7 +582,8 @@
         default:
             break;
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"UserStatusTypeChanged" object:nil];
+    AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [ourDelegate userStatusTypeChanged];
 }
 
 @end

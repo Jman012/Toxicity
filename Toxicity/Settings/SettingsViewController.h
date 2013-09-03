@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "NewDHTNodeViewController.h"
 #import "Singleton.h"
+#import "AppDelegate.h"
+
 #include "tox.h"
 
 @interface SettingsViewController : UITableViewController <UITabBarControllerDelegate, UITableViewDataSource, UITextFieldDelegate>

@@ -8,6 +8,7 @@
 
 #import "JSMessagesViewController.h"
 #import "Singleton.h"
+#import "AppDelegate.h"
 
 @interface ChatWindowViewController : JSMessagesViewController <JSMessagesViewDataSource, JSMessagesViewDelegate>
 {

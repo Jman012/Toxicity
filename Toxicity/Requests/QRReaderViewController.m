@@ -69,7 +69,8 @@
         
         if ([Singleton friendPublicKeyIsValid:symbol.data]) {
             //actually add friend
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"AddFriend" object:nil userInfo:@{@"new_friend_key": symbol.data}];
+            AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [ourDelegate addFriend:symbol.data];
             
             [self dismissViewControllerAnimated:YES completion:^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"QRReaderDidAddFriend" object:nil];

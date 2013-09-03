@@ -111,7 +111,8 @@
 - (void)cellAcceptButtonPressed:(id)sender {
     NSLog(@"accept");
     UIButton *button = (UIButton *)sender;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"AcceptedFriendRequest" object:nil userInfo:@{@"key_to_accept":[button titleForState:UIControlStateDisabled]}];
+    AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [ourDelegate acceptFriendRequest:[button titleForState:UIControlStateDisabled]];
     
     [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:[button titleForState:UIControlStateDisabled]];
     
@@ -168,7 +169,8 @@
         //add the friend
         
         if ([Singleton friendPublicKeyIsValid:theString]) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"AddFriend" object:nil userInfo:@{@"new_friend_key": theString}];
+            AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [ourDelegate addFriend:theString];
         }
     }
 }

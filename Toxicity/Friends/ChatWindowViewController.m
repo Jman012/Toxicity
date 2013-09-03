@@ -188,7 +188,8 @@
     [dict setObject:text forKey:@"message"];
     [dict setObject:[NSString stringWithFormat:@"%d", friendIndex] forKey:@"friend_number"];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessage" object:nil userInfo:dict];
+    AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [ourDelegate sendMessage:dict];
     
     [self finishSend];
 }

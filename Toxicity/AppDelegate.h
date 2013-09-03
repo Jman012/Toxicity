@@ -31,11 +31,16 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-- (void)connectToDHTWithIP:(NSNotification *)notification;
-- (void)userNickChanged:(NSNotification *)notification;
-- (void)userStatusChanged:(NSNotification *)notification;
 unsigned char * hex_string_to_bin(char hex_string[]);
 - (void)toxCoreLoop;
+
+- (void)connectToDHTWithIP:(DHTNodeObject *)theDHTInfo;
+- (void)userNickChanged;
+- (void)userStatusChanged;
+- (void)userStatusTypeChanged;
+- (void)addFriend:(NSString *)theirKey;
+- (void)sendMessage:(NSDictionary *)messageDict;
+- (void)acceptFriendRequest:(NSString *)theKeyToAccept;
 - (int)deleteFriend:(int)theFriendNumber;
 
 @end
