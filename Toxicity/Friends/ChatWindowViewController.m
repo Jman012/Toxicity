@@ -59,11 +59,28 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo) name:@"FriendAdded" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"NewMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lastMessageFailed) name:@"LastMessageFailedToSend" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColoredStatusIndicator) name:@"FriendUserStatusChanged" object:nil];
     
     UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToPopView)];
     swipeRight.cancelsTouchesInView = NO;
     swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
     [self.view addGestureRecognizer:swipeRight];
+    
+    //setup the colored status indicator on the navbar
+    statusNavBarImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray-navbar"]];
+    CGRect tempFrame = statusNavBarImageView.frame;
+    tempFrame.origin.x = self.navigationController.navigationBar.frame.size.width - tempFrame.size.width;
+    statusNavBarImageView.frame = tempFrame;
+//    [self.navigationController.navigationBar addSubview:statusNavBarImageView];
+    [self updateColoredStatusIndicator];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [self.navigationController.navigationBar addSubview:statusNavBarImageView];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [statusNavBarImageView removeFromSuperview];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -74,6 +91,29 @@
 - (void)swipeToPopView {
     //user swiped from left to right, should pop the view back to friends list
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)updateColoredStatusIndicator {
+    if (_friendInfo.connectionType == ToxFriendConnectionStatus_Online) {
+        switch (_friendInfo.statusType) {
+            case ToxFriendUserStatus_None:
+                [statusNavBarImageView setImage:[UIImage imageNamed:@"status-green-navbar"]];
+                break;
+                
+            case ToxFriendUserStatus_Away:
+                [statusNavBarImageView setImage:[UIImage imageNamed:@"status-yellow-navbar"]];
+                break;
+                
+            case ToxFriendUserStatus_Busy:
+                [statusNavBarImageView setImage:[UIImage imageNamed:@"status-red-navbar"]];
+                break;
+                
+            default:
+                break;
+        }
+    } else {
+        [statusNavBarImageView setImage:[UIImage imageNamed:@"status-gray-navbar"]];
+    }
 }
 
 #pragma mark - Notifications Center stuff

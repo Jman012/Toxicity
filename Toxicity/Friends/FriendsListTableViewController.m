@@ -59,20 +59,8 @@
     
     
     //dht connection status, put above table view
-    //todo: make it work
-    UIBarButtonItem *dhtStatus = [[UIBarButtonItem alloc] init];
-    if (tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
-        dhtStatus.title = @"Connected to Network";
-        dhtStatus.tintColor = [UIColor colorWithRed:0.0f green:0.6f blue:0.0f alpha:1.0f];
-    } else {
-        dhtStatus.title = @"Not Connected";
-        dhtStatus.tintColor = [UIColor colorWithRed:0.6f green:0.0f blue:0.0f alpha:1.0f];
-    }
-    dhtStatus.style = UIBarButtonItemStyleBordered;
-    dhtStatus.width = 310;
-    
     connectionStatusToolbar = [[TransparentToolbar alloc] initWithFrame:CGRectMake(0, -55, self.tableView.bounds.size.width, 44)];
-    [connectionStatusToolbar setItems:[NSArray arrayWithObject:dhtStatus]];
+    [self updateConnectionStatusView:[NSNotification notificationWithName:@"" object:nil]];
     
     
     [self.tableView addSubview:connectionStatusToolbar];
@@ -117,7 +105,7 @@
         if ([notificaton object] == nil || ![notificaton object]) {
             dhtStatus.title = @"Connected to Network";
         } else {
-            dhtStatus.title = [NSString stringWithFormat:@"Connected to Network: %d", [[notificaton object] integerValue]];
+            dhtStatus.title = [NSString stringWithFormat:@"Connected to Network: %d Nodes", [[notificaton object] integerValue]];
         }
         dhtStatus.tintColor = [UIColor colorWithRed:0.0f green:0.6f blue:0.0f alpha:1.0f];
     } else {

@@ -18,6 +18,8 @@
     NSMutableArray      *messages;
     
     NSUInteger          friendIndex;
+    
+    UIImageView         *statusNavBarImageView;
 }
 
 - (id)initWithFriendIndex:(NSUInteger)friendIndex;
