@@ -378,6 +378,7 @@
 		B9B9C6D617D59E2F006BF8AC /* status-red-navbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-red-navbar@2x.png"; path = "Images/status-red-navbar@2x.png"; sourceTree = "<group>"; };
 		B9B9C6D717D59E2F006BF8AC /* status-yellow-navbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-navbar.png"; path = "Images/status-yellow-navbar.png"; sourceTree = "<group>"; };
 		B9B9C6D817D59E2F006BF8AC /* status-yellow-navbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-navbar@2x.png"; path = "Images/status-yellow-navbar@2x.png"; sourceTree = "<group>"; };
+		B9B9C6E117D6C8C4006BF8AC /* misc_tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = misc_tools.h; path = "ProjectTox-Core/toxcore/misc_tools.h"; sourceTree = "<group>"; };
 		B9BB980F17B0187C00A1ACEC /* crypto_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = crypto_auth.c; sourceTree = "<group>"; };
 		B9BB981117B0187C00A1ACEC /* auth_hmacsha256_api.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = auth_hmacsha256_api.c; sourceTree = "<group>"; };
 		B9BB981317B0187C00A1ACEC /* api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api.h; sourceTree = "<group>"; };
@@ -781,6 +782,7 @@
 				B9AF750A17CF21E500015E9B /* Lossless_UDP.h */,
 				B9AF750B17CF21E500015E9B /* Messenger.c */,
 				B9AF750C17CF21E500015E9B /* Messenger.h */,
+				B9B9C6E117D6C8C4006BF8AC /* misc_tools.h */,
 				B9AF750D17CF21E500015E9B /* net_crypto.c */,
 				B9AF750E17CF21E500015E9B /* net_crypto.h */,
 				B9AF750F17CF21E500015E9B /* network.c */,

@@ -22,7 +22,11 @@
     
     //loads dht node list
     if ([prefs objectForKey:@"dht_node_list"] == nil) {
-        
+        DHTNodeObject *tempDHT = [[DHTNodeObject alloc] init];
+        tempDHT.dhtName = @"stqism-premade";
+        tempDHT.dhtIP = @"54.215.145.71";
+        tempDHT.dhtPort = @"33445";
+        tempDHT.dhtKey = @"6EDDEE2188EF579303C0766B4796DCBA89C93058B6032FEA51593DCD42FB746C";
     } else {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         for (NSData *data in [prefs objectForKey:@"dht_node_list"]) {
@@ -102,8 +106,7 @@
     
     //this is the main loop for the tox core. ran with an NSTimer for a different thread. runs the stuff needed to let tox work (network and stuff)
 //    [self performSelectorInBackground:@selector(toxCoreLoop:) withObject:[NSNumber numberWithBool:NO]];
-    toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
-    [toxMainThread start];
+    [self startToxThread];
     
     char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
     int pos = 0;
@@ -123,12 +126,7 @@
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     
 
-    [toxMainThread cancel];
-    //wait until it's not working
-    while ([toxMainThread isExecuting] == YES) {
-        //wait a millisecond before checking again
-        usleep(1000);
-    }
+    [self killToxThread];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -138,12 +136,7 @@
     
     
     
-    [toxMainThread cancel];
-    //wait until it's not working
-    while ([toxMainThread isExecuting] == YES) {
-        //wait a millisecond before checking again
-        usleep(1000);
-    }
+    [self killToxThread];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -155,8 +148,7 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
-    [toxMainThread start];
+    [self startToxThread];
     
 }
 
@@ -165,12 +157,7 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     
     
-    [toxMainThread cancel];
-    //wait until it's not working
-    while ([toxMainThread isExecuting] == YES) {
-        //wait a millisecond before checking again
-        usleep(1000);
-    }
+    [self killToxThread];
     tox_kill([[Singleton sharedSingleton] toxCoreInstance]);
 }
 
@@ -184,7 +171,24 @@
     return YES;
 }
 
-#pragma mark - NSNotificationCenter method
+#pragma mark - Thread methods
+
+- (void)killToxThread {
+    [toxMainThread cancel];
+    //wait until it's not working
+    while ([toxMainThread isExecuting] == YES) {
+        //wait a millisecond before checking again
+        [toxMainThread cancel];
+        usleep(1000);
+    }
+}
+
+- (void)startToxThread {
+    toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
+    [toxMainThread start];
+}
+
+#pragma mark - Calls from view controllers
 
 - (void)connectToDHTWithIP:(DHTNodeObject *)theDHTInfo {
     NSLog(@"Connecting to %@ %@ %@", [theDHTInfo dhtIP], [theDHTInfo dhtPort], [theDHTInfo dhtKey]);
@@ -211,10 +215,6 @@
     
     //add the connection info to the singleton, then a timer if the connection doesnt work
     [[Singleton sharedSingleton] setCurrentConnectDHT:[theDHTInfo copy]];
-//    [[[Singleton sharedSingleton] currentConnectDHT] setDhtName:[notification userInfo][@"dht_name"]];
-//    [[[Singleton sharedSingleton] currentConnectDHT] setDhtIP:[notification userInfo][@"dht_ip"]];
-//    [[[Singleton sharedSingleton] currentConnectDHT] setDhtPort:[notification userInfo][@"dht_port"]];
-//    [[[Singleton sharedSingleton] currentConnectDHT] setDhtKey:[notification userInfo][@"dht_key"]];
     [[[Singleton sharedSingleton] currentConnectDHT] setConnectionStatus:ToxDHTNodeConnectionStatus_Connecting];
     
     
@@ -384,7 +384,9 @@
     
     uint8_t *key = (uint8_t *)[data bytes];
     
+    [self killToxThread];
     int num = tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], key);
+    [self startToxThread];
     
     switch (num) {
         case -1:
@@ -406,6 +408,9 @@
             //save in user defaults
             [Singleton saveFriendListInUserDefaults];
             
+            //remove from the pending requests
+            [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:theKeyToAccept];
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
             
             break;
@@ -416,20 +421,13 @@
 - (int)deleteFriend:(int)theFriendNumber {
     
     //thread safety: cancel our thread, delete friend, restart thread
-    [toxMainThread cancel];
-    
-    //wait until it's not working
-    while ([toxMainThread isExecuting] == YES) {
-        //wait a millisecond before checking again
-        usleep(1000);
-    }
+    [self killToxThread];
     
     //thread is now stopped, safe to remove friend
     int num = tox_delfriend([[Singleton sharedSingleton] toxCoreInstance], theFriendNumber);
     
     //all done, woo! restart thread
-    toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
-    [toxMainThread start];
+    [self startToxThread];
     
     //and return delfriend's number
     return num;
@@ -439,7 +437,7 @@
 #pragma mark - Tox Core call backs and stuff
 
 void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *userdata) {
-    printf("got request");
+    printf("got request\n");
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Friend Request! From:");
         
@@ -456,23 +454,32 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
             sprintf(&convertedKey[pos] ,"%02X", public_key[i] & 0xff);
         }
         
-        //we got a friend request, so we have to store it!
-        //the pending dictionary has the object as nsdata bytes of the bin version of the publickey, and the dict key is the nsstring of said publickey
-        [[[Singleton sharedSingleton] pendingFriendRequests] setObject:[NSData dataWithBytes:public_key length:TOX_CLIENT_ID_SIZE]
-                                                                forKey:[NSString stringWithUTF8String:convertedKey]];
-        /*UIAlertView *requestAlert = [[UIAlertView alloc] initWithTitle:@"Friend Request"
-         message:[NSString stringWithUTF8String:convertedKey]
-         delegate:(AppDelegate*)[[UIApplication sharedApplication] delegate]
-         cancelButtonTitle:@"Accept"
-         otherButtonTitles:@"Reject", nil];
-         [requestAlert show];*/
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendRequestReceived" object:nil];
+        //check to see if this person is already on our friends list
+        BOOL alreadyAFriend = NO;
+        for (FriendObject *tempFriend in [[Singleton sharedSingleton] mainFriendList]) {
+            if ([tempFriend.publicKey isEqualToString:[NSString stringWithUTF8String:convertedKey]]) {
+                NSLog(@"The friend request we got is one of a friend we already have: %@ %@", tempFriend.nickname, tempFriend.publicKey);
+                alreadyAFriend = YES;
+                break;
+            }
+        }
+        
+        //if they're not on our friends list then dont add a request, just auto accept
+        if (alreadyAFriend == NO) {
+            //we got a friend request, so we have to store it!
+            //the pending dictionary has the object as nsdata bytes of the bin version of the publickey, and the dict key is the nsstring of said publickey
+            [[[Singleton sharedSingleton] pendingFriendRequests] setObject:[NSData dataWithBytes:public_key length:TOX_CLIENT_ID_SIZE]
+                                                                    forKey:[NSString stringWithUTF8String:convertedKey]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendRequestReceived" object:nil];
+        } else {
+            tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], public_key);
+        }
         
     });
 }
 
 void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, void *userdata) {
-    printf("got message %d", friendnumber);
+    printf("got message %d\n", friendnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Message from [%d]: %s", friendnumber, string);
         
@@ -529,7 +536,7 @@ void print_action(Tox *m, int friendnumber, uint8_t * action, uint16_t length, v
 }
 
 void print_nickchange(Tox *m, int friendnumber, uint8_t * string, uint16_t length, void *userdata) {
-    printf("got nick %d", friendnumber);
+    printf("got nick %d\n", friendnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Nick Change from [%d]: %s", friendnumber, string);
         
@@ -561,7 +568,7 @@ void print_nickchange(Tox *m, int friendnumber, uint8_t * string, uint16_t lengt
 }
 
 void print_statuschange(Tox *m, int friendnumber,  uint8_t * string, uint16_t length, void *userdata) {
-    printf("got status %d", friendnumber);
+    printf("got status %d\n", friendnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Status change from [%d]: %s", friendnumber, string);
         
@@ -593,7 +600,7 @@ void print_statuschange(Tox *m, int friendnumber,  uint8_t * string, uint16_t le
 }
 
 void print_userstatuschange(Tox *m, int friendnumber, TOX_USERSTATUS kind, void *userdata) {
-    printf("got userstatus %d", friendnumber);
+    printf("got userstatus %d\n", friendnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
         uint8_t tempKey[TOX_CLIENT_ID_SIZE];
         tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
@@ -649,7 +656,7 @@ void print_userstatuschange(Tox *m, int friendnumber, TOX_USERSTATUS kind, void 
 }
 
 void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void *userdata) {
-    printf("got connection change %d", friendnumber);
+    printf("got connection change %d\n", friendnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Friend Status Change: [%d]: %d", friendnumber, (int)status);
         
@@ -794,7 +801,7 @@ uint32_t resolve_addr(const char *address)
         lastCount = count;
         
         
-        usleep(50000);
+        usleep(100000);
         
         
     }
@@ -818,44 +825,5 @@ uint32_t resolve_addr(const char *address)
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTFailedToConnect" object:nil];
     }
 }
-
-#pragma mark - Alert View Delegate
-
-/*- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
- if (buttonIndex == 1) {
- return;
- }
- 
- NSData *data = [[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:[alertView message]];
- 
- uint8_t *key = (uint8_t *)[data bytes];
- 
- int num = m_addfriend_norequest([[Singleton sharedSingleton] toxCoreMessenger], key);
- 
- switch (num) {
- case -1:
- NSLog(@"Accepting request failed");
- break;
- 
- default: //added friend successfully
- {
- //friend added through accept request
- FriendObject *tempFriend = [[FriendObject alloc] init];
- [tempFriend setPublicKey:[[alertView message] substringToIndex:(CLIENT_ID_SIZE * 2)]];
- NSLog(@"new friend key: %@", [tempFriend publicKey]);
- [tempFriend setNickname:@""];
- [tempFriend setStatusMessage:@"Accepted..."];
- 
- [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
- [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
- [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
- 
- 
- [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
- 
- break;
- }
- }
- }*/
 
 @end
