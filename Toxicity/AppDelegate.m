@@ -27,6 +27,7 @@
         tempDHT.dhtIP = @"54.215.145.71";
         tempDHT.dhtPort = @"33445";
         tempDHT.dhtKey = @"6EDDEE2188EF579303C0766B4796DCBA89C93058B6032FEA51593DCD42FB746C";
+        [[Singleton sharedSingleton] setDhtNodeList:(NSMutableArray *)@[tempDHT]];
     } else {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         for (NSData *data in [prefs objectForKey:@"dht_node_list"]) {
@@ -103,10 +104,6 @@
         [[Singleton sharedSingleton] setMainFriendList:array];
     }
     
-    
-    //this is the main loop for the tox core. ran with an NSTimer for a different thread. runs the stuff needed to let tox work (network and stuff)
-//    [self performSelectorInBackground:@selector(toxCoreLoop:) withObject:[NSNumber numberWithBool:NO]];
-    [self startToxThread];
     
     char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
     int pos = 0;
@@ -279,6 +276,7 @@
     
     int num = tox_addfriend([[Singleton sharedSingleton] toxCoreInstance], binID, (uint8_t *)"Toxicity for iOS", strlen("Toxicity for iOS") + 1);
     free(binID);
+    
     switch (num) {
         case TOX_FAERR_TOOLONG:
             NSLog(@"toolong");
@@ -380,7 +378,7 @@
 }
 
 - (void)acceptFriendRequest:(NSString *)theKeyToAccept {
-    NSData *data = [[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:theKeyToAccept];
+    NSData *data = [[[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:theKeyToAccept] copy];
     
     uint8_t *key = (uint8_t *)[data bytes];
     
@@ -409,7 +407,7 @@
             [Singleton saveFriendListInUserDefaults];
             
             //remove from the pending requests
-            [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:theKeyToAccept];
+//            [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:theKeyToAccept];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
             
