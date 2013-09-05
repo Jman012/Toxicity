@@ -20,6 +20,7 @@ typedef enum {
 {
     UIImageView     *statusImageView;
     UILabel         *messageLabel;
+    UIImageView     *avatarImageView;
     
     UIView          *cellBackgroundView;
     CAGradientLayer *mainLayerGradient;
@@ -29,6 +30,7 @@ typedef enum {
 @property (nonatomic, strong) UILabel *nickLabel;
 @property (nonatomic, strong) NSString *messageLabelText;
 @property (nonatomic, assign) FriendCellStatusColor statusColor;
+@property (nonatomic, strong) UIImage *avatarImage;
 
 
 @end

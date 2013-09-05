@@ -32,4 +32,6 @@ typedef enum {
 @property (nonatomic, assign) ToxFriendConnectionStatus connectionType;
 @property (nonatomic, strong) UIImage                   *avatarImage;
 
+- (void)loadTheAvatar;
+
 @end

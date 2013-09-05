@@ -98,6 +98,7 @@
             int num = tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], idToAdd);
             if (num >= 0) {
                 [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
+                [tempFriend loadTheAvatar];
             }
             free(idToAdd);
         }
@@ -325,6 +326,8 @@
             //save in user defaults
             [Singleton saveFriendListInUserDefaults];
             
+            [tempFriend loadTheAvatar];
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
             break;
         }
@@ -405,6 +408,8 @@
             
             //save in user defaults
             [Singleton saveFriendListInUserDefaults];
+            
+            [tempFriend loadTheAvatar];
             
             //remove from the pending requests
 //            [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:theKeyToAccept];

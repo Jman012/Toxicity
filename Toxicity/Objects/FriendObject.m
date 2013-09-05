@@ -61,4 +61,28 @@
     return temp;
 }
 
+- (void)loadTheAvatar {
+    //todo: check our filesystem or w/e to see if we already have an avatar saved, if not, fetch a new one
+    
+    [self fetchRobohashAvatar];
+}
+
+- (void)fetchRobohashAvatar {
+    //todo: changed the size based on display?
+    NSURL *roboHashURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://robohash.org/%@.png?size=96x96", self.publicKey]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:roboHashURL];
+    
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               if (!error) {
+                                   self.avatarImage = [[UIImage alloc] initWithData:data];
+                                   //todo: save on phone or something
+                               } else {
+                                   
+                               }
+                           }];
+    
+}
+
 @end

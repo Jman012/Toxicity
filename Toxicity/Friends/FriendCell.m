@@ -70,6 +70,15 @@
         
         [self.contentView addSubview:messageLabel];
         
+        /*****Avatar Image View*****/
+        avatarImageView = [[UIImageView alloc] init];
+        [avatarImageView setBackgroundColor:[UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f]];
+        [avatarImageView.layer setCornerRadius:4.0f];
+        [avatarImageView.layer setMasksToBounds:YES];
+        [avatarImageView.layer addSublayer:[self getNewInnerShadowLayer]];
+        
+        [self.contentView addSubview:avatarImageView];
+        
         /*****Selected Background View*****/
         UIView *selected = [[UIView alloc] initWithFrame:self.bounds];
         CALayer *selectedBGLayer = [CALayer layer];
@@ -86,12 +95,40 @@
         selectedGrad.name = @"SelectedGradient";
         [selected.layer insertSublayer:selectedGrad atIndex:1];
         
-//        selected.backgroundColor = [UIColor colorWithRed:0.5 green:0 blue:0 alpha:1];
-        
+
         self.selectedBackgroundView = selected;
         
     }
     return self;
+}
+
+- (CAShapeLayer *)getNewInnerShadowLayer {
+    CAShapeLayer* shadowLayer = [CAShapeLayer layer];
+    [shadowLayer setFrame:CGRectMake(0, 0, 48, 48)];
+    
+    // Standard shadow stuff
+    [shadowLayer setShadowColor:[[UIColor colorWithWhite:0 alpha:1] CGColor]];
+    [shadowLayer setShadowOffset:CGSizeMake(0.0f, 0.0f)];
+    [shadowLayer setShadowOpacity:1.0f];
+    [shadowLayer setShadowRadius:3];
+    
+    // Causes the inner region in this example to NOT be filled.
+    [shadowLayer setFillRule:kCAFillRuleEvenOdd];
+    
+    // Create the larger rectangle path.
+    CGMutablePathRef path = CGPathCreateMutable();
+    CGPathAddRect(path, NULL, CGRectInset([shadowLayer bounds], -10, -10));
+    
+    // Add the inner path so it's subtracted from the outer path.
+    // someInnerPath could be a simple bounds rect, or maybe
+    // a rounded one for some extra fanciness.
+    CGPathAddPath(path, NULL, [[UIBezierPath bezierPathWithRect:[shadowLayer bounds]] CGPath]);
+    CGPathCloseSubpath(path);
+    
+    [shadowLayer setPath:path];
+    CGPathRelease(path);
+    
+    return shadowLayer;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -110,18 +147,41 @@
     
     //calculates the desired width. if it's in editing mde (with the red delete button) use the contentView width and 20px padding (10px on each side)
     //and if not editing use entire width minus 20px padding (10px each side) and the width of the status view
+    
+    /*
+                          <-320px->
+      ^   |       +------+                                      |
+      |   |       |      |       Nick Label                  | ||
+     64px |<-8px->|  Img |<-8px->                    <-10px->| ||
+      |   |       |      |       Status Label                | ||
+      v   |       +------+                                      |
+     
+     
+     Total padding: 8+8+10 = 26px
+     
+     Img: 48x48 px
+          8px padding vertical each way
+     
+     */
+    
+    const int padding = 26;
+    const int avatarWidth = 48;
+    
     CGFloat labelWidth;
     if (self.editing) {
-        labelWidth = self.contentView.bounds.size.width - 20;
+        labelWidth = self.contentView.bounds.size.width - padding - avatarWidth;
     } else {
-        labelWidth = self.bounds.size.width - 20 - statusImageView.frame.size.width;
+        labelWidth = self.bounds.size.width - padding - statusImageView.frame.size.width - avatarWidth;
     }
     
     /*****Nick Label*****/
-    [self.nickLabel setFrame:CGRectMake(10, 8, labelWidth, 22)];
+    [self.nickLabel setFrame:CGRectMake(64, 8, labelWidth, 22)];
     
     /*****Message Label*****/
-    [messageLabel setFrame:CGRectMake(10, 30, labelWidth, messageLabel.frame.size.height)];
+    [messageLabel setFrame:CGRectMake(64, 30, labelWidth, messageLabel.frame.size.height)];
+    
+    /*****Avatar Image View*****/
+    [avatarImageView setFrame:CGRectMake(8, 8, 48, 48)];
     
     /*****Gradient*****/
     cellBackgroundView.frame = self.bounds;
@@ -173,6 +233,10 @@
     }
     
     newFrame.size.width = labelWidth;
+}
+
+- (void)setAvatarImage:(UIImage *)avatarImage {
+    [avatarImageView setImage:avatarImage];
 }
 
 @end

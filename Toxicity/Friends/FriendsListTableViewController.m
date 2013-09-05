@@ -158,6 +158,10 @@
     //the custom cell automatically changes the height of double line messages
     cell.messageLabelText = tempFriend.statusMessage;
     
+    //set the avatar image
+    //todo: make sure this part works with the cache and stuff im gong to implement
+    cell.avatarImage = tempFriend.avatarImage;
+    
     //change the color. the custo mcell will actually change the image
     if (tempFriend.connectionType == ToxFriendConnectionStatus_None) {
         cell.statusColor = FriendCellStatusColor_Gray;
