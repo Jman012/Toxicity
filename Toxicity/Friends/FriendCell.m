@@ -10,7 +10,7 @@
 
 @implementation FriendCell
 
-@synthesize nickLabel = _nickLabel, messageLabelText = _messageLabelText, statusColor = _statusColor;
+@synthesize nickLabel = _nickLabel, messageLabelText = _messageLabelText, statusColor = _statusColor, friendIdentifier = _friendIdentifier;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

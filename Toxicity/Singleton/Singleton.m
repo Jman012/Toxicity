@@ -10,7 +10,7 @@
 
 @implementation Singleton
 
-@synthesize dhtNodeList, currentConnectDHT, userNick, userStatusMessage, userStatusType, pendingFriendRequests, mainFriendList, mainFriendMessages, currentlyOpenedFriendNumber, toxCoreInstance;
+@synthesize dhtNodeList, currentConnectDHT, userNick, userStatusMessage, userStatusType, pendingFriendRequests, mainFriendList, mainFriendMessages, currentlyOpenedFriendNumber,toxCoreInstance, defaultAvatarImage, avatarImageCache;
 
 - (id)init
 {
@@ -27,6 +27,9 @@
         
         self.mainFriendList = [[NSMutableArray alloc] init];
         self.mainFriendMessages = [[NSMutableArray alloc] init];
+        
+        self.defaultAvatarImage = [UIImage imageNamed:@"default-avatar"];
+        self.avatarImageCache = [[NSCache alloc] init];
         
         //if -1, no chat windows open
         currentlyOpenedFriendNumber = -1;
@@ -46,6 +49,8 @@
     
     return sharedInstance;
 }
+
+#pragma mark - Generic class methods
 
 + (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey {
     
@@ -106,6 +111,100 @@
     }
     [prefs setObject:array forKey:@"friend_list"];
     [prefs synchronize];
+}
+
+#pragma mark - Avatar Cache methods
+
+- (void)avatarImageForKey:(NSString *)key finishBlock:(void (^)(UIImage *))finishBlock {
+    UIImage *tempImage = [self.avatarImageCache objectForKey:key];
+    
+    if (tempImage) {
+        if (finishBlock)
+            finishBlock(tempImage);
+        
+    } else {
+        [self loadAvatarForKey:key finishBlock:finishBlock];
+    }
+    
+}
+
+- (void)loadAvatarForKey:(NSString *)theKey finishBlock:(void (^)(UIImage *))finishBlock {
+    //todo: check our filesystem or w/e to see if we already have an avatar saved, if not, fetch a new one
+        
+    NSError *error;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *ourDocumentLocation = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+    NSArray *documentContents = [fileManager contentsOfDirectoryAtPath:ourDocumentLocation error:&error];
+    
+    BOOL imageFoundInFilesystem = NO;
+    if (!error) {
+        for (NSString *tempFilename in documentContents) {
+            if ([tempFilename isEqualToString:[theKey stringByAppendingString:@".png"]]) {
+                //we already have a .png for this firned's public key
+                //load the image from this file
+                UIImage *loadedAvatarImage = [UIImage imageWithContentsOfFile:[ourDocumentLocation stringByAppendingPathComponent:tempFilename]];
+                
+                //put image into cache
+                if (loadedAvatarImage) {
+                    [self.avatarImageCache setObject:loadedAvatarImage forKey:theKey];
+                    if (finishBlock) {
+                        finishBlock(loadedAvatarImage);
+                    }
+                    
+                } else {
+                    //image did not load correctly, lets download it and rewrite it
+                    [self fetchRobohashAvatarForKey:theKey finishBlock:finishBlock];
+                    
+                }
+                
+                //nothing else to do, break out of the for loop
+                imageFoundInFilesystem = YES;
+                break;
+                
+            }
+        }
+    }
+    
+    if (imageFoundInFilesystem == NO) {
+        //if we've made it this far into the method, that means no .png was found or loading it failed.
+        //therefore we must download one:
+        [self fetchRobohashAvatarForKey:theKey finishBlock:finishBlock];
+    }
+}
+
+- (void)fetchRobohashAvatarForKey:(NSString *)theKey finishBlock:(void (^)(UIImage *))finishBlock {
+    //todo: changed the size based on display?
+    NSURL *roboHashURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://robohash.org/%@.png?size=96x96", theKey]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:roboHashURL];
+    
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               
+                               if (!error) {
+                                   sleep(1); //ensure that the table view is all done loading, so cellForRow works
+                                   UIImage *downloadedImage = [[UIImage alloc] initWithData:data];
+                                   [self.avatarImageCache setObject:downloadedImage forKey:theKey];
+                                   
+                                   NSString *ourDocumentLocation = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+                                   NSString *theFilename = [[ourDocumentLocation stringByAppendingPathComponent:theKey] stringByAppendingPathExtension:@"png"];
+                                   [UIImagePNGRepresentation(downloadedImage) writeToFile:theFilename atomically:YES];
+                                   
+                                   if (finishBlock)
+                                       finishBlock(downloadedImage);
+                                   
+                                   
+                               } else {
+                                   //downlaod didn't work, use the default
+                                   [self.avatarImageCache setObject:self.defaultAvatarImage forKey:theKey];
+                                   if (finishBlock)
+                                       finishBlock(self.defaultAvatarImage);
+                                   
+                                   
+                               }
+                               
+                           }];
+    
 }
 
 @end

@@ -43,6 +43,9 @@
     
     //with new core, we need to hold an instance of messenger
     Tox                 *toxCoreInstance;
+    
+    UIImage             *defaultAvatarImage;
+    NSCache             *avatarImageCache;
 }
 
 @property (nonatomic, strong) NSMutableArray *dhtNodeList;
@@ -55,10 +58,14 @@
 @property (nonatomic, strong) NSMutableArray *mainFriendMessages;
 @property (nonatomic, assign) NSInteger currentlyOpenedFriendNumber;
 @property (nonatomic, assign) Tox *toxCoreInstance;
+@property (nonatomic, strong) UIImage *defaultAvatarImage;
+@property (nonatomic, strong) NSCache *avatarImageCache;
 
 + (Singleton *)sharedSingleton;
 + (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey;
 + (BOOL)friendPublicKeyIsValid:(NSString *)theKey;
 + (void)saveFriendListInUserDefaults;
+
+- (void)avatarImageForKey:(NSString *)key finishBlock:(void (^)(UIImage *))finishBlock;
 
 @end

@@ -30,8 +30,5 @@ typedef enum {
 @property (nonatomic, strong) NSString                  *statusMessage;
 @property (nonatomic, assign) ToxFriendUserStatus       statusType;
 @property (nonatomic, assign) ToxFriendConnectionStatus connectionType;
-@property (nonatomic, strong) UIImage                   *avatarImage;
-
-- (void)loadTheAvatar;
 
 @end

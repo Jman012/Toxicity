@@ -19,7 +19,6 @@
         self.statusMessage = [[NSString alloc] init];
         self.statusType = ToxFriendUserStatus_None;
         self.connectionType = ToxFriendConnectionStatus_None;
-        self.avatarImage = [UIImage imageNamed:@"default-avatar"]; //add placeholder
     }
     return self;
 }
@@ -31,7 +30,6 @@
         self.publicKeyWithNoSpam = [decoder decodeObjectForKey:@"friend_publicKeyWithNoSpam"];
         self.nickname = [decoder decodeObjectForKey:@"friend_nickname"];
         self.statusMessage = [decoder decodeObjectForKey:@"friend_statusMessage"];
-        self.avatarImage = [decoder decodeObjectForKey:@"friend_statusType"];
         
         self.statusType = ToxFriendUserStatus_None;
         self.connectionType = ToxFriendConnectionStatus_None;
@@ -45,7 +43,6 @@
     [encoder encodeObject:self.publicKeyWithNoSpam forKey:@"friend_publicKeyWithNoSpam"];
     [encoder encodeObject:self.nickname forKey:@"friend_nickname"];
     [encoder encodeObject:self.statusMessage forKey:@"friend_statusMessage"];
-    [encoder encodeObject:self.avatarImage forKey:@"friend_statusType"];
 }
 
 - (id)copy {
@@ -56,18 +53,17 @@
     temp.statusMessage = [self.statusMessage copy];
     temp.statusType = self.statusType;
     temp.connectionType = self.connectionType;
-    temp.avatarImage = [self.avatarImage copy];
     
     return temp;
 }
 
-- (void)loadTheAvatar {
+/*- (void)loadTheAvatarWithCache:(NSCache *)theCache {
     //todo: check our filesystem or w/e to see if we already have an avatar saved, if not, fetch a new one
     
-    [self fetchRobohashAvatar];
+    [self fetchRobohashAvatarWithCache:theCache];
 }
 
-- (void)fetchRobohashAvatar {
+- (void)fetchRobohashAvatarWithCache:(NSCache *)theCache {
     //todo: changed the size based on display?
     NSURL *roboHashURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://robohash.org/%@.png?size=96x96", self.publicKey]];
     NSURLRequest *request = [NSURLRequest requestWithURL:roboHashURL];
@@ -76,13 +72,20 @@
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (!error) {
-                                   self.avatarImage = [[UIImage alloc] initWithData:data];
+//                                   self.avatarImage = [[UIImage alloc] initWithData:data];
+                                   
+                                   if (theCache) {
+                                       [theCache setObject:[[UIImage alloc] initWithData:data] forKey:self.publicKey];
+                                       
+                                   } else {
+                                       
+                                   }
                                    //todo: save on phone or something
                                } else {
                                    
                                }
                            }];
     
-}
+}*/
 
 @end

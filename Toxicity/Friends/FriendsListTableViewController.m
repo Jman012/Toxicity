@@ -143,6 +143,9 @@
     
     FriendObject *tempFriend = [_mainFriendList objectAtIndex:indexPath.row];
     
+    //set the identifier
+    cell.friendIdentifier = tempFriend.publicKey; //make this a copy?
+    
     //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
     //e.g., AF4E32...B6C899
     if ([tempFriend.nickname isEqualToString:@""]){
@@ -159,8 +162,24 @@
     cell.messageLabelText = tempFriend.statusMessage;
     
     //set the avatar image
-    //todo: make sure this part works with the cache and stuff im gong to implement
-    cell.avatarImage = tempFriend.avatarImage;
+    cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
+    [[Singleton sharedSingleton] avatarImageForKey:tempFriend.publicKey finishBlock:^(UIImage *theAvatarImage) {
+        
+        if (cell) {
+            if ([cell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
+                cell.avatarImage = theAvatarImage;
+            } else {
+                //this could have taken any amount of time to accomplish (either right from cache had to download a new one
+                //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
+                FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+                if (theCell) {
+                    if ([theCell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
+                        theCell.avatarImage = theAvatarImage;
+                    }
+                }
+            }
+        }
+    }];
     
     //change the color. the custo mcell will actually change the image
     if (tempFriend.connectionType == ToxFriendConnectionStatus_None) {
