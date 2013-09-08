@@ -75,7 +75,6 @@
         [avatarImageView setBackgroundColor:[UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f]];
         [avatarImageView.layer setCornerRadius:4.0f];
         [avatarImageView.layer setMasksToBounds:YES];
-        [avatarImageView.layer addSublayer:[self getNewInnerShadowLayer]];
         
         [self.contentView addSubview:avatarImageView];
         
@@ -100,35 +99,6 @@
         
     }
     return self;
-}
-
-- (CAShapeLayer *)getNewInnerShadowLayer {
-    CAShapeLayer* shadowLayer = [CAShapeLayer layer];
-    [shadowLayer setFrame:CGRectMake(0, 0, 48, 48)];
-    
-    // Standard shadow stuff
-    [shadowLayer setShadowColor:[[UIColor colorWithWhite:0 alpha:1] CGColor]];
-    [shadowLayer setShadowOffset:CGSizeMake(0.0f, 0.0f)];
-    [shadowLayer setShadowOpacity:1.0f];
-    [shadowLayer setShadowRadius:3];
-    
-    // Causes the inner region in this example to NOT be filled.
-    [shadowLayer setFillRule:kCAFillRuleEvenOdd];
-    
-    // Create the larger rectangle path.
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathAddRect(path, NULL, CGRectInset([shadowLayer bounds], -10, -10));
-    
-    // Add the inner path so it's subtracted from the outer path.
-    // someInnerPath could be a simple bounds rect, or maybe
-    // a rounded one for some extra fanciness.
-    CGPathAddPath(path, NULL, [[UIBezierPath bezierPathWithRect:[shadowLayer bounds]] CGPath]);
-    CGPathCloseSubpath(path);
-    
-    [shadowLayer setPath:path];
-    CGPathRelease(path);
-    
-    return shadowLayer;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -182,6 +152,12 @@
     
     /*****Avatar Image View*****/
     [avatarImageView setFrame:CGRectMake(8, 8, 48, 48)];
+    for (UIView *shadow in [avatarImageView subviews]) {
+        if ([shadow tag] == kShadowViewTag) {
+            [shadow removeFromSuperview];
+        }
+    }
+    [avatarImageView makeInsetShadowWithRadius:4.0 Alpha:0.5f];
     
     /*****Gradient*****/
     cellBackgroundView.frame = self.bounds;

@@ -178,6 +178,13 @@
                     }
                 }
             }
+        } else {
+            FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+            if (theCell) {
+                if ([theCell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
+                    theCell.avatarImage = theAvatarImage;
+                }
+            }
         }
     }];
     
