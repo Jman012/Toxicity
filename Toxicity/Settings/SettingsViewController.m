@@ -206,6 +206,7 @@
     switch ([indexPath section]) {
         case 0:
         {
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             if (indexPath.row != 2) {
                 //name/status message field
                 
@@ -290,6 +291,7 @@
             
         case 1:
         {
+            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
             cell.textLabel.text = @"Copy ID to clipboard";
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
             
@@ -298,6 +300,8 @@
             
         case 2:
         {
+            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+            
             //Do nothing for first row in thi section (new dht node button)
             if (indexPath.row == 0)
                 break;
@@ -505,13 +509,6 @@
     [newDHTViewCont setAlreadyKey:[tempDHT.dhtKey copy]];
     
     [self.navigationController pushViewController:newDHTViewCont animated:YES];
-}
-
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0)
-        return nil;
-    
-    return indexPath;
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
