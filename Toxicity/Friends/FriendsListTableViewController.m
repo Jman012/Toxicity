@@ -189,6 +189,7 @@
     }];
     
     //change the color. the custo mcell will actually change the image
+    cell.shouldShowFriendStatus = YES;
     if (tempFriend.connectionType == ToxFriendConnectionStatus_None) {
         cell.statusColor = FriendCellStatusColor_Gray;
     } else {

@@ -10,7 +10,7 @@
 
 @implementation FriendCell
 
-@synthesize nickLabel = _nickLabel, messageLabelText = _messageLabelText, statusColor = _statusColor, friendIdentifier = _friendIdentifier;
+@synthesize nickLabel = _nickLabel, messageLabelText = _messageLabelText, statusColor = _statusColor, friendIdentifier = _friendIdentifier, shouldShowFriendStatus = _shouldShowFriendStatus;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -43,7 +43,8 @@
         //default is gray
         statusImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - 16, 0, 16, 64)];
         [statusImageView setImage:[UIImage imageNamed:@"status-gray"]];
-        [self addSubview:statusImageView];
+        if (self.shouldShowFriendStatus)
+            [self addSubview:statusImageView];
         
         /*****Nick Label*****/
         self.nickLabel = [[UILabel alloc] init];
@@ -213,6 +214,15 @@
 
 - (void)setAvatarImage:(UIImage *)avatarImage {
     [avatarImageView setImage:avatarImage];
+}
+
+- (void)setShouldShowFriendStatus:(BOOL)shouldShowFriendStatus {
+    if (shouldShowFriendStatus == NO) {
+        [statusImageView removeFromSuperview];
+    } else {
+        [statusImageView removeFromSuperview];
+        [self addSubview:statusImageView];
+    }
 }
 
 @end

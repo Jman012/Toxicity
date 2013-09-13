@@ -36,16 +36,28 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetFriendRequest) name:@"FriendRequestReceived" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToFriendsList) name:@"QRReaderDidAddFriend" object:nil];
     
+    _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
+    selectedCells = [[NSMutableArray alloc] init];
+    
     UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
                                                                                   target:self
                                                                                   action:@selector(cameraButtonPressed)];
     [cameraButton setStyle:UIBarButtonItemStyleBordered];
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                target:self
                                                                                action:@selector(addButtonPressed)];
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    acceptButton = [[UIBarButtonItem alloc] initWithTitle:@"Accept (0)"
+                                                    style:UIBarButtonItemStyleBordered
+                                                   target:self
+                                                   action:@selector(acceptButtonPressed)];
+    rejectButton = [[UIBarButtonItem alloc] initWithTitle:@"Reject (0)"
+                                                    style:UIBarButtonItemStyleBordered
+                                                   target:self
+                                                   action:@selector(rejectButtonPressed)];
+
     [addButton setStyle:UIBarButtonItemStyleBordered];
-    NSArray *array = [NSArray arrayWithObjects:cameraButton, flexibleSpace, addButton, nil];
+    NSArray *array = [NSArray arrayWithObjects:cameraButton, addButton, flexibleSpace, acceptButton, rejectButton, nil];
     self.toolbarItems = array;
     [self.navigationController setToolbarHidden:NO animated:YES];
     
@@ -57,10 +69,8 @@
     
     [self.navigationController.toolbar setTintColor:[UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1]];
     
-//    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    [self.tableView registerClass:[FriendCell class] forCellReuseIdentifier:@"RequestFriendCell"];
     
-    
-    _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
     
     
     UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToPopView)];
@@ -70,7 +80,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    [self.tableView registerClass:[FriendCell class] forCellReuseIdentifier:@"RequestFriendCell"];
     
     [self.navigationController setToolbarHidden:NO animated:NO];
 }
@@ -108,41 +118,22 @@
     [alertView show];
 }
 
-- (void)cellAcceptButtonPressed:(id)sender {
-    NSLog(@"accept");
-    UIButton *button = (UIButton *)sender;
-    AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [ourDelegate acceptFriendRequest:[button titleForState:UIControlStateDisabled]];
-    
-    [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:[button titleForState:UIControlStateDisabled]];
-    
-    
-    [self.tableView beginUpdates];
-    
-    [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:([button tag] - 402) inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-    _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
-    
-    [self.tableView endUpdates];
-    
-//    [self.tableView reloadData];
+- (void)acceptButtonPressed {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Accept"
+                                                        message:[NSString stringWithFormat:@"Are you sure you want to accept %d friends?", [selectedCells count]]
+                                                       delegate:self
+                                              cancelButtonTitle:@"Yes"
+                                              otherButtonTitles:@"No", nil];
+    [alertView show];
 }
 
-- (void)cellRejectButtonPressed:(id)sender {
-    NSLog(@"reject");
-    UIButton *button = (UIButton *)sender;
-    
-    [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:[button titleForState:UIControlStateDisabled]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"RejectedFriendRequest" object:nil userInfo:@{@"key_to_accept":[button titleForState:UIControlStateDisabled]}];
-
-    
-    [self.tableView beginUpdates];
-    
-    [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:([button tag] - 900) inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-    _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
-    
-    [self.tableView endUpdates];
-    
-//    [self.tableView reloadData];
+- (void)rejectButtonPressed {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Reject"
+                                                        message:[NSString stringWithFormat:@"Are you sure you want to reject %d friends?", [selectedCells count]]
+                                                       delegate:self
+                                              cancelButtonTitle:@"Yes"
+                                              otherButtonTitles:@"No", nil];
+    [alertView show];
 }
 
 - (void)didGetFriendRequest {
@@ -160,17 +151,60 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSLog(@"button: %d", buttonIndex);
-    if (buttonIndex == 0 || buttonIndex == 1) {
-        NSString *theString = [[[alertView textFieldAtIndex:0] text] copy];
-        if (buttonIndex == 1) {
-            theString = [[[UIPasteboard generalPasteboard] string] copy];
-            NSLog(@"Pasted: %@", theString);
+    AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    if ([alertView.title isEqualToString:@"Add Friend"]) {
+        if (buttonIndex == 0 || buttonIndex == 1) {
+            NSString *theString = [[[alertView textFieldAtIndex:0] text] copy];
+            if (buttonIndex == 1) {
+                theString = [[[UIPasteboard generalPasteboard] string] copy];
+                NSLog(@"Pasted: %@", theString);
+            }
+            //add the friend
+            
+            if ([Singleton friendPublicKeyIsValid:theString]) {
+                [ourDelegate addFriend:theString];
+            }
         }
-        //add the friend
-        
-        if ([Singleton friendPublicKeyIsValid:theString]) {
-            AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [ourDelegate addFriend:theString];
+    } else if ([alertView.title isEqualToString:@"Accept"]) {
+        if (buttonIndex == 0) {
+            [self.tableView beginUpdates];
+            
+            NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
+            for (NSString *tempString in selectedCells) {
+                for (int i = 0; i < [_arrayOfRequests count]; i++) {
+                    if ([tempString isEqualToString:[_arrayOfRequests objectAtIndex:i]]) {
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+                    }
+                }
+            }
+            
+            [ourDelegate acceptFriendRequests:selectedCells];
+            _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
+            
+            
+            [self.tableView endUpdates];
+        }
+    } else if ([alertView.title isEqualToString:@"Reject"]) {
+        if (buttonIndex == 0) {
+            [self.tableView beginUpdates];
+            
+            NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
+            for (NSString *tempString in selectedCells) {
+                for (int i = 0; i < [_arrayOfRequests count]; i++) {
+                    if ([tempString isEqualToString:[_arrayOfRequests objectAtIndex:i]]) {
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+                    }
+                }
+                [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:tempString];
+            }
+            
+            _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
+            
+            
+            [self.tableView endUpdates];
         }
     }
 }
@@ -196,152 +230,61 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    static NSString *CellIdentifier = @"RequestFriendCell";
+    FriendCell *cell = (FriendCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[FriendCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    // Configure the cell...
-    
-    //do all the fancy stuff here
-    CAGradientLayer *grad = [CAGradientLayer layer];
-    grad.frame = CGRectMake(cell.bounds.origin.x, cell.bounds.origin.y + 1, cell.bounds.size.width, cell.bounds.size.height - 1);
-    UIColor *top = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.4f alpha:1.0f];
-    UIColor *bottom = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.3f alpha:1.0f];
-    grad.colors = [NSArray arrayWithObjects:(id)[top CGColor], (id)[bottom CGColor], nil];
-    grad.name = @"Gradient";
-    
-    NSArray* sublayers = [NSArray arrayWithArray:cell.contentView.layer.sublayers];
-    for (CALayer *layer in sublayers) {
-        if ([layer.name isEqualToString:@"Gradient"]) {
-            [layer removeFromSuperlayer];
-        }
-    }
-    [cell.contentView.layer insertSublayer:grad atIndex:0];
-    
-    
-    //the info
-    
-    //tags: main label=400, sublabel=401, accept=402, reject=403
-    UILabel *mainLabel;
-    if ([cell viewWithTag:400] != nil)
-        mainLabel = (UILabel *)[cell viewWithTag:400];
-    else {
-        mainLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, 176, 23)];
-        mainLabel.tag = 400;
-    }
-    
-    UILabel *messageLabel;
-    if ([cell viewWithTag:401] != nil)
-        messageLabel = (UILabel *)[cell viewWithTag:401];
-    else {
-        messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 33, 176, 25)];
-        messageLabel.tag = 401;
-    }
-    
-    UIButton *acceptButton;
-    if ([cell viewWithTag:402 + indexPath.row] != nil)
-        acceptButton = (UIButton *)[cell viewWithTag:402 + indexPath.row];
-    else {
-        acceptButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        acceptButton.tag = 402 + indexPath.row;
-    }
-    
-    UIButton *rejectButton;
-    if ([cell viewWithTag:900 + indexPath.row] != nil)
-        rejectButton = (UIButton *)[cell viewWithTag:900 + indexPath.row];
-    else {
-        rejectButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        rejectButton.tag = 900 + indexPath.row;
-    }
+    cell.friendIdentifier = [_arrayOfRequests objectAtIndex:indexPath.row];
 
-    
-    //main label
+    //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
+    //e.g., AF4E32...B6C899
     NSString *temp = [_arrayOfRequests objectAtIndex:indexPath.row];
     NSString *front = [temp substringToIndex:6];
     NSString *end = [temp substringFromIndex:[temp length] - 6];
     NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
-    mainLabel.text = formattedString;
+    cell.nickLabel.text = formattedString;
     
-    //message label todo:store & retrieve message
-    messageLabel.text = @"Tox me on tox.";
-    
-    [mainLabel setTextColor:[UIColor whiteColor]];
-    [mainLabel setBackgroundColor:[UIColor clearColor]];
-    [messageLabel setTextColor:[UIColor colorWithRed:0.55f green:0.62f blue:0.68f alpha:1.0f]];
-    [messageLabel setBackgroundColor:[UIColor clearColor]];
-    
-    cell.contentView.backgroundColor = [UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f];
+    cell.messageLabelText = @"Tox me on Tox.";
     
     
-    mainLabel.shadowColor = [UIColor colorWithRed:0.2f green:0.2f blue:0.2f alpha:1.0f];
-    mainLabel.shadowOffset = CGSizeMake(1.0f, 1.0f);
-    messageLabel.shadowColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
-    messageLabel.shadowOffset = CGSizeMake(0.5f, 0.5f);
+    cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
+    [[Singleton sharedSingleton] avatarImageForKey:[_arrayOfRequests objectAtIndex:indexPath.row] finishBlock:^(UIImage *theAvatarImage) {
+        
+        if (cell) {
+            if ([cell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+                cell.avatarImage = theAvatarImage;
+            } else {
+                //this could have taken any amount of time to accomplish (either right from cache had to download a new one
+                //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
+                FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+                if (theCell) {
+                    if ([theCell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+                        theCell.avatarImage = theAvatarImage;
+                    }
+                }
+            }
+        } else {
+            FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+            if (theCell) {
+                if ([theCell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+                    theCell.avatarImage = theAvatarImage;
+                }
+            }
+        }
+    }];
     
-    messageLabel.font = [UIFont systemFontOfSize:14.0f];
-    mainLabel.font = [UIFont systemFontOfSize:18.0f];
-    
-    //buttons
-    [acceptButton setFrame:CGRectMake(179, 1, 70, 63)];
-    [rejectButton setFrame:CGRectMake(250, 1, 70, 63)];
-    [acceptButton setTitle:@"Accept" forState:UIControlStateNormal];
-    [rejectButton setTitle:@"Reject" forState:UIControlStateNormal];
-    [acceptButton addTarget:self action:@selector(cellAcceptButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [rejectButton addTarget:self action:@selector(cellRejectButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [acceptButton setBackgroundImage:[UIImage imageNamed:@"accept-button-normal"] forState:UIControlStateNormal];
-    [rejectButton setBackgroundImage:[UIImage imageNamed:@"reject-button-normal"] forState:UIControlStateNormal];
-    [acceptButton setBackgroundImage:[UIImage imageNamed:@"accept-button-inverted"] forState:UIControlStateHighlighted];
-    [rejectButton setBackgroundImage:[UIImage imageNamed:@"reject-button-inverted"] forState:UIControlStateHighlighted];
-    
-    //hide the key in the "title"
-    [acceptButton setTitle:[_arrayOfRequests objectAtIndex:indexPath.row] forState:UIControlStateDisabled];
-    [rejectButton setTitle:[_arrayOfRequests objectAtIndex:indexPath.row] forState:UIControlStateDisabled];
+    cell.shouldShowFriendStatus = NO;
     
     
-    /*CAGradientLayer *acceptButtonGradientLayer = [CAGradientLayer layer];
-    acceptButtonGradientLayer.frame = acceptButton.bounds;
-//    UIColor *acceptTopColor = [UIColor colorWithRed:0.2f green:0.6f blue:0.2f alpha:1.0f];
-//    UIColor *acceptBottomColor = [UIColor colorWithRed:0.2f green:0.4f blue:0.2f alpha:1.0f];
-    UIColor *acceptTopColor = [UIColor colorWithHue:0.333f saturation:0.5f brightness:0.5f alpha:1.0f];
-    UIColor *acceptBottomColor = [UIColor colorWithHue:0.333f saturation:0.5f brightness:0.4f alpha:1.0f];
-    acceptButtonGradientLayer.colors = [NSArray arrayWithObjects:(id)[acceptTopColor CGColor], (id)[acceptBottomColor CGColor], nil];
-    acceptButtonGradientLayer.name = @"AcceptGradient";
-    NSArray* acceptButtonSublayers = [NSArray arrayWithArray:acceptButton.layer.sublayers];
-    for (CALayer *layer in acceptButtonSublayers) {
-        if ([layer.name isEqualToString:@"AcceptGradient"]) {
-            [layer removeFromSuperlayer];
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    for (NSString *tempString in selectedCells) {
+        if ([tempString isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
     }
-    [acceptButton.layer insertSublayer:acceptButtonGradientLayer atIndex:0];
     
-    CAGradientLayer *rejectButtonGradientLayer = [CAGradientLayer layer];
-    rejectButtonGradientLayer.frame = rejectButton.bounds;
-    UIColor *rejectTopColor = [UIColor colorWithHue:0.0f saturation:0.5f brightness:0.5f alpha:1.0f];
-    UIColor *rejectBottomColor = [UIColor colorWithHue:0.0f saturation:0.5f brightness:0.4f alpha:1.0f];
-    rejectButtonGradientLayer.colors = [NSArray arrayWithObjects:(id)[rejectTopColor CGColor], (id)[rejectBottomColor CGColor], nil];
-    rejectButtonGradientLayer.name = @"RejectGradient";
-    NSArray* rejectButtonSublayers = [NSArray arrayWithArray:rejectButton.layer.sublayers];
-    for (CALayer *layer in rejectButtonSublayers) {
-        if ([layer.name isEqualToString:@"RejectGradient"]) {
-            [layer removeFromSuperlayer];
-        }
-    }
-    [rejectButton.layer insertSublayer:rejectButtonGradientLayer atIndex:0];*/
-    
-    
-    if ([cell viewWithTag:400] == nil)
-        [cell.contentView addSubview:mainLabel];
-    
-    if ([cell viewWithTag:401] == nil)
-        [cell.contentView addSubview:messageLabel];
-    
-    if ([cell viewWithTag:402 + indexPath.row] == nil)
-        [cell.contentView addSubview:acceptButton];
-    
-    if ([cell viewWithTag:900 + indexPath.row] == nil)
-        [cell.contentView addSubview:rejectButton];
     
     return cell;
 }
@@ -391,9 +334,33 @@
 
 #pragma mark - Table view delegate
 
-/*- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    FriendCell *cell = (FriendCell *)[tableView cellForRowAtIndexPath:indexPath];
+    if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
+        //deselect
+        int j = -1;
+        for (int i = 0; i < [selectedCells count]; i++) {
+            if ([[selectedCells objectAtIndex:i] isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+                j = i;
+            }
+        }
+        if (j != -1) {
+            [selectedCells removeObjectAtIndex:j];
+        }
+        
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        
+    } else {
+        //select
+        [selectedCells addObject:[[_arrayOfRequests objectAtIndex:indexPath.row] copy]];
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
     
-}*/
+    acceptButton.title = [NSString stringWithFormat:@"Accept (%d)", [selectedCells count]];
+    rejectButton.title = [NSString stringWithFormat:@"Reject (%d)", [selectedCells count]];
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+}
 
 @end

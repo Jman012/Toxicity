@@ -40,7 +40,7 @@ unsigned char * hex_string_to_bin(char hex_string[]);
 - (void)userStatusTypeChanged;
 - (void)addFriend:(NSString *)theirKey;
 - (void)sendMessage:(NSDictionary *)messageDict;
-- (void)acceptFriendRequest:(NSString *)theKeyToAccept;
+- (void)acceptFriendRequests:(NSArray *)theKeysToAccept;
 - (int)deleteFriend:(int)theFriendNumber;
 
 @end

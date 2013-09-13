@@ -11,10 +11,15 @@
 #import "Singleton.h"
 #import "QRReaderViewController.h"
 #import "AppDelegate.h"
+#import "FriendCell.h"
 
 @interface RequestsTableViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 {
-    NSArray     *_arrayOfRequests;
+    NSArray             *_arrayOfRequests;
+    NSMutableArray      *selectedCells;
+    
+    UIBarButtonItem    *acceptButton;
+    UIBarButtonItem    *rejectButton;
 }
 
 @end

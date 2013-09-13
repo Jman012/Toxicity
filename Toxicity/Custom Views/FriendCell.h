@@ -30,6 +30,7 @@ typedef enum {
 
 @property (nonatomic, strong) UILabel *nickLabel;
 @property (nonatomic, strong) NSString *messageLabelText;
+@property (nonatomic, assign) BOOL shouldShowFriendStatus;
 @property (nonatomic, assign) FriendCellStatusColor statusColor;
 @property (nonatomic, strong) UIImage *avatarImage;
 @property (nonatomic, strong) NSString *friendIdentifier;

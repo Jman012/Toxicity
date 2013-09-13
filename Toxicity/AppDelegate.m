@@ -89,10 +89,10 @@
             int num = tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], idToAdd);
             if (num >= 0) {
                 [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
+                [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
             }
             free(idToAdd);
         }
-        [[Singleton sharedSingleton] setMainFriendList:array];
     }
     
     //loads any save dht nodes
@@ -112,6 +112,13 @@
             [array addObject:tempDHT];
         }
         [[Singleton sharedSingleton] setDhtNodeList:array];
+    }
+    
+    //loads any pending friend requests
+    if ([prefs objectForKey:@"pending_requests_list"] == nil) {
+        
+    } else {
+        [[Singleton sharedSingleton] setPendingFriendRequests:(NSMutableDictionary *)[prefs objectForKey:@"pending_requests_list"]];
     }
     
     /***** End NSUserDefault Loading *****/
@@ -389,50 +396,58 @@
     }
 }
 
-- (void)acceptFriendRequest:(NSString *)theKeyToAccept {
-    NSData *data = [[[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:theKeyToAccept] copy];
-    
-    uint8_t *key = (uint8_t *)[data bytes];
-    
+- (void)acceptFriendRequests:(NSArray *)theKeysToAccept {
     [self killToxThread];
-    int num = tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], key);
-    [self startToxThread];
-    
-    switch (num) {
-        case -1: {
-            NSLog(@"Accepting request failed");
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unknown Error"
-                                                                message:[NSString stringWithFormat:@"[Error Code: %d] There was an unknown error with accepting that ID.", num]
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"Okay"
-                                                      otherButtonTitles:nil];
-            [alertView show];
-            break;
-        }
-            
-        default: //added friend successfully
-        {
-            //friend added through accept request
-            FriendObject *tempFriend = [[FriendObject alloc] init];
-            [tempFriend setPublicKey:[theKeyToAccept substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
-            NSLog(@"new friend key: %@", [tempFriend publicKey]);
-            [tempFriend setNickname:@""];
-            [tempFriend setStatusMessage:@"Accepted..."];
-            
-            [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
-            [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
-            
-            //save in user defaults
-            [Singleton saveFriendListInUserDefaults];
-            
-            //remove from the pending requests
-            [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:theKeyToAccept];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
-            
-            break;
+
+    for (NSString *arrayKey in theKeysToAccept) {
+
+        NSData *data = [[[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:arrayKey] copy];
+
+        uint8_t *key = (uint8_t *)[data bytes];
+        
+        int num = tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], key);
+        
+        switch (num) {
+            case -1: {
+                NSLog(@"Accepting request failed");
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unknown Error"
+                                                                    message:[NSString stringWithFormat:@"[Error Code: %d] There was an unknown error with accepting that ID.", num]
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"Okay"
+                                                          otherButtonTitles:nil];
+                [alertView show];
+                break;
+            }
+                
+            default: //added friend successfully
+            {
+                //friend added through accept request
+                FriendObject *tempFriend = [[FriendObject alloc] init];
+                [tempFriend setPublicKey:[arrayKey substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
+                NSLog(@"new friend key: %@", [tempFriend publicKey]);
+                [tempFriend setNickname:@""];
+                [tempFriend setStatusMessage:@"Accepted..."];
+                
+                [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
+                [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
+                
+                //save in user defaults
+                [Singleton saveFriendListInUserDefaults];
+                
+                //remove from the pending requests
+                [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:arrayKey];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
+                
+                break;
+            }
         }
     }
+    
+    [self startToxThread];
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    [prefs setObject:[[Singleton sharedSingleton] pendingFriendRequests] forKey:@"pending_requests_list"];
 }
 
 - (int)deleteFriend:(int)theFriendNumber {
@@ -488,12 +503,12 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
             //the pending dictionary has the object as nsdata bytes of the bin version of the publickey, and the dict key is the nsstring of said publickey
             [[[Singleton sharedSingleton] pendingFriendRequests] setObject:[NSData dataWithBytes:public_key length:TOX_CLIENT_ID_SIZE]
                                                                     forKey:[NSString stringWithUTF8String:convertedKey]];
+            NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+            [prefs setObject:[[Singleton sharedSingleton] pendingFriendRequests] forKey:@"pending_requests_list"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendRequestReceived" object:nil];
         } else {
-            AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [ourDelegate killToxThread];
+            //no need to kill thread, this is synchronous
             tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], public_key);
-            [ourDelegate startToxThread];
         }
         
     });
@@ -716,7 +731,10 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
     while ([toxMainThread isExecuting] == YES) {
         //wait a millisecond before checking again
         [toxMainThread cancel];
-        usleep(1000);
+        struct timespec time1, time2;
+        time1.tv_sec = 0;
+        time1.tv_nsec = 1 *1000000; //1ms
+        nanosleep(&time1, &time2);
     }
 }
 
@@ -734,6 +752,7 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
         //check to see if our thread was cancelled, and if so, exit so it's not in the middle of tox_do
         if ([[NSThread currentThread] isCancelled]) {
             [NSThread exit];
+            return;
         }
         
         //code to check if node connection has changed, if so notify the app
@@ -787,7 +806,7 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
         }
         
         
-        usleep(100000);
+        usleep(1000000);
         
         
     }
