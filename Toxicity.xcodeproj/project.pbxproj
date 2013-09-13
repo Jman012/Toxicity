@@ -241,6 +241,7 @@
 		B9BB9A5B17B377BF00A1ACEC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */; };
 		B9BB9A5E17B4B20100A1ACEC /* ChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */; };
 		B9BB9A6317B7128300A1ACEC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */; };
+		B9D5C94517E2CF9500B84BEF /* group_chats.c in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C94317E2CF9500B84BEF /* group_chats.c */; };
 		B9D859B017C306AE005FD2D2 /* accept-button-inverted.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859A817C306AE005FD2D2 /* accept-button-inverted.png */; };
 		B9D859B117C306AE005FD2D2 /* accept-button-inverted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859A917C306AE005FD2D2 /* accept-button-inverted@2x.png */; };
 		B9D859B217C306AE005FD2D2 /* accept-button-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859AA17C306AE005FD2D2 /* accept-button-normal.png */; };
@@ -642,6 +643,8 @@
 		B9BB9A5C17B4B20100A1ACEC /* ChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChatWindowViewController.h; path = Friends/ChatWindowViewController.h; sourceTree = "<group>"; };
 		B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChatWindowViewController.m; path = Friends/ChatWindowViewController.m; sourceTree = "<group>"; };
 		B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B9D5C94317E2CF9500B84BEF /* group_chats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_chats.c; path = "ProjectTox-Core/toxcore/group_chats.c"; sourceTree = "<group>"; };
+		B9D5C94417E2CF9500B84BEF /* group_chats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = group_chats.h; path = "ProjectTox-Core/toxcore/group_chats.h"; sourceTree = "<group>"; };
 		B9D859A817C306AE005FD2D2 /* accept-button-inverted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accept-button-inverted.png"; path = "Images/accept-button-inverted.png"; sourceTree = "<group>"; };
 		B9D859A917C306AE005FD2D2 /* accept-button-inverted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accept-button-inverted@2x.png"; path = "Images/accept-button-inverted@2x.png"; sourceTree = "<group>"; };
 		B9D859AA17C306AE005FD2D2 /* accept-button-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accept-button-normal.png"; path = "Images/accept-button-normal.png"; sourceTree = "<group>"; };
@@ -782,6 +785,8 @@
 				B9AF750417CF21E400015E9B /* DHT.h */,
 				B9AF750517CF21E500015E9B /* friend_requests.c */,
 				B9AF750617CF21E500015E9B /* friend_requests.h */,
+				B9D5C94317E2CF9500B84BEF /* group_chats.c */,
+				B9D5C94417E2CF9500B84BEF /* group_chats.h */,
 				B9AF750717CF21E500015E9B /* LAN_discovery.c */,
 				B9AF750817CF21E500015E9B /* LAN_discovery.h */,
 				B9AF750917CF21E500015E9B /* Lossless_UDP.c */,
@@ -2221,6 +2226,7 @@
 				B98C9C3F17DC0C36008B10E0 /* FriendCell.m in Sources */,
 				B98C9C4017DC0C36008B10E0 /* TransparentToolbar.m in Sources */,
 				B98C9C4317DC16D8008B10E0 /* UIView+Shadow.m in Sources */,
+				B9D5C94517E2CF9500B84BEF /* group_chats.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
