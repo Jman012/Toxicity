@@ -99,10 +99,10 @@
     if ([prefs objectForKey:@"dht_node_list"] == nil) {
         //no list exists, make a new array, add a placeholder so I don't have to add one manually
         DHTNodeObject *tempDHT = [[DHTNodeObject alloc] init];
-        tempDHT.dhtName = @"stqism-premade";
-        tempDHT.dhtIP = @"54.215.145.71";
+        tempDHT.dhtName = @"stal-premade";
+        tempDHT.dhtIP = @"198.46.136.167";
         tempDHT.dhtPort = @"33445";
-        tempDHT.dhtKey = @"6EDDEE2188EF579303C0766B4796DCBA89C93058B6032FEA51593DCD42FB746C";
+        tempDHT.dhtKey = @"728925473812C7AAC482BE7250BCCAD0B8CB9F737BF3D42ABD34459C1768F854";
         [[Singleton sharedSingleton] setDhtNodeList:(NSMutableArray *)@[tempDHT]];
     } else {
         //theere's a list, loop through them and add to singleton
