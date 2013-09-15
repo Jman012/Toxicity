@@ -541,7 +541,7 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
         
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it
-        if (friendnumber != [[Singleton sharedSingleton] currentlyOpenedFriendNumber]) {
+        if (friendnumber != [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] row]) {
             NSMutableArray *tempMessages = [[[[Singleton sharedSingleton] mainFriendMessages] objectAtIndex:friendnumber] mutableCopy];
             MessageObject *theMessage = [[MessageObject alloc] init];
             [theMessage setMessage:[NSString stringWithUTF8String:(char *)string]];
@@ -806,7 +806,7 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
         }
         
         
-        usleep(1000000);
+        usleep(100000);
         
         
     }

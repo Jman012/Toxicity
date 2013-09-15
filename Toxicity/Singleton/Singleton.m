@@ -10,7 +10,12 @@
 
 @implementation Singleton
 
-@synthesize dhtNodeList, currentConnectDHT, userNick, userStatusMessage, userStatusType, pendingFriendRequests, mainFriendList, mainFriendMessages, currentlyOpenedFriendNumber,toxCoreInstance, defaultAvatarImage, avatarImageCache;
+@synthesize dhtNodeList, currentConnectDHT;
+@synthesize userNick, userStatusMessage, userStatusType;
+@synthesize pendingFriendRequests, mainFriendList, mainFriendMessages;
+@synthesize currentlyOpenedFriendNumber, toxCoreInstance;
+@synthesize defaultAvatarImage, avatarImageCache;
+@synthesize groupList;
 
 - (id)init
 {
@@ -31,8 +36,10 @@
         self.defaultAvatarImage = [UIImage imageNamed:@"default-avatar"];
         self.avatarImageCache = [[NSCache alloc] init];
         
-        //if -1, no chat windows open
-        currentlyOpenedFriendNumber = -1;
+        self.groupList = [[NSMutableArray alloc] init];
+        
+        //if nil, no chat windows open
+        currentlyOpenedFriendNumber = nil;
     }
     return self;
     
@@ -115,7 +122,7 @@
 
 #pragma mark - Avatar Cache methods
 
-- (void)avatarImageForKey:(NSString *)key finishBlock:(void (^)(UIImage *))finishBlock {
+- (void)avatarImageForKey:(NSString *)key type:(AvatarType)type finishBlock:(void (^)(UIImage *))finishBlock {
     UIImage *tempImage = [self.avatarImageCache objectForKey:key];
     
     if (tempImage) {
@@ -123,12 +130,12 @@
             finishBlock(tempImage);
         
     } else {
-        [self loadAvatarForKey:key finishBlock:finishBlock];
+        [self loadAvatarForKey:key type:type finishBlock:finishBlock];
     }
     
 }
 
-- (void)loadAvatarForKey:(NSString *)theKey finishBlock:(void (^)(UIImage *))finishBlock {
+- (void)loadAvatarForKey:(NSString *)theKey type:(AvatarType)type finishBlock:(void (^)(UIImage *))finishBlock {
     //todo: check our filesystem or w/e to see if we already have an avatar saved, if not, fetch a new one
         
     NSError *error;
@@ -153,7 +160,7 @@
                     
                 } else {
                     //image did not load correctly, lets download it and rewrite it
-                    [self fetchRobohashAvatarForKey:theKey finishBlock:finishBlock];
+                    [self fetchRobohashAvatarForKey:theKey type:type finishBlock:finishBlock];
                     
                 }
                 
@@ -168,20 +175,20 @@
     if (imageFoundInFilesystem == NO) {
         //if we've made it this far into the method, that means no .png was found or loading it failed.
         //therefore we must download one:
-        [self fetchRobohashAvatarForKey:theKey finishBlock:finishBlock];
+        [self fetchRobohashAvatarForKey:theKey type:type finishBlock:finishBlock];
     }
 }
 
-- (void)fetchRobohashAvatarForKey:(NSString *)theKey finishBlock:(void (^)(UIImage *))finishBlock {
+- (void)fetchRobohashAvatarForKey:(NSString *)theKey type:(AvatarType)type finishBlock:(void (^)(UIImage *))finishBlock {
     //todo: changed the size based on display?
-    NSURL *roboHashURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://robohash.org/%@.png?size=96x96", theKey]];
+    NSURL *roboHashURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://robohash.org/%@.png?size=96x96%@", theKey, (type == AvatarType_Group ? @"&set=set3" : @"")]];
     NSURLRequest *request = [NSURLRequest requestWithURL:roboHashURL];
     
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                
-                               if (!error) {
+                               if (!error && data) {
                                    sleep(1); //ensure that the table view is all done loading, so cellForRow works
                                    UIImage *downloadedImage = [[UIImage alloc] initWithData:data];
                                    [self.avatarImageCache setObject:downloadedImage forKey:theKey];

@@ -67,6 +67,9 @@
     [self updateRequestsButton];
     
     [self.tableView registerClass:[FriendCell class] forCellReuseIdentifier:@"FriendListCell"];
+    
+    headerForFriends = [[FriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+    headerForGroups = [[FriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -121,13 +124,62 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
-    return 1;
+    // Return the number of sections.    
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{    
-    return [_mainFriendList count];
+{
+    switch (section) {
+        case 0:
+            return [[[Singleton sharedSingleton] groupList] count];
+            break;
+            
+        case 1:
+            return [_mainFriendList count];
+            break;
+            
+        default:
+            return 0;
+            break;
+    }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if ([[[Singleton sharedSingleton] groupList] count] == 0) {
+        return nil;
+    }
+    
+    switch (section) {
+        case 0:
+            headerForGroups.textLabel.text = @"Groups";
+            return headerForGroups;
+            break;
+            
+        case 1:
+            headerForFriends.textLabel.text = @"Friends";
+            return headerForFriends;
+            
+        default:
+            return nil;
+            break;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if (section == 0) {
+        return 0;
+    } else {
+        return 22;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if ([[[Singleton sharedSingleton] groupList] count] == 0) {
+        return 0;
+    } else {
+        return 22;
+    }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -140,37 +192,77 @@
     static NSString *CellIdentifier = @"FriendListCell";
     FriendCell *cell = (FriendCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    
-    FriendObject *tempFriend = [_mainFriendList objectAtIndex:indexPath.row];
-    
-    //set the identifier
-    cell.friendIdentifier = tempFriend.publicKey; //make this a copy?
-    
-    //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
-    //e.g., AF4E32...B6C899
-    if ([tempFriend.nickname isEqualToString:@""]){
-        NSString *temp = tempFriend.publicKey;
+    if (indexPath.section == 0) {
+        /***** Groups *****/
+        //i have this all squashed down to save on visual space
+        GroupObject *tempGroup = [[[Singleton sharedSingleton] groupList] objectAtIndex:indexPath.section];
+        cell.friendIdentifier = tempGroup.groupPulicKey;
+        NSString *temp = tempGroup.groupPulicKey;
         NSString *front = [temp substringToIndex:6];
         NSString *end = [temp substringFromIndex:[temp length] - 6];
         NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
         cell.nickLabel.text = formattedString;
-    } else {
-        cell.nickLabel.text = tempFriend.nickname;
-    }
-    
-    //the custom cell automatically changes the height of double line messages
-    cell.messageLabelText = tempFriend.statusMessage;
-    
-    //set the avatar image
-    cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
-    [[Singleton sharedSingleton] avatarImageForKey:tempFriend.publicKey finishBlock:^(UIImage *theAvatarImage) {
-        
-        if (cell) {
-            if ([cell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
-                cell.avatarImage = theAvatarImage;
+        cell.messageLabelText = [[tempGroup groupMembers] componentsJoinedByString:@", "]; //"JmanGuy, stqism, stal" etc
+        cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
+        [[Singleton sharedSingleton] avatarImageForKey:tempGroup.groupPulicKey type:AvatarType_Group finishBlock:^(UIImage *theAvatarImage) {
+            if (cell) {
+                if ([cell.friendIdentifier isEqualToString:tempGroup.groupPulicKey]) {
+                    cell.avatarImage = theAvatarImage;
+                } else {
+                    FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+                    if (theCell) {
+                        if ([theCell.friendIdentifier isEqualToString:tempGroup.groupPulicKey]) {
+                            theCell.avatarImage = theAvatarImage;
+                        }}}
             } else {
-                //this could have taken any amount of time to accomplish (either right from cache had to download a new one
-                //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
+                FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+                if (theCell) {
+                    if ([theCell.friendIdentifier isEqualToString:tempGroup.groupPulicKey]) {
+                        theCell.avatarImage = theAvatarImage;
+                    }}}}];
+        cell.shouldShowFriendStatus = NO;
+        return cell;
+        
+    } else {
+        /***** Friends *****/
+        FriendObject *tempFriend = [_mainFriendList objectAtIndex:indexPath.row];
+        
+        //set the identifier
+        cell.friendIdentifier = tempFriend.publicKey; //make this a copy?
+        
+        //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
+        //e.g., AF4E32...B6C899
+        if ([tempFriend.nickname isEqualToString:@""]){
+            NSString *temp = tempFriend.publicKey;
+            NSString *front = [temp substringToIndex:6];
+            NSString *end = [temp substringFromIndex:[temp length] - 6];
+            NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
+            cell.nickLabel.text = formattedString;
+        } else {
+            cell.nickLabel.text = tempFriend.nickname;
+        }
+        
+        //the custom cell automatically changes the height of double line messages
+        cell.messageLabelText = tempFriend.statusMessage;
+        
+        //set the avatar image
+        cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
+        [[Singleton sharedSingleton] avatarImageForKey:tempFriend.publicKey type:AvatarType_Friend finishBlock:^(UIImage *theAvatarImage) {
+            
+            if (cell) {
+                if ([cell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
+                    cell.avatarImage = theAvatarImage;
+                } else {
+                    //this could have taken any amount of time to accomplish (either right from cache had to download a new one
+                    //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
+                    FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+                    if (theCell) {
+                        if ([theCell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
+                            theCell.avatarImage = theAvatarImage;
+                        }
+                    }
+                }
+            } else {
                 FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
                 if (theCell) {
                     if ([theCell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
@@ -178,46 +270,39 @@
                     }
                 }
             }
+        }];
+        
+        //change the color. the custo mcell will actually change the image
+        cell.shouldShowFriendStatus = YES;
+        if (tempFriend.connectionType == ToxFriendConnectionStatus_None) {
+            cell.statusColor = FriendCellStatusColor_Gray;
         } else {
-            FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-            if (theCell) {
-                if ([theCell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
-                    theCell.avatarImage = theAvatarImage;
+            switch (tempFriend.statusType) {
+                case ToxFriendUserStatus_Away:
+                {
+                    cell.statusColor = FriendCellStatusColor_Yellow;
+                    break;
                 }
+                    
+                case ToxFriendUserStatus_Busy:
+                {
+                    cell.statusColor = FriendCellStatusColor_Red;
+                    break;
+                }
+                    
+                case ToxFriendUserStatus_None:
+                {
+                    cell.statusColor = FriendCellStatusColor_Green;
+                    break;
+                }
+                    
+                default:
+                    break;
             }
         }
-    }];
-    
-    //change the color. the custo mcell will actually change the image
-    cell.shouldShowFriendStatus = YES;
-    if (tempFriend.connectionType == ToxFriendConnectionStatus_None) {
-        cell.statusColor = FriendCellStatusColor_Gray;
-    } else {
-        switch (tempFriend.statusType) {
-            case ToxFriendUserStatus_Away:
-            {
-                cell.statusColor = FriendCellStatusColor_Yellow;
-                break;
-            }
-                
-            case ToxFriendUserStatus_Busy:
-            {
-                cell.statusColor = FriendCellStatusColor_Red;
-                break;
-            }
-                
-            case ToxFriendUserStatus_None:
-            {
-                cell.statusColor = FriendCellStatusColor_Green;
-                break;
-            }
-                
-            default:
-                break;
-        }
+        
+        return cell;
     }
-    
-    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -232,34 +317,41 @@
     return YES;
 }
 
-
-
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         //delete the friend from the table view, singleton, and messenger instance
         
-//        Tox *m = [[Singleton sharedSingleton] toxCoreInstance];
-//        int num = tox_delfriend(m, indexPath.row);
         AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        int num = [ourDelegate deleteFriend:indexPath.row];
         
-        if (num == 0) {
-            [self.tableView beginUpdates];
-
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        
-            [[[Singleton sharedSingleton] mainFriendList] removeObjectAtIndex:indexPath.row];
-            [[[Singleton sharedSingleton] mainFriendMessages] removeObjectAtIndex:indexPath.row];
+        if (indexPath.section == 0) {
             
-            //save in user defaults
-            [Singleton saveFriendListInUserDefaults];
+            //group delete
+            //todo: integrate with soon to be delegate functions
             
-            [self.tableView endUpdates];
+            
         } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Something went wrong with deleting the friend! Tox Core issue." delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
-            [alert show];
+            
+            //friend delete
+            int num = [ourDelegate deleteFriend:indexPath.row];
+            
+            if (num == 0) {
+                [self.tableView beginUpdates];
+                
+                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                
+                [[[Singleton sharedSingleton] mainFriendList] removeObjectAtIndex:indexPath.row];
+                [[[Singleton sharedSingleton] mainFriendMessages] removeObjectAtIndex:indexPath.row];
+                
+                //save in user defaults
+                [Singleton saveFriendListInUserDefaults];
+                
+                [self.tableView endUpdates];
+            } else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Something went wrong with deleting the friend! Tox Core issue." delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+                [alert show];
+            }
         }
         
     }   
@@ -289,10 +381,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ChatWindowViewController *chatVC = [[ChatWindowViewController alloc] initWithFriendIndex:indexPath.row];
-    [self.navigationController pushViewController:chatVC animated:YES];
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+    if (indexPath.section == 0) {
+        
+    } else {
+        ChatWindowViewController *chatVC = [[ChatWindowViewController alloc] initWithFriendIndex:indexPath];
+        [self.navigationController pushViewController:chatVC animated:YES];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
     
 }
 

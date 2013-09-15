@@ -250,7 +250,7 @@
     
     
     cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
-    [[Singleton sharedSingleton] avatarImageForKey:[_arrayOfRequests objectAtIndex:indexPath.row] finishBlock:^(UIImage *theAvatarImage) {
+    [[Singleton sharedSingleton] avatarImageForKey:[_arrayOfRequests objectAtIndex:indexPath.row] type:AvatarType_Friend finishBlock:^(UIImage *theAvatarImage) {
         
         if (cell) {
             if ([cell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {

@@ -23,7 +23,7 @@
     return self;
 }
 
-- (id)initWithFriendIndex:(NSUInteger)theIndex {
+- (id)initWithFriendIndex:(NSIndexPath *)theIndex {
     
     self = [super init];
     if (self) {
@@ -32,9 +32,9 @@
         _mainFriendList = [[Singleton sharedSingleton] mainFriendList];
         _mainFriendMessages = [[Singleton sharedSingleton] mainFriendMessages];
         
-        messages = [[_mainFriendMessages objectAtIndex:theIndex] mutableCopy];
+        messages = [[_mainFriendMessages objectAtIndex:theIndex.row] mutableCopy];
         
-        _friendInfo = [_mainFriendList objectAtIndex:theIndex];
+        _friendInfo = [_mainFriendList objectAtIndex:theIndex.row];
         
         [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:friendIndex];
     }
@@ -84,8 +84,8 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    [[Singleton sharedSingleton] mainFriendMessages][friendIndex] = [messages mutableCopy];
-    [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:-1];
+    [[Singleton sharedSingleton] mainFriendMessages][friendIndex.row] = [messages mutableCopy];
+    [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:nil];
 }
 
 - (void)swipeToPopView {

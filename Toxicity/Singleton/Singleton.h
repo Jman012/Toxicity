@@ -11,6 +11,12 @@
 #import "FriendObject.h"
 #include "tox.h"
 #import "MessageObject.h"
+#import "GroupObject.h"
+
+typedef enum {
+    AvatarType_Friend,
+    AvatarType_Group
+} AvatarType;
 
 @interface Singleton : NSObject
 {
@@ -19,7 +25,7 @@
     NSMutableArray      *dhtNodeList;
     
     //this holds the info for the node that we're trying to connect to, or currently connected
-    DHTNodeObject *currentConnectDHT;
+    DHTNodeObject       *currentConnectDHT;
     
     //our info
     NSString            *userNick;
@@ -38,7 +44,7 @@
     NSMutableArray      *mainFriendMessages;
     
     //friend number index for the chat window that is currently open
-    NSInteger           currentlyOpenedFriendNumber;
+    NSIndexPath         *currentlyOpenedFriendNumber;
     
     
     //with new core, we need to hold an instance of messenger
@@ -46,6 +52,9 @@
     
     UIImage             *defaultAvatarImage;
     NSCache             *avatarImageCache;
+    
+    //lsit of groups, holds the GroupObject
+    NSMutableArray      *groupList;
 }
 
 @property (nonatomic, strong) NSMutableArray *dhtNodeList;
@@ -56,16 +65,17 @@
 @property (nonatomic, strong) NSMutableDictionary *pendingFriendRequests;
 @property (nonatomic, strong) NSMutableArray *mainFriendList;
 @property (nonatomic, strong) NSMutableArray *mainFriendMessages;
-@property (nonatomic, assign) NSInteger currentlyOpenedFriendNumber;
+@property (nonatomic, strong) NSIndexPath *currentlyOpenedFriendNumber;
 @property (nonatomic, assign) Tox *toxCoreInstance;
 @property (nonatomic, strong) UIImage *defaultAvatarImage;
 @property (nonatomic, strong) NSCache *avatarImageCache;
+@property (nonatomic, strong) NSMutableArray *groupList;
 
 + (Singleton *)sharedSingleton;
 + (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey;
 + (BOOL)friendPublicKeyIsValid:(NSString *)theKey;
 + (void)saveFriendListInUserDefaults;
 
-- (void)avatarImageForKey:(NSString *)key finishBlock:(void (^)(UIImage *))finishBlock;
+- (void)avatarImageForKey:(NSString *)key type:(AvatarType)type finishBlock:(void (^)(UIImage *))finishBlock;
 
 @end

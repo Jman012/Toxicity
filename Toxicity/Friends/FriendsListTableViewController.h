@@ -14,6 +14,8 @@
 #import "RequestsTableViewController.h"
 #import "FriendCell.h"
 #import "AppDelegate.h"
+#import "FriendListHeader.h"
+#import "GroupObject.h"
 
 #include "tox.h"
 
@@ -24,6 +26,9 @@
     NSMutableArray              *_mainFriendList;
     
     TransparentToolbar          *connectionStatusToolbar;
+    
+    FriendListHeader            *headerForFriends;
+    FriendListHeader            *headerForGroups;
 }
 
 - (IBAction)requestsButtonPushed:(id)sender;

@@ -242,6 +242,8 @@
 		B9BB9A5E17B4B20100A1ACEC /* ChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */; };
 		B9BB9A6317B7128300A1ACEC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */; };
 		B9D5C94517E2CF9500B84BEF /* group_chats.c in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C94317E2CF9500B84BEF /* group_chats.c */; };
+		B9D5C95D17E3E31500B84BEF /* FriendListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C95C17E3E31500B84BEF /* FriendListHeader.m */; };
+		B9D5C96017E54F5100B84BEF /* GroupObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C95F17E54F5100B84BEF /* GroupObject.m */; };
 		B9D859B017C306AE005FD2D2 /* accept-button-inverted.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859A817C306AE005FD2D2 /* accept-button-inverted.png */; };
 		B9D859B117C306AE005FD2D2 /* accept-button-inverted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859A917C306AE005FD2D2 /* accept-button-inverted@2x.png */; };
 		B9D859B217C306AE005FD2D2 /* accept-button-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = B9D859AA17C306AE005FD2D2 /* accept-button-normal.png */; };
@@ -645,6 +647,10 @@
 		B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B9D5C94317E2CF9500B84BEF /* group_chats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_chats.c; path = "ProjectTox-Core/toxcore/group_chats.c"; sourceTree = "<group>"; };
 		B9D5C94417E2CF9500B84BEF /* group_chats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = group_chats.h; path = "ProjectTox-Core/toxcore/group_chats.h"; sourceTree = "<group>"; };
+		B9D5C95B17E3E31500B84BEF /* FriendListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendListHeader.h; path = "Custom Views/FriendListHeader.h"; sourceTree = "<group>"; };
+		B9D5C95C17E3E31500B84BEF /* FriendListHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendListHeader.m; path = "Custom Views/FriendListHeader.m"; sourceTree = "<group>"; };
+		B9D5C95E17E54F5100B84BEF /* GroupObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GroupObject.h; path = Objects/GroupObject.h; sourceTree = "<group>"; };
+		B9D5C95F17E54F5100B84BEF /* GroupObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GroupObject.m; path = Objects/GroupObject.m; sourceTree = "<group>"; };
 		B9D859A817C306AE005FD2D2 /* accept-button-inverted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accept-button-inverted.png"; path = "Images/accept-button-inverted.png"; sourceTree = "<group>"; };
 		B9D859A917C306AE005FD2D2 /* accept-button-inverted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accept-button-inverted@2x.png"; path = "Images/accept-button-inverted@2x.png"; sourceTree = "<group>"; };
 		B9D859AA17C306AE005FD2D2 /* accept-button-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "accept-button-normal.png"; path = "Images/accept-button-normal.png"; sourceTree = "<group>"; };
@@ -854,6 +860,8 @@
 				B97D604417B95154001C07B8 /* FriendObject.m */,
 				B97D605317BCBF77001C07B8 /* MessageObject.h */,
 				B97D605417BCBF77001C07B8 /* MessageObject.m */,
+				B9D5C95E17E54F5100B84BEF /* GroupObject.h */,
+				B9D5C95F17E54F5100B84BEF /* GroupObject.m */,
 			);
 			name = Objects;
 			sourceTree = "<group>";
@@ -919,6 +927,8 @@
 			children = (
 				B98C9C3B17DC0C36008B10E0 /* FriendCell.h */,
 				B98C9C3C17DC0C36008B10E0 /* FriendCell.m */,
+				B9D5C95B17E3E31500B84BEF /* FriendListHeader.h */,
+				B9D5C95C17E3E31500B84BEF /* FriendListHeader.m */,
 				B98C9C3D17DC0C36008B10E0 /* TransparentToolbar.h */,
 				B98C9C3E17DC0C36008B10E0 /* TransparentToolbar.m */,
 				B98C9C4117DC16D8008B10E0 /* UIView+Shadow.h */,
@@ -2227,6 +2237,8 @@
 				B98C9C4017DC0C36008B10E0 /* TransparentToolbar.m in Sources */,
 				B98C9C4317DC16D8008B10E0 /* UIView+Shadow.m in Sources */,
 				B9D5C94517E2CF9500B84BEF /* group_chats.c in Sources */,
+				B9D5C95D17E3E31500B84BEF /* FriendListHeader.m in Sources */,
+				B9D5C96017E54F5100B84BEF /* GroupObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
