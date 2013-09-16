@@ -85,7 +85,7 @@
             FriendObject *tempFriend = (FriendObject *)[NSKeyedUnarchiver unarchiveObjectWithData:data];
             [array addObject:tempFriend];
             
-            unsigned char *idToAdd = hex_string_to_bin((char *)[tempFriend.publicKeyWithNoSpam UTF8String]);
+            unsigned char *idToAdd = hex_string_to_bin((char *)[tempFriend.publicKey UTF8String]);
             int num = tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], idToAdd);
             if (num >= 0) {
                 [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
@@ -493,7 +493,8 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
             [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendRequestReceived" object:nil];
         } else {
             //no need to kill thread, this is synchronous
-//            tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], public_key);
+            tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], public_key);
+
         }
         
     });
@@ -673,7 +674,7 @@ void print_userstatuschange(Tox *m, int friendnumber, TOX_USERSTATUS kind, void 
 void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void *userdata) {
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Friend Status Change: [%d]: %d", friendnumber, (int)status);
-        
+
         uint8_t tempKey[TOX_CLIENT_ID_SIZE];
         tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
         

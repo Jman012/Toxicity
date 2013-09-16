@@ -38,8 +38,8 @@
         
         self.groupList = [[NSMutableArray alloc] init];
         
-        //if nil, no chat windows open
-        currentlyOpenedFriendNumber = nil;
+        //if -1, no chat windows open
+        currentlyOpenedFriendNumber = [NSIndexPath indexPathForItem:-1 inSection:-1];
     }
     return self;
     

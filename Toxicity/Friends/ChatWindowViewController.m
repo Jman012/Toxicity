@@ -85,7 +85,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [[Singleton sharedSingleton] mainFriendMessages][friendIndex.row] = [messages mutableCopy];
-    [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:nil];
+    [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
 }
 
 - (void)swipeToPopView {
