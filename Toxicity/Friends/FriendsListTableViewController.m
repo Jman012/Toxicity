@@ -195,7 +195,7 @@
     if (indexPath.section == 0) {
         /***** Groups *****/
         //i have this all squashed down to save on visual space
-        GroupObject *tempGroup = [[[Singleton sharedSingleton] groupList] objectAtIndex:indexPath.section];
+        GroupObject *tempGroup = [[[Singleton sharedSingleton] groupList] objectAtIndex:indexPath.row];
         cell.friendIdentifier = tempGroup.groupPulicKey;
         NSString *temp = tempGroup.groupPulicKey;
         NSString *front = [temp substringToIndex:6];
@@ -209,11 +209,15 @@
                 if ([cell.friendIdentifier isEqualToString:tempGroup.groupPulicKey]) {
                     cell.avatarImage = theAvatarImage;
                 } else {
-                    FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-                    if (theCell) {
-                        if ([theCell.friendIdentifier isEqualToString:tempGroup.groupPulicKey]) {
-                            theCell.avatarImage = theAvatarImage;
-                        }}}
+                    NSArray *visibleCells = [tableView visibleCells];
+                    for (FriendCell *tempCell in visibleCells) {
+                        if (tempCell) {
+                            if ([tempCell.friendIdentifier isEqualToString:[[[Singleton sharedSingleton] groupList] objectAtIndex:indexPath.row]]) {
+                                tempCell.avatarImage = theAvatarImage;
+                            }
+                        }
+                    }
+                }
             } else {
                 FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
                 if (theCell) {
@@ -255,10 +259,12 @@
                 } else {
                     //this could have taken any amount of time to accomplish (either right from cache had to download a new one
                     //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
-                    FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-                    if (theCell) {
-                        if ([theCell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
-                            theCell.avatarImage = theAvatarImage;
+                    NSArray *visibleCells = [tableView visibleCells];
+                    for (FriendCell *tempCell in visibleCells) {
+                        if (tempCell) {
+                            if ([tempCell.friendIdentifier isEqualToString:[_mainFriendList objectAtIndex:indexPath.row]]) {
+                                tempCell.avatarImage = theAvatarImage;
+                            }
                         }
                     }
                 }

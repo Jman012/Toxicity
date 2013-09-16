@@ -21,7 +21,7 @@
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
     //start messenger here for LAN discorvery without pesky dht. required for tox core
-    [[Singleton sharedSingleton] setToxCoreInstance:tox_new()];
+    [[Singleton sharedSingleton] setToxCoreInstance:tox_new(TOX_ENABLE_IPV6_DEFAULT)];
     
     //callbacks
     tox_callback_friendrequest([[Singleton sharedSingleton] toxCoreInstance], print_request, NULL);
@@ -208,25 +208,10 @@
     const char *dht_key = [[theDHTInfo dhtKey] UTF8String];
     
     
-    //used from toxic source, this tells tox core to make a connection into the dht network
-    tox_IP_Port bootstrap_ip_port;
-    bootstrap_ip_port.port = htons(atoi(dht_port));
-    int resolved_address = resolve_addr(dht_ip);
-    if (resolved_address != 0) {
-        bootstrap_ip_port.ip.i = resolved_address;
-    } else {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                            message:@"Error resolving IP address, check your Node information."
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Okay"
-                                                  otherButtonTitles:nil];
-        [alertView show];
-        return;
-    }
-    
+    //used from toxic source, this tells tox core to make a connection into the dht network    
     [self killToxThread];
     unsigned char *binary_string = hex_string_to_bin((char *)dht_key);
-    tox_bootstrap([[Singleton sharedSingleton] toxCoreInstance], bootstrap_ip_port, binary_string); //actual connection
+    tox_bootstrap_from_address([[Singleton sharedSingleton] toxCoreInstance], dht_ip, TOX_ENABLE_IPV6_DEFAULT, htons(atoi(dht_port)), binary_string); //actual connection
     free(binary_string);
     [self startToxThread];
     
@@ -508,7 +493,7 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
             [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendRequestReceived" object:nil];
         } else {
             //no need to kill thread, this is synchronous
-            tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], public_key);
+//            tox_addfriend_norequest([[Singleton sharedSingleton] toxCoreInstance], public_key);
         }
         
     });

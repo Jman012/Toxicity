@@ -186,7 +186,7 @@
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     [dict setObject:[_friendInfo publicKey] forKey:@"friend_public_key"];
     [dict setObject:text forKey:@"message"];
-    [dict setObject:[NSString stringWithFormat:@"%d", friendIndex] forKey:@"friend_number"];
+    [dict setObject:[NSString stringWithFormat:@"%d", friendIndex.row] forKey:@"friend_number"];
     
     AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [ourDelegate sendMessage:dict];

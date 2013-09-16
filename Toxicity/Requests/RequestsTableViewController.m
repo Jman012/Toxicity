@@ -119,21 +119,25 @@
 }
 
 - (void)acceptButtonPressed {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Accept"
-                                                        message:[NSString stringWithFormat:@"Are you sure you want to accept %d friends?", [selectedCells count]]
-                                                       delegate:self
-                                              cancelButtonTitle:@"Yes"
-                                              otherButtonTitles:@"No", nil];
-    [alertView show];
+    if ([selectedCells count] > 0) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Accept"
+                                                            message:[NSString stringWithFormat:@"Are you sure you want to accept %d friends?", [selectedCells count]]
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Yes"
+                                                  otherButtonTitles:@"No", nil];
+        [alertView show];
+    }
 }
 
 - (void)rejectButtonPressed {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Reject"
-                                                        message:[NSString stringWithFormat:@"Are you sure you want to reject %d friends?", [selectedCells count]]
-                                                       delegate:self
-                                              cancelButtonTitle:@"Yes"
-                                              otherButtonTitles:@"No", nil];
-    [alertView show];
+    if ([selectedCells count] > 0) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Reject"
+                                                            message:[NSString stringWithFormat:@"Are you sure you want to reject %d friends?", [selectedCells count]]
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Yes"
+                                                  otherButtonTitles:@"No", nil];
+        [alertView show];
+    }
 }
 
 - (void)didGetFriendRequest {
@@ -180,6 +184,8 @@
             }
             
             [ourDelegate acceptFriendRequests:selectedCells];
+            selectedCells = nil;
+            selectedCells = [[NSMutableArray alloc] init];
             _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
             
@@ -200,6 +206,8 @@
                 [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:tempString];
             }
             
+            selectedCells = nil;
+            selectedCells = [[NSMutableArray alloc] init];
             _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
             
@@ -248,27 +256,29 @@
     
     cell.messageLabelText = @"Tox me on Tox.";
     
-    
+    NSString *currentRequestString = [_arrayOfRequests objectAtIndex:indexPath.row];
     cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
     [[Singleton sharedSingleton] avatarImageForKey:[_arrayOfRequests objectAtIndex:indexPath.row] type:AvatarType_Friend finishBlock:^(UIImage *theAvatarImage) {
         
         if (cell) {
-            if ([cell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+            if ([cell.friendIdentifier isEqualToString:currentRequestString]) {
                 cell.avatarImage = theAvatarImage;
             } else {
                 //this could have taken any amount of time to accomplish (either right from cache had to download a new one
                 //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
-                FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-                if (theCell) {
-                    if ([theCell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
-                        theCell.avatarImage = theAvatarImage;
+                NSArray *visibleCells = [tableView visibleCells];
+                for (FriendCell *tempCell in visibleCells) {
+                    if (tempCell) {
+                        if ([tempCell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+                            tempCell.avatarImage = theAvatarImage;
+                        }
                     }
                 }
             }
         } else {
             FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
             if (theCell) {
-                if ([theCell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+                if ([theCell.friendIdentifier isEqualToString:currentRequestString]) {
                     theCell.avatarImage = theAvatarImage;
                 }
             }

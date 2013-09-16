@@ -188,9 +188,13 @@
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                
+                               UIImage *downloadedImage = nil;
                                if (!error && data) {
                                    sleep(1); //ensure that the table view is all done loading, so cellForRow works
-                                   UIImage *downloadedImage = [[UIImage alloc] initWithData:data];
+                                   downloadedImage = [[UIImage alloc] initWithData:data];
+                               }
+                               
+                               if (downloadedImage) {
                                    [self.avatarImageCache setObject:downloadedImage forKey:theKey];
                                    
                                    NSString *ourDocumentLocation = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
