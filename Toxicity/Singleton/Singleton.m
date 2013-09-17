@@ -15,7 +15,7 @@
 @synthesize pendingFriendRequests, mainFriendList, mainFriendMessages;
 @synthesize currentlyOpenedFriendNumber, toxCoreInstance;
 @synthesize defaultAvatarImage, avatarImageCache;
-@synthesize groupList;
+@synthesize groupList, pendingGroupInvites, pendingGroupInviteFriendNumbers;
 
 - (id)init
 {
@@ -37,6 +37,8 @@
         self.avatarImageCache = [[NSCache alloc] init];
         
         self.groupList = [[NSMutableArray alloc] init];
+        self.pendingGroupInvites = [[NSMutableDictionary alloc] init];
+        self.pendingGroupInviteFriendNumbers = [[NSMutableDictionary alloc] init];
         
         //if -1, no chat windows open
         currentlyOpenedFriendNumber = [NSIndexPath indexPathForItem:-1 inSection:-1];
@@ -118,6 +120,10 @@
     }
     [prefs setObject:array forKey:@"friend_list"];
     [prefs synchronize];
+}
+
++ (void)saveGroupListInUserDefaults {
+    
 }
 
 #pragma mark - Avatar Cache methods

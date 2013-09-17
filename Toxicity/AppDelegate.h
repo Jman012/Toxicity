@@ -41,6 +41,7 @@ unsigned char * hex_string_to_bin(char hex_string[]);
 - (void)addFriend:(NSString *)theirKey;
 - (void)sendMessage:(NSDictionary *)messageDict;
 - (void)acceptFriendRequests:(NSArray *)theKeysToAccept;
+- (void)acceptGroupInvites:(NSArray *)theKeysToAccept;
 - (int)deleteFriend:(int)theFriendNumber;
 
 @end

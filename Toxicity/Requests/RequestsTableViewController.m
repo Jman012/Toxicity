@@ -34,10 +34,13 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetFriendRequest) name:@"FriendRequestReceived" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetGroupInvite) name:@"GroupInviteReceived" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToFriendsList) name:@"QRReaderDidAddFriend" object:nil];
     
     _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
-    selectedCells = [[NSMutableArray alloc] init];
+    _arrayOfInvites = [[[Singleton sharedSingleton] pendingGroupInvites] allKeys];
+    selectedRequests = [[NSMutableArray alloc] init];
+    selectedInvites = [[NSMutableArray alloc] init];
     
     UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
                                                                                   target:self
@@ -77,6 +80,9 @@
     swipeRight.cancelsTouchesInView = NO;
     swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
     [self.view addGestureRecognizer:swipeRight];
+    
+    groupInvitesHeader = [[FriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+    friendRequestsHeader = [[FriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -119,9 +125,9 @@
 }
 
 - (void)acceptButtonPressed {
-    if ([selectedCells count] > 0) {
+    if ([selectedRequests count] > 0 || [selectedInvites count] > 0) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Accept"
-                                                            message:[NSString stringWithFormat:@"Are you sure you want to accept %d friends?", [selectedCells count]]
+                                                            message:[NSString stringWithFormat:@"Are you sure you want to accept %d requests/invites?", [selectedRequests count] + [selectedInvites count]]
                                                            delegate:self
                                                   cancelButtonTitle:@"Yes"
                                                   otherButtonTitles:@"No", nil];
@@ -130,9 +136,9 @@
 }
 
 - (void)rejectButtonPressed {
-    if ([selectedCells count] > 0) {
+    if ([selectedRequests count] > 0 || [selectedInvites count] > 0) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Reject"
-                                                            message:[NSString stringWithFormat:@"Are you sure you want to reject %d friends?", [selectedCells count]]
+                                                            message:[NSString stringWithFormat:@"Are you sure you want to reject %d requests/invites?", [selectedRequests count] + [selectedInvites count]]
                                                            delegate:self
                                                   cancelButtonTitle:@"Yes"
                                                   otherButtonTitles:@"No", nil];
@@ -147,6 +153,13 @@
     [self.tableView reloadData];
 }
 
+- (void)didGetGroupInvite {
+    NSLog(@"got invite");
+    
+    _arrayOfInvites = [[[Singleton sharedSingleton] pendingGroupInvites] allKeys];
+    [self.tableView reloadData];
+}
+
 - (void)returnToFriendsList {
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
@@ -154,7 +167,6 @@
 #pragma mark - Alert View Delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    NSLog(@"button: %d", buttonIndex);
     AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
     if ([alertView.title isEqualToString:@"Add Friend"]) {
@@ -175,18 +187,34 @@
             [self.tableView beginUpdates];
             
             NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-            for (NSString *tempString in selectedCells) {
+            for (NSString *tempString in selectedRequests) {
                 for (int i = 0; i < [_arrayOfRequests count]; i++) {
                     if ([tempString isEqualToString:[_arrayOfRequests objectAtIndex:i]]) {
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:1]];
+                    }
+                }
+            }
+            for (NSString *tempString in selectedInvites) {
+                for (int i = 0; i < [_arrayOfInvites count]; i++) {
+                    if ([tempString isEqualToString:[_arrayOfInvites objectAtIndex:i]]) {
                         [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
                     }
                 }
             }
             
-            [ourDelegate acceptFriendRequests:selectedCells];
-            selectedCells = nil;
-            selectedCells = [[NSMutableArray alloc] init];
-            _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
+            
+            if ([selectedRequests count] > 0) {
+                [ourDelegate acceptFriendRequests:selectedRequests];
+                selectedRequests = nil;
+                selectedRequests = [[NSMutableArray alloc] init];
+                _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
+            }
+            if ([selectedInvites count] > 0) {
+                [ourDelegate acceptGroupInvites:selectedInvites];
+                selectedInvites = nil;
+                selectedInvites = [[NSMutableArray alloc] init];
+                _arrayOfInvites = [[[Singleton sharedSingleton] pendingGroupInvites] allKeys];
+            }
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
             
             
@@ -197,7 +225,7 @@
             [self.tableView beginUpdates];
             
             NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-            for (NSString *tempString in selectedCells) {
+            for (NSString *tempString in selectedRequests) {
                 for (int i = 0; i < [_arrayOfRequests count]; i++) {
                     if ([tempString isEqualToString:[_arrayOfRequests objectAtIndex:i]]) {
                         [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
@@ -206,8 +234,8 @@
                 [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:tempString];
             }
             
-            selectedCells = nil;
-            selectedCells = [[NSMutableArray alloc] init];
+            selectedRequests = nil;
+            selectedRequests = [[NSMutableArray alloc] init];
             _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
             
@@ -222,18 +250,68 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [_arrayOfRequests count];
+    switch (section) {
+        case 0:
+            return [_arrayOfInvites count];
+            break;
+            
+        case 1:
+            return [_arrayOfRequests count];
+            break;
+            
+        default:
+            return 0;
+            break;
+    }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if ([_arrayOfInvites count] == 0) {
+        return nil;
+    }
+    
+    switch (section) {
+        case 0:
+            groupInvitesHeader.textLabel.text = @"Group Invites";
+            return groupInvitesHeader;
+            break;
+            
+        case 1:
+            friendRequestsHeader.textLabel.text = @"Friend Requests";
+            return friendRequestsHeader;
+            break;
+            
+        default:
+            return nil;
+            break;
+    }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     UIView *view = [[UIView alloc] init];
     return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if ([_arrayOfInvites count] == 0) {
+        return 0;
+    } else {
+        return 22;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if (section == 0) {
+        return 0;
+    } else {
+        return 22;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -244,59 +322,100 @@
         cell = [[FriendCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    cell.friendIdentifier = [_arrayOfRequests objectAtIndex:indexPath.row];
-
-    //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
-    //e.g., AF4E32...B6C899
-    NSString *temp = [_arrayOfRequests objectAtIndex:indexPath.row];
-    NSString *front = [temp substringToIndex:6];
-    NSString *end = [temp substringFromIndex:[temp length] - 6];
-    NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
-    cell.nickLabel.text = formattedString;
-    
-    cell.messageLabelText = @"Tox me on Tox.";
-    
-    NSString *currentRequestString = [_arrayOfRequests objectAtIndex:indexPath.row];
-    cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
-    [[Singleton sharedSingleton] avatarImageForKey:[_arrayOfRequests objectAtIndex:indexPath.row] type:AvatarType_Friend finishBlock:^(UIImage *theAvatarImage) {
-        
-        if (cell) {
-            if ([cell.friendIdentifier isEqualToString:currentRequestString]) {
-                cell.avatarImage = theAvatarImage;
+    if (indexPath.section == 0) {
+        //group invite
+        cell.friendIdentifier = [_arrayOfInvites objectAtIndex:indexPath.row];
+        NSString *temp = [_arrayOfInvites objectAtIndex:indexPath.row];
+        NSString *front = [temp substringToIndex:6];
+        NSString *end = [temp substringFromIndex:[temp length] - 6];
+        NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
+        cell.nickLabel.text = formattedString;
+        cell.messageLabelText = @"Tox me on Group Tox.";
+        NSString *currentRequestString = [_arrayOfInvites objectAtIndex:indexPath.row];
+        cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
+        [[Singleton sharedSingleton] avatarImageForKey:[_arrayOfInvites objectAtIndex:indexPath.row] type:AvatarType_Group finishBlock:^(UIImage *theAvatarImage) {
+            if (cell) {
+                if ([cell.friendIdentifier isEqualToString:currentRequestString]) {
+                    cell.avatarImage = theAvatarImage;
+                } else {
+                    NSArray *visibleCells = [tableView visibleCells];
+                    for (FriendCell *tempCell in visibleCells) {
+                        if (tempCell) {
+                            if ([tempCell.friendIdentifier isEqualToString:[_arrayOfInvites objectAtIndex:indexPath.row]]) {
+                                tempCell.avatarImage = theAvatarImage;
+                            }}}}
             } else {
-                //this could have taken any amount of time to accomplish (either right from cache had to download a new one
-                //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
-                NSArray *visibleCells = [tableView visibleCells];
-                for (FriendCell *tempCell in visibleCells) {
-                    if (tempCell) {
-                        if ([tempCell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
-                            tempCell.avatarImage = theAvatarImage;
+                FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+                if (theCell) {
+                    if ([theCell.friendIdentifier isEqualToString:currentRequestString]) {
+                        theCell.avatarImage = theAvatarImage;
+                    }}}}];
+        cell.shouldShowFriendStatus = NO;
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        for (NSString *tempString in selectedInvites) {
+            if ([tempString isEqualToString:[_arrayOfInvites objectAtIndex:indexPath.row]]) {
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            }
+        }
+        
+        return cell;
+        
+    } else {
+        //friend request
+    
+        cell.friendIdentifier = [_arrayOfRequests objectAtIndex:indexPath.row];
+        
+        //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
+        //e.g., AF4E32...B6C899
+        NSString *temp = [_arrayOfRequests objectAtIndex:indexPath.row];
+        NSString *front = [temp substringToIndex:6];
+        NSString *end = [temp substringFromIndex:[temp length] - 6];
+        NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
+        cell.nickLabel.text = formattedString;
+        
+        cell.messageLabelText = @"Tox me on Tox.";
+        
+        NSString *currentRequestString = [_arrayOfRequests objectAtIndex:indexPath.row];
+        cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
+        [[Singleton sharedSingleton] avatarImageForKey:[_arrayOfRequests objectAtIndex:indexPath.row] type:AvatarType_Friend finishBlock:^(UIImage *theAvatarImage) {
+            
+            if (cell) {
+                if ([cell.friendIdentifier isEqualToString:currentRequestString]) {
+                    cell.avatarImage = theAvatarImage;
+                } else {
+                    //this could have taken any amount of time to accomplish (either right from cache had to download a new one
+                    //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
+                    NSArray *visibleCells = [tableView visibleCells];
+                    for (FriendCell *tempCell in visibleCells) {
+                        if (tempCell) {
+                            if ([tempCell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+                                tempCell.avatarImage = theAvatarImage;
+                            }
                         }
                     }
                 }
-            }
-        } else {
-            FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-            if (theCell) {
-                if ([theCell.friendIdentifier isEqualToString:currentRequestString]) {
-                    theCell.avatarImage = theAvatarImage;
+            } else {
+                FriendCell *theCell = (FriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+                if (theCell) {
+                    if ([theCell.friendIdentifier isEqualToString:currentRequestString]) {
+                        theCell.avatarImage = theAvatarImage;
+                    }
                 }
             }
+        }];
+        
+        cell.shouldShowFriendStatus = NO;
+        
+        
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        for (NSString *tempString in selectedRequests) {
+            if ([tempString isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            }
         }
-    }];
-    
-    cell.shouldShowFriendStatus = NO;
-    
-    
-    cell.accessoryType = UITableViewCellAccessoryNone;
-    for (NSString *tempString in selectedCells) {
-        if ([tempString isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        }
+        
+        return cell;
     }
-    
-    
-    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -347,28 +466,38 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FriendCell *cell = (FriendCell *)[tableView cellForRowAtIndexPath:indexPath];
+    NSMutableArray *selectedPointer; //this will point to either selectedRequests or selectedGroups, depending on section
+    NSArray *arrayPointer; // same. Both for sake of code brevity
+    if (indexPath.section == 0) {
+        selectedPointer = selectedInvites;
+        arrayPointer = _arrayOfInvites;
+    } else {
+        selectedPointer = selectedRequests;
+        arrayPointer = _arrayOfRequests;
+    }
+    
     if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
         //deselect
         int j = -1;
-        for (int i = 0; i < [selectedCells count]; i++) {
-            if ([[selectedCells objectAtIndex:i] isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+        for (int i = 0; i < [selectedPointer count]; i++) {
+            if ([[selectedPointer objectAtIndex:i] isEqualToString:[arrayPointer objectAtIndex:indexPath.row]]) {
                 j = i;
             }
         }
         if (j != -1) {
-            [selectedCells removeObjectAtIndex:j];
+            [selectedPointer removeObjectAtIndex:j];
         }
         
         cell.accessoryType = UITableViewCellAccessoryNone;
         
     } else {
         //select
-        [selectedCells addObject:[[_arrayOfRequests objectAtIndex:indexPath.row] copy]];
+        [selectedPointer addObject:[[arrayPointer objectAtIndex:indexPath.row] copy]];
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
     
-    acceptButton.title = [NSString stringWithFormat:@"Accept (%d)", [selectedCells count]];
-    rejectButton.title = [NSString stringWithFormat:@"Reject (%d)", [selectedCells count]];
+    acceptButton.title = [NSString stringWithFormat:@"Accept (%d)", [selectedRequests count] + [selectedInvites count]];
+    rejectButton.title = [NSString stringWithFormat:@"Reject (%d)", [selectedRequests count] + [selectedInvites count]];
     
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }

@@ -55,6 +55,11 @@ typedef enum {
     
     //lsit of groups, holds the GroupObject
     NSMutableArray      *groupList;
+    
+    //acts like pendingFriendRequests
+    NSMutableDictionary *pendingGroupInvites;
+    //holds friend nubmers for tox_join_groupchat()
+    NSMutableDictionary *pendingGroupInviteFriendNumbers;
 }
 
 @property (nonatomic, strong) NSMutableArray *dhtNodeList;
@@ -70,11 +75,14 @@ typedef enum {
 @property (nonatomic, strong) UIImage *defaultAvatarImage;
 @property (nonatomic, strong) NSCache *avatarImageCache;
 @property (nonatomic, strong) NSMutableArray *groupList;
+@property (nonatomic, strong) NSMutableDictionary *pendingGroupInvites;
+@property (nonatomic, strong) NSMutableDictionary *pendingGroupInviteFriendNumbers;
 
 + (Singleton *)sharedSingleton;
 + (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey;
 + (BOOL)friendPublicKeyIsValid:(NSString *)theKey;
 + (void)saveFriendListInUserDefaults;
++ (void)saveGroupListInUserDefaults;
 
 - (void)avatarImageForKey:(NSString *)key type:(AvatarType)type finishBlock:(void (^)(UIImage *))finishBlock;
 

@@ -12,14 +12,20 @@
 #import "QRReaderViewController.h"
 #import "AppDelegate.h"
 #import "FriendCell.h"
+#import "FriendListHeader.h"
 
 @interface RequestsTableViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 {
     NSArray             *_arrayOfRequests;
-    NSMutableArray      *selectedCells;
+    NSArray             *_arrayOfInvites;
+    NSMutableArray      *selectedRequests;
+    NSMutableArray      *selectedInvites;
     
-    UIBarButtonItem    *acceptButton;
-    UIBarButtonItem    *rejectButton;
+    FriendListHeader    *groupInvitesHeader;
+    FriendListHeader    *friendRequestsHeader;
+    
+    UIBarButtonItem     *acceptButton;
+    UIBarButtonItem     *rejectButton;
 }
 
 @end

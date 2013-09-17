@@ -37,9 +37,11 @@
     _mainFriendList = [[Singleton sharedSingleton] mainFriendList];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendListUpdate) name:@"FriendAdded" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendListUpdate) name:@"GroupAdded" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendListUpdate) name:@"FriendUserStatusChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"FriendRequestReceived" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"RejectedFriendRequest" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"GroupInviteReceived" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView:) name:@"DHTConnected" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView:) name:@"DHTDisconnected" object:nil];
@@ -93,9 +95,10 @@
 
 - (void)updateRequestsButton {
     //update the name of the button
-    int count = [[[[Singleton sharedSingleton] pendingFriendRequests] allKeys] count];
-    if (count > 0) {
-        self.navigationItem.rightBarButtonItem.title = [NSString stringWithFormat:@"Requests (%d)", count];
+    int countRequests = [[[[Singleton sharedSingleton] pendingFriendRequests] allKeys] count];
+    int countInvites = [[[[Singleton sharedSingleton] pendingGroupInvites] allKeys] count];
+    if (countRequests > 0 || countInvites > 0) {
+        self.navigationItem.rightBarButtonItem.title = [NSString stringWithFormat:@"Requests (%d)", countRequests + countInvites];
     } else {
         self.navigationItem.rightBarButtonItem.title = @"Requests";
     }
@@ -387,14 +390,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
-        
-    } else {
-        ChatWindowViewController *chatVC = [[ChatWindowViewController alloc] initWithFriendIndex:indexPath];
-        [self.navigationController pushViewController:chatVC animated:YES];
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    }
-    
+    ChatWindowViewController *chatVC = [[ChatWindowViewController alloc] initWithFriendIndex:indexPath];
+    [self.navigationController pushViewController:chatVC animated:YES];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

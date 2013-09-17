@@ -186,7 +186,14 @@
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     [dict setObject:[_friendInfo publicKey] forKey:@"friend_public_key"];
     [dict setObject:text forKey:@"message"];
-    [dict setObject:[NSString stringWithFormat:@"%d", friendIndex.row] forKey:@"friend_number"];
+    [dict setObject:[NSNumber numberWithInt:friendIndex.row] forKey:@"friend_number"];
+    if (friendIndex.section == 0) {
+        //group
+        [dict setObject:[NSNumber numberWithBool:YES] forKey:@"is_group_message"];
+    } else {
+        //friend
+        [dict setObject:[NSNumber numberWithBool:NO] forKey:@"is_group_message"];
+    }
     
     AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [ourDelegate sendMessage:dict];
