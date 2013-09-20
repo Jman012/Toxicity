@@ -390,9 +390,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ChatWindowViewController *chatVC = [[ChatWindowViewController alloc] initWithFriendIndex:indexPath];
-    [self.navigationController pushViewController:chatVC animated:YES];
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (indexPath.section == 0) {
+        GroupChatWindowViewController *chatVC = [[GroupChatWindowViewController alloc] initWithFriendIndex:indexPath];
+        [self.navigationController pushViewController:chatVC animated:YES];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    } else {
+        FriendChatWindowViewController *chatVC = [[FriendChatWindowViewController alloc] initWithFriendIndex:indexPath];
+        [self.navigationController pushViewController:chatVC animated:YES];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
 }
 
 @end

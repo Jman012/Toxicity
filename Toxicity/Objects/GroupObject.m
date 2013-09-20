@@ -10,7 +10,7 @@
 
 @implementation GroupObject
 
-@synthesize groupPulicKey, groupMembers;
+@synthesize groupPulicKey, groupMembers, groupName;
 
 - (id)init {
     self = [super init];
@@ -19,6 +19,8 @@
         groupPulicKey = @"";
         
         groupMembers = [[NSMutableArray alloc] init];
+        
+        groupName = @"";
         
     }
     return self;

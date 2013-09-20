@@ -60,6 +60,8 @@ typedef enum {
     NSMutableDictionary *pendingGroupInvites;
     //holds friend nubmers for tox_join_groupchat()
     NSMutableDictionary *pendingGroupInviteFriendNumbers;
+    
+    NSMutableArray      *groupMessages;
 }
 
 @property (nonatomic, strong) NSMutableArray *dhtNodeList;
@@ -77,6 +79,7 @@ typedef enum {
 @property (nonatomic, strong) NSMutableArray *groupList;
 @property (nonatomic, strong) NSMutableDictionary *pendingGroupInvites;
 @property (nonatomic, strong) NSMutableDictionary *pendingGroupInviteFriendNumbers;
+@property (nonatomic, strong) NSMutableArray *groupMessages;
 
 + (Singleton *)sharedSingleton;
 + (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey;

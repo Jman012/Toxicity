@@ -163,8 +163,6 @@
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
     
-    
-    [self killToxThread];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -176,7 +174,10 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    [self startToxThread];
+//    [self startToxThread];
+    toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
+    [toxMainThread setThreadPriority:1.0];
+    [toxMainThread start];
     
 }
 
@@ -290,15 +291,22 @@
     NSUInteger friendNum = [messageDict[@"friend_number"] integerValue];
     
     NSLog(@"Sending Message: %@", theMessage);
-    
-    //use the client id from the core to make sure we're sending it to the right person
-    uint8_t key[TOX_CLIENT_ID_SIZE];
-    tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendNum, key);
+
     
     char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
-    int pos = 0;
-    for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
-        sprintf(&convertedKey[pos] ,"%02X", key[i] & 0xff);
+    if (isGroupMessage == NO) {
+        //use the client id from the core to make sure we're sending it to the right person
+        uint8_t key[TOX_CLIENT_ID_SIZE];
+        tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendNum, key);
+        
+        int pos = 0;
+        for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
+            sprintf(&convertedKey[pos] ,"%02X", key[i] & 0xff);
+        }
+    } else {
+        GroupObject *tempGroup = [[[Singleton sharedSingleton] groupList] objectAtIndex:friendNum];
+//        convertedKey = [[tempGroup groupPulicKey] UTF8String];
+        sprintf(convertedKey, "%s", [[tempGroup groupPulicKey] UTF8String]);
     }
     
     //Gotta make sure the friend key with the message and the friend key fro mthe core match up with the friend numbers
@@ -478,6 +486,7 @@
                 GroupObject *tempGroup = [[GroupObject alloc] init];
                 [tempGroup setGroupPulicKey:arrayKey];
                 [[[Singleton sharedSingleton] groupList] insertObject:tempGroup atIndex:num];
+                [[[Singleton sharedSingleton] groupMessages] insertObject:[NSArray array] atIndex:num];
                 
                 [Singleton saveGroupListInUserDefaults];
                 
@@ -622,7 +631,7 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
         
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it
-        if (friendnumber != [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] row]) {
+        if (friendnumber != [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] section] == 1) {
             NSMutableArray *tempMessages = [[[[Singleton sharedSingleton] mainFriendMessages] objectAtIndex:friendnumber] mutableCopy];
             MessageObject *theMessage = [[MessageObject alloc] init];
             [theMessage setMessage:[NSString stringWithUTF8String:(char *)string]];
@@ -649,11 +658,41 @@ void print_action(Tox *m, int friendnumber, uint8_t * action, uint16_t length, v
     print_message(m, friendnumber, action, length, userdata);
 }
 
-void print_groupmessage(Tox *tox, int groupnumber, uint8_t * message, uint16_t length, void *userdata) {
+void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_t * message, uint16_t length, void *userdata) {
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Group message received from group [%d], message: %s", groupnumber, message);
         
+        NSString *thePublicKey = [[[[Singleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPulicKey];
+        uint8_t *theirNameC[MAX_NICK_BYTES];
+        tox_group_peername([[Singleton sharedSingleton] toxCoreInstance], groupnumber, friendgroupnumber, (uint8_t *)theirNameC);
+        NSString *theirName = [NSString stringWithUTF8String:(const char *)theirNameC];
+        NSString *newMessage = [theirName stringByAppendingFormat:@": %@", [NSString stringWithUTF8String:(const char *)message]];
         
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+        [dict setObject:newMessage forKey:@"message"];
+        [dict setObject:thePublicKey forKey:@"their_public_key"];
+        NSLog(@"Message key: %@", thePublicKey);
+        
+        //add to singleton
+        //if the message coming through is not to the currently opened chat window, then uialertview it
+        if (groupnumber != [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] section] == 0) {
+            NSMutableArray *tempMessages = [[[[Singleton sharedSingleton] groupMessages] objectAtIndex:groupnumber] mutableCopy];
+            MessageObject *theMessage = [[MessageObject alloc] init];
+            [theMessage setMessage:newMessage];
+            [theMessage setOrigin:MessageLocation_Them];
+            [theMessage setDidFailToSend:NO];
+            [tempMessages addObject:theMessage];
+            [[Singleton sharedSingleton] groupMessages][groupnumber] = [tempMessages copy];
+            
+            UIAlertView *messageAlert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Message from Group #%d", groupnumber]
+                                                                   message:newMessage
+                                                                  delegate:nil
+                                                         cancelButtonTitle:@"Okay"
+                                                         otherButtonTitles:nil];
+            [messageAlert show];
+        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessage" object:nil userInfo:dict];
         
     });
 }
@@ -816,19 +855,22 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
 #pragma mark - Thread methods
 
 - (void)killToxThread {
+    return;
     [toxMainThread cancel];
     //wait until it's not working
-    while ([toxMainThread isExecuting] == YES) {
+    int count = 0;
+    NSLog(@"Kill thread");
+    while ([toxMainThread isExecuting] == YES && count < 20) {
         //wait a millisecond before checking again
         [toxMainThread cancel];
-        struct timespec time1, time2;
-        time1.tv_sec = 0;
-        time1.tv_nsec = 1 *1000000; //1ms
-        nanosleep(&time1, &time2);
+        usleep(10000);
+        count++;
     }
 }
 
 - (void)startToxThread {
+    return;
+    NSLog(@"Start thread");
     toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
     [toxMainThread start];
 }
@@ -838,7 +880,7 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
     //it doesn't do recursiveness
     
     while (TRUE) {
-        
+//        NSLog(@"Loooooop");
         //check to see if our thread was cancelled, and if so, exit so it's not in the middle of tox_do
         if ([[NSThread currentThread] isCancelled]) {
             [NSThread exit];
@@ -896,7 +938,7 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
         }
         
         
-        usleep(100000);
+        usleep(1000);
         
         
     }

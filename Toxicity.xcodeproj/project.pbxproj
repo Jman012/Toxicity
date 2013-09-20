@@ -80,6 +80,7 @@
 		B98C9C3F17DC0C36008B10E0 /* FriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B98C9C3C17DC0C36008B10E0 /* FriendCell.m */; };
 		B98C9C4017DC0C36008B10E0 /* TransparentToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = B98C9C3E17DC0C36008B10E0 /* TransparentToolbar.m */; };
 		B98C9C4317DC16D8008B10E0 /* UIView+Shadow.m in Sources */ = {isa = PBXBuildFile; fileRef = B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */; };
+		B9A5343117EAD17800F2FD94 /* GroupChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9A5343017EAD17800F2FD94 /* GroupChatWindowViewController.m */; };
 		B9B9C6D917D59E2F006BF8AC /* status-gray-navbar.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D117D59E2F006BF8AC /* status-gray-navbar.png */; };
 		B9B9C6DA17D59E2F006BF8AC /* status-gray-navbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D217D59E2F006BF8AC /* status-gray-navbar@2x.png */; };
 		B9B9C6DB17D59E2F006BF8AC /* status-green-navbar.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D317D59E2F006BF8AC /* status-green-navbar.png */; };
@@ -229,7 +230,7 @@
 		B9BB99E417B0E39200A1ACEC /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E217B0E39200A1ACEC /* SettingsViewController.m */; };
 		B9BB99E817B0E41F00A1ACEC /* Singleton.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E717B0E41F00A1ACEC /* Singleton.m */; };
 		B9BB9A5B17B377BF00A1ACEC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */; };
-		B9BB9A5E17B4B20100A1ACEC /* ChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */; };
+		B9BB9A5E17B4B20100A1ACEC /* FriendChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB9A5D17B4B20100A1ACEC /* FriendChatWindowViewController.m */; };
 		B9BB9A6317B7128300A1ACEC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */; };
 		B9D5C95D17E3E31500B84BEF /* FriendListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C95C17E3E31500B84BEF /* FriendListHeader.m */; };
 		B9D5C96017E54F5100B84BEF /* GroupObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C95F17E54F5100B84BEF /* GroupObject.m */; };
@@ -360,6 +361,8 @@
 		B98C9C3E17DC0C36008B10E0 /* TransparentToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TransparentToolbar.m; path = "Custom Views/TransparentToolbar.m"; sourceTree = "<group>"; };
 		B98C9C4117DC16D8008B10E0 /* UIView+Shadow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Shadow.h"; path = "Custom Views/UIView+Shadow.h"; sourceTree = "<group>"; };
 		B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Shadow.m"; path = "Custom Views/UIView+Shadow.m"; sourceTree = "<group>"; };
+		B9A5342F17EAD17800F2FD94 /* GroupChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GroupChatWindowViewController.h; path = Friends/GroupChatWindowViewController.h; sourceTree = "<group>"; };
+		B9A5343017EAD17800F2FD94 /* GroupChatWindowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GroupChatWindowViewController.m; path = Friends/GroupChatWindowViewController.m; sourceTree = "<group>"; };
 		B9B9C6D117D59E2F006BF8AC /* status-gray-navbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray-navbar.png"; path = "Images/status-gray-navbar.png"; sourceTree = "<group>"; };
 		B9B9C6D217D59E2F006BF8AC /* status-gray-navbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray-navbar@2x.png"; path = "Images/status-gray-navbar@2x.png"; sourceTree = "<group>"; };
 		B9B9C6D317D59E2F006BF8AC /* status-green-navbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-green-navbar.png"; path = "Images/status-green-navbar.png"; sourceTree = "<group>"; };
@@ -621,8 +624,8 @@
 		B9BB99E617B0E41F00A1ACEC /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Singleton.h; path = Singleton/Singleton.h; sourceTree = "<group>"; };
 		B9BB99E717B0E41F00A1ACEC /* Singleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Singleton.m; path = Singleton/Singleton.m; sourceTree = "<group>"; };
 		B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		B9BB9A5C17B4B20100A1ACEC /* ChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChatWindowViewController.h; path = Friends/ChatWindowViewController.h; sourceTree = "<group>"; };
-		B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChatWindowViewController.m; path = Friends/ChatWindowViewController.m; sourceTree = "<group>"; };
+		B9BB9A5C17B4B20100A1ACEC /* FriendChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendChatWindowViewController.h; path = Friends/FriendChatWindowViewController.h; sourceTree = "<group>"; };
+		B9BB9A5D17B4B20100A1ACEC /* FriendChatWindowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendChatWindowViewController.m; path = Friends/FriendChatWindowViewController.m; sourceTree = "<group>"; };
 		B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B9D5C95B17E3E31500B84BEF /* FriendListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendListHeader.h; path = "Custom Views/FriendListHeader.h"; sourceTree = "<group>"; };
 		B9D5C95C17E3E31500B84BEF /* FriendListHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendListHeader.m; path = "Custom Views/FriendListHeader.m"; sourceTree = "<group>"; };
@@ -1812,8 +1815,10 @@
 			children = (
 				B9BB99DC17B0E38900A1ACEC /* FriendsListTableViewController.h */,
 				B9BB99DD17B0E38900A1ACEC /* FriendsListTableViewController.m */,
-				B9BB9A5C17B4B20100A1ACEC /* ChatWindowViewController.h */,
-				B9BB9A5D17B4B20100A1ACEC /* ChatWindowViewController.m */,
+				B9BB9A5C17B4B20100A1ACEC /* FriendChatWindowViewController.h */,
+				B9BB9A5D17B4B20100A1ACEC /* FriendChatWindowViewController.m */,
+				B9A5342F17EAD17800F2FD94 /* GroupChatWindowViewController.h */,
+				B9A5343017EAD17800F2FD94 /* GroupChatWindowViewController.m */,
 			);
 			name = Friends;
 			sourceTree = "<group>";
@@ -2206,7 +2211,7 @@
 				B9BB99E317B0E39200A1ACEC /* NewDHTNodeViewController.m in Sources */,
 				B9BB99E417B0E39200A1ACEC /* SettingsViewController.m in Sources */,
 				B9BB99E817B0E41F00A1ACEC /* Singleton.m in Sources */,
-				B9BB9A5E17B4B20100A1ACEC /* ChatWindowViewController.m in Sources */,
+				B9BB9A5E17B4B20100A1ACEC /* FriendChatWindowViewController.m in Sources */,
 				B97D604217B95145001C07B8 /* DHTNodeObject.m in Sources */,
 				B97D604517B95154001C07B8 /* FriendObject.m in Sources */,
 				B97D605517BCBF77001C07B8 /* MessageObject.m in Sources */,
@@ -2239,6 +2244,7 @@
 				B9D5C99917E5904600B84BEF /* ping.c in Sources */,
 				B9D5C99A17E5904600B84BEF /* tox.c in Sources */,
 				B9D5C99B17E5904600B84BEF /* util.c in Sources */,
+				B9A5343117EAD17800F2FD94 /* GroupChatWindowViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2334,6 +2340,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Toxicity/Toxicity-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/libsodium/include";

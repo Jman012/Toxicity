@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "Singleton.h"
-#import "ChatWindowViewController.h"
+#import "FriendChatWindowViewController.h"
+#import "GroupChatWindowViewController.h"
 #import "TransparentToolbar.h"
 #import "RequestsTableViewController.h"
 #import "FriendCell.h"

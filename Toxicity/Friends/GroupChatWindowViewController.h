@@ -10,11 +10,11 @@
 #import "Singleton.h"
 #import "AppDelegate.h"
 
-@interface ChatWindowViewController : JSMessagesViewController <JSMessagesViewDataSource, JSMessagesViewDelegate>
+@interface GroupChatWindowViewController : JSMessagesViewController <JSMessagesViewDataSource, JSMessagesViewDelegate>
 {
-    NSMutableArray      *_mainFriendList;
-    NSMutableArray      *_mainFriendMessages;
-    FriendObject        *_friendInfo;
+    NSMutableArray      *_mainGroupList;
+    NSMutableArray      *_mainGroupMessages;
+    GroupObject         *_groupInfo;
     
     NSMutableArray      *messages;
     

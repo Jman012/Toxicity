@@ -15,7 +15,7 @@
 @synthesize pendingFriendRequests, mainFriendList, mainFriendMessages;
 @synthesize currentlyOpenedFriendNumber, toxCoreInstance;
 @synthesize defaultAvatarImage, avatarImageCache;
-@synthesize groupList, pendingGroupInvites, pendingGroupInviteFriendNumbers;
+@synthesize groupList, pendingGroupInvites, pendingGroupInviteFriendNumbers, groupMessages;
 
 - (id)init
 {
@@ -39,6 +39,7 @@
         self.groupList = [[NSMutableArray alloc] init];
         self.pendingGroupInvites = [[NSMutableDictionary alloc] init];
         self.pendingGroupInviteFriendNumbers = [[NSMutableDictionary alloc] init];
+        self.groupMessages = [[NSMutableArray alloc] init];
         
         //if -1, no chat windows open
         currentlyOpenedFriendNumber = [NSIndexPath indexPathForItem:-1 inSection:-1];

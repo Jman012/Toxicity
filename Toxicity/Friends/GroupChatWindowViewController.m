@@ -6,13 +6,13 @@
 //  Copyright (c) 2013 JamesTech. All rights reserved.
 //
 
-#import "ChatWindowViewController.h"
+#import "GroupChatWindowViewController.h"
 
-@interface ChatWindowViewController ()
+@interface GroupChatWindowViewController ()
 
 @end
 
-@implementation ChatWindowViewController
+@implementation GroupChatWindowViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -29,12 +29,12 @@
     if (self) {
         friendIndex = theIndex;
         
-        _mainFriendList = [[Singleton sharedSingleton] mainFriendList];
-        _mainFriendMessages = [[Singleton sharedSingleton] mainFriendMessages];
+        _mainGroupList = [[Singleton sharedSingleton] groupList];
+        _mainGroupMessages = [[Singleton sharedSingleton] groupMessages];
         
-        messages = [[_mainFriendMessages objectAtIndex:theIndex.row] mutableCopy];
+        messages = [[_mainGroupMessages objectAtIndex:theIndex.row] mutableCopy];
         
-        _friendInfo = [_mainFriendList objectAtIndex:theIndex.row];
+        _groupInfo = [_mainGroupList objectAtIndex:theIndex.row];
         
         [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:friendIndex];
     }
@@ -51,10 +51,10 @@
     self.tableView.backgroundColor = [UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f];
     self.tableView.separatorColor = [UIColor clearColor];
     
-    if ([_friendInfo.nickname isEqualToString:@""])
-        self.title = _friendInfo.publicKey;
+    if ([_groupInfo.groupName isEqualToString:@""])
+        self.title = _groupInfo.groupPulicKey;
     else
-        self.title = _friendInfo.nickname;
+        self.title = _groupInfo.groupName;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo) name:@"FriendAdded" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"NewMessage" object:nil];
@@ -66,13 +66,13 @@
     swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
     [self.view addGestureRecognizer:swipeRight];
     
-    //setup the colored status indicator on the navbar
+    /*//setup the colored status indicator on the navbar
     statusNavBarImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray-navbar"]];
     CGRect tempFrame = statusNavBarImageView.frame;
     tempFrame.origin.x = self.navigationController.navigationBar.frame.size.width - tempFrame.size.width;
     statusNavBarImageView.frame = tempFrame;
 //    [self.navigationController.navigationBar addSubview:statusNavBarImageView];
-    [self updateColoredStatusIndicator];
+    [self updateColoredStatusIndicator];*/
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -84,7 +84,7 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    [[Singleton sharedSingleton] mainFriendMessages][friendIndex.row] = [messages mutableCopy];
+    [[Singleton sharedSingleton] groupMessages][friendIndex.row] = [messages mutableCopy];
     [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
 }
 
@@ -94,8 +94,8 @@
 }
 
 - (void)updateColoredStatusIndicator {
-    if (_friendInfo.connectionType == ToxFriendConnectionStatus_Online) {
-        switch (_friendInfo.statusType) {
+    /*if (_groupInfo.connectionType == ToxFriendConnectionStatus_Online) {
+        switch (_groupInfo.statusType) {
             case ToxFriendUserStatus_None:
                 [statusNavBarImageView setImage:[UIImage imageNamed:@"status-green-navbar"]];
                 break;
@@ -113,16 +113,16 @@
         }
     } else {
         [statusNavBarImageView setImage:[UIImage imageNamed:@"status-gray-navbar"]];
-    }
+    }*/
 }
 
 #pragma mark - Notifications Center stuff
 
 - (void)updateUserInfo {
-    if ([_friendInfo.nickname isEqualToString:@""])
-        self.title = _friendInfo.publicKey;
+    if ([_groupInfo.groupName isEqualToString:@""])
+        self.title = _groupInfo.groupPulicKey;
     else
-        self.title = _friendInfo.nickname;
+        self.title = _groupInfo.groupName;
     
     //todo: status (where to display?) and status type
 }
@@ -131,7 +131,7 @@
     NSString *theMessage = [notification userInfo][@"message"];
     NSString *theirKey = [notification userInfo][@"their_public_key"];
     
-    if ([theirKey isEqualToString:_friendInfo.publicKey]) {
+    if ([theirKey isEqualToString:_groupInfo.groupPulicKey]) {
         MessageObject *tempMessage = [[MessageObject alloc] init];
         [tempMessage setMessage:theMessage];
         [tempMessage setOrigin:MessageLocation_Them];
@@ -184,7 +184,7 @@
     
     
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    [dict setObject:[_friendInfo publicKey] forKey:@"friend_public_key"];
+    [dict setObject:[_groupInfo groupPulicKey] forKey:@"friend_public_key"];
     [dict setObject:text forKey:@"message"];
     [dict setObject:[NSNumber numberWithInt:friendIndex.row] forKey:@"friend_number"];
     if (friendIndex.section == 0) {
