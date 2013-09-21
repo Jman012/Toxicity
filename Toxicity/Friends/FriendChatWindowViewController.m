@@ -58,7 +58,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo) name:@"FriendAdded" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"NewMessage" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lastMessageFailed) name:@"LastMessageFailedToSend" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColoredStatusIndicator) name:@"FriendUserStatusChanged" object:nil];
     
     UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToPopView)];
@@ -132,23 +131,21 @@
     NSString *theirKey = [notification userInfo][@"their_public_key"];
     
     if ([theirKey isEqualToString:_friendInfo.publicKey]) {
+        [self.tableView beginUpdates];
+        
         MessageObject *tempMessage = [[MessageObject alloc] init];
         [tempMessage setMessage:theMessage];
         [tempMessage setOrigin:MessageLocation_Them];
         [tempMessage setDidFailToSend:NO];
         [messages addObject:tempMessage];
+        
+        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:([messages count] - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+        [self.tableView endUpdates];
+        [self scrollToBottomAnimated:YES];
     }
     
-    [self.tableView reloadData];
-    [self scrollToBottomAnimated:YES];
     
     [JSMessageSoundEffect playMessageReceivedSound];
-}
-
-- (void)lastMessageFailed {
-    MessageObject *tempMessage = [messages lastObject];
-    [tempMessage setDidFailToSend:YES];
-    [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -177,7 +174,6 @@
     }
     tempMessage.origin = MessageLocation_Me;
     tempMessage.didFailToSend = NO;
-    [messages addObject:tempMessage];
     
     
     [JSMessageSoundEffect playMessageSentSound];
@@ -196,7 +192,13 @@
     }
     
     AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [ourDelegate sendMessage:dict];
+    BOOL success = [ourDelegate sendMessage:dict];
+    if (!success) {
+        tempMessage.didFailToSend = YES;
+    }
+    
+    //add the message after we know if it failed or not
+    [messages addObject:tempMessage];
     
     [self finishSend];
 }

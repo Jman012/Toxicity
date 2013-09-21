@@ -283,7 +283,9 @@
     [self startToxThread];
 }
 
-- (void)sendMessage:(NSDictionary *)messageDict {
+- (BOOL)sendMessage:(NSDictionary *)messageDict {
+    //return type: TRUE = sent, FALSE = not sent, should error
+    
     //send a message to a friend, called primarily from the caht window vc
     NSString *theirKey = messageDict[@"friend_public_key"];
     NSString *theMessage = messageDict[@"message"];
@@ -335,7 +337,9 @@
             
             if (num == 0) {
                 NSLog(@"Failed to put message in send queue!");
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"LastMessageFailedToSend" object:nil];
+                return FALSE;
+            } else {
+                return TRUE;
             }
         } else { //group message
             char *utf8Message = (char *)[theMessage UTF8String];
@@ -343,14 +347,16 @@
             
             if (num == -1) {
                 NSLog(@"Failed to put message in send queue!");
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"LastMessageFailedToSend" object:nil];
+                return FALSE;
+            } else {
+                return TRUE;
             }
         }
         [self startToxThread];
         
     } else {
         NSLog(@"Failed to send, mismatched friendnum and id");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"LastMessageFailedToSend" object:nil];
+        return FALSE;
     }
     
 }
@@ -631,7 +637,7 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
         
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it
-        if (friendnumber != [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] section] == 1) {
+        if (friendnumber != [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] section] != 1) {
             NSMutableArray *tempMessages = [[[[Singleton sharedSingleton] mainFriendMessages] objectAtIndex:friendnumber] mutableCopy];
             MessageObject *theMessage = [[MessageObject alloc] init];
             [theMessage setMessage:[NSString stringWithUTF8String:(char *)string]];
@@ -675,7 +681,7 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
         
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it
-        if (groupnumber != [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] section] == 0) {
+        if (groupnumber != [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] section] != 0) {
             NSMutableArray *tempMessages = [[[[Singleton sharedSingleton] groupMessages] objectAtIndex:groupnumber] mutableCopy];
             MessageObject *theMessage = [[MessageObject alloc] init];
             [theMessage setMessage:newMessage];
