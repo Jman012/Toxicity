@@ -149,24 +149,28 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if ([[[Singleton sharedSingleton] groupList] count] == 0) {
-        return nil;
-    }
     
     switch (section) {
         case 0:
-            headerForGroups.textLabel.text = @"Groups";
-            return headerForGroups;
+            if ([[[Singleton sharedSingleton] groupList] count] > 0) {
+                headerForGroups.textLabel.text = @"Groups";
+                return headerForGroups;
+            }
             break;
             
         case 1:
-            headerForFriends.textLabel.text = @"Friends";
-            return headerForFriends;
+            if ([_mainFriendList count] > 0) {
+                headerForFriends.textLabel.text = @"Friends";
+                return headerForFriends;
+            }
+            break;
             
         default:
             return nil;
             break;
     }
+    
+    return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -178,10 +182,26 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if ([[[Singleton sharedSingleton] groupList] count] == 0) {
-        return 0;
-    } else {
-        return 22;
+    switch (section) {
+        case 0:
+            if ([[[Singleton sharedSingleton] groupList] count] == 0) {
+                return 0;
+            } else {
+                return 22;
+            }
+            break;
+            
+        case 1:
+            if ([_mainFriendList count] == 0) {
+                return 0;
+            } else {
+                return 22;
+            }
+            break;
+            
+        default:
+            return 0;
+            break;
     }
 }
 

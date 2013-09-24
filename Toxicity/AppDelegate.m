@@ -666,7 +666,7 @@ void print_action(Tox *m, int friendnumber, uint8_t * action, uint16_t length, v
 
 void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_t * message, uint16_t length, void *userdata) {
     dispatch_sync(dispatch_get_main_queue(), ^{
-        NSLog(@"Group message received from group [%d], message: %s", groupnumber, message);
+        NSLog(@"Group message received from group [%d], message: %s. Friend [%d]", groupnumber, message, friendgroupnumber);
         
         NSString *thePublicKey = [[[[Singleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPulicKey];
         uint8_t *theirNameC[MAX_NICK_BYTES];

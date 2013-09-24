@@ -219,6 +219,10 @@
             
             
             [self.tableView endUpdates];
+            
+            if ([_arrayOfInvites count] == 0) {
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
         }
     } else if ([alertView.title isEqualToString:@"Reject"]) {
         if (buttonIndex == 0) {
@@ -241,6 +245,10 @@
             
             
             [self.tableView endUpdates];
+            
+            if ([_arrayOfRequests count] == 0) {
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
         }
     }
 }
@@ -272,25 +280,27 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if ([_arrayOfInvites count] == 0) {
-        return nil;
-    }
     
     switch (section) {
         case 0:
-            groupInvitesHeader.textLabel.text = @"Group Invites";
-            return groupInvitesHeader;
+            if ([_arrayOfInvites count] > 0) {
+                groupInvitesHeader.textLabel.text = @"Group Invites";
+                return groupInvitesHeader;
+            }
             break;
             
         case 1:
-            friendRequestsHeader.textLabel.text = @"Friend Requests";
-            return friendRequestsHeader;
+            if ([_arrayOfInvites count] > 0) {
+                friendRequestsHeader.textLabel.text = @"Friend Requests";
+                return friendRequestsHeader;
+            }
             break;
             
         default:
             return nil;
             break;
     }
+    return nil;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -299,10 +309,27 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if ([_arrayOfInvites count] == 0) {
-        return 0;
-    } else {
-        return 22;
+    
+    switch (section) {
+        case 0:
+            if ([_arrayOfInvites count] == 0) {
+                return 0;
+            } else {
+                return 22;
+            }
+            break;
+            
+        case 1:
+            if ([_arrayOfRequests count] == 0) {
+                return 0;
+            } else {
+                return 22;
+            }
+            break;
+            
+        default:
+            return 0;
+            break;
     }
 }
 
