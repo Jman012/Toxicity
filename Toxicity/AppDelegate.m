@@ -526,6 +526,16 @@
     
 }
 
+- (int)deleteGroupchat:(int)theGroupNumber {
+    [self killToxThread];
+    
+    int num = tox_del_groupchat([[Singleton sharedSingleton] toxCoreInstance], theGroupNumber);
+    
+    [self startToxThread];
+    
+    return num;
+}
+
 #pragma mark - End Tox related Methods
 
 #pragma mark - Tox Core Callback Functions

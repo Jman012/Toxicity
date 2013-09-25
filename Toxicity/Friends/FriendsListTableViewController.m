@@ -357,8 +357,27 @@
         if (indexPath.section == 0) {
             
             //group delete
-            //todo: integrate with soon to be delegate functions
+            int num = [ourDelegate deleteGroupchat:indexPath.row];
             
+            if (num == 0) {
+                [self.tableView beginUpdates];
+                
+                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                
+                [[[Singleton sharedSingleton] groupList] removeObjectAtIndex:indexPath.row];
+                [[[Singleton sharedSingleton] groupMessages] removeObjectAtIndex:indexPath.row];
+
+                //todo: save when i start saving these things
+                
+                [self.tableView endUpdates];
+            } else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                message:@"Something went wrong ith deleting the group chat! Tox Core issue."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Okay"
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }
             
         } else {
             
@@ -378,7 +397,11 @@
                 
                 [self.tableView endUpdates];
             } else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Something went wrong with deleting the friend! Tox Core issue." delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                message:@"Something went wrong with deleting the friend! Tox Core issue."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Okay"
+                                                      otherButtonTitles:nil];
                 [alert show];
             }
         }
