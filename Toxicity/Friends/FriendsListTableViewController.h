@@ -23,6 +23,7 @@
 @interface FriendsListTableViewController : UITableViewController <UIAlertViewDelegate>
 {
     IBOutlet UIBarButtonItem    *settingsButton;
+    IBOutlet UIBarButtonItem    *requestsButton;
     
     NSMutableArray              *_mainFriendList;
     

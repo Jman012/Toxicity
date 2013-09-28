@@ -20,22 +20,30 @@
         
         cellBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
         
-        /*****Background Grey Color*****/
-        mainLayerBG = [CALayer layer];
-        mainLayerBG.frame = self.bounds;
-        mainLayerBG.backgroundColor = [[UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f] CGColor];
-        mainLayerBG.name = @"Background";
-        [cellBackgroundView.layer insertSublayer:mainLayerBG atIndex:0];
-        
-        /*****Background Gradient*****/
-        mainLayerGradient = [CAGradientLayer layer];
-        mainLayerGradient.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y + 1, self.bounds.size.width, self.bounds.size.height - 1);
-        UIColor *top = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.4f alpha:1.0f];
-        UIColor *bottom = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.3f alpha:1.0f];
-        mainLayerGradient.colors = [NSArray arrayWithObjects:(id)[top CGColor], (id)[bottom CGColor], nil];
-        mainLayerGradient.name = @"Gradient";
-        
-        [cellBackgroundView.layer insertSublayer:mainLayerGradient atIndex:1];
+        if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+            // Load resources for iOS 6.1 or earlier
+            
+            /*****Background Grey Color*****/
+            mainLayerBG = [CALayer layer];
+            mainLayerBG.frame = self.bounds;
+            mainLayerBG.backgroundColor = [[UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f] CGColor];
+            mainLayerBG.name = @"Background";
+            [cellBackgroundView.layer insertSublayer:mainLayerBG atIndex:0];
+            
+            /*****Background Gradient*****/
+            mainLayerGradient = [CAGradientLayer layer];
+            mainLayerGradient.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y + 1, self.bounds.size.width, self.bounds.size.height - 1);
+            UIColor *top = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.4f alpha:1.0f];
+            UIColor *bottom = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.3f alpha:1.0f];
+            mainLayerGradient.colors = [NSArray arrayWithObjects:(id)[top CGColor], (id)[bottom CGColor], nil];
+            mainLayerGradient.name = @"Gradient";
+            
+            [cellBackgroundView.layer insertSublayer:mainLayerGradient atIndex:1];
+        } else {
+            // Load resources for iOS 7 or later
+            
+            [cellBackgroundView setBackgroundColor:[UIColor colorWithHue:1.0f saturation:0.0f brightness:0.35f alpha:1.0f]];
+        }
         
         [self setBackgroundView:cellBackgroundView];
         
@@ -50,8 +58,11 @@
         self.nickLabel = [[UILabel alloc] init];
         [self.nickLabel setTextColor:[UIColor whiteColor]];
         [self.nickLabel setBackgroundColor:[UIColor clearColor]];
-        [self.nickLabel setShadowColor:[UIColor colorWithRed:0.2f green:0.2f blue:0.2f alpha:1.0f]];
-        [self.nickLabel setShadowOffset:CGSizeMake(1.0f, 1.0f)];
+        if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+            // Load resources for iOS 6.1 or earlier
+            [self.nickLabel setShadowColor:[UIColor colorWithRed:0.2f green:0.2f blue:0.2f alpha:1.0f]];
+            [self.nickLabel setShadowOffset:CGSizeMake(1.0f, 1.0f)];
+        }
         [self.nickLabel setFont:[UIFont systemFontOfSize:18.0f]];
         
         [self.contentView addSubview:self.nickLabel];
@@ -66,8 +77,11 @@
         [messageLabel setBackgroundColor:[UIColor clearColor]];
         [messageLabel setFont:[UIFont systemFontOfSize:12.0f]];
 
-        [messageLabel setShadowColor:[UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f]];
-        [messageLabel setShadowOffset:CGSizeMake(0.5f, 0.5f)];
+        if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+            // Load resources for iOS 6.1 or earlier
+            [messageLabel setShadowColor:[UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f]];
+            [messageLabel setShadowOffset:CGSizeMake(0.5f, 0.5f)];
+        }
         
         [self.contentView addSubview:messageLabel];
         
@@ -79,22 +93,30 @@
         
         [self.contentView addSubview:avatarImageView];
         
+        
         /*****Selected Background View*****/
         UIView *selected = [[UIView alloc] initWithFrame:self.bounds];
-        CALayer *selectedBGLayer = [CALayer layer];
-        selectedBGLayer.frame = self.bounds;
-        selectedBGLayer.backgroundColor = [[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f] CGColor];
-        selectedBGLayer.name = @"SelectedBackground";
-        [selected.layer insertSublayer:selectedBGLayer atIndex:0];
-        
-        CAGradientLayer *selectedGrad = [CAGradientLayer layer];
-        selectedGrad.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y + 1, self.bounds.size.width, self.bounds.size.height - 1);
-        UIColor *selectedTop = [UIColor colorWithHue:0.5f saturation:0.0f brightness:0.2f alpha:1.0f];
-        UIColor *selectedBottom = [UIColor colorWithHue:0.5f saturation:0.0f brightness:0.3f alpha:1.0f];
-        selectedGrad.colors = [NSArray arrayWithObjects:(id)[selectedTop CGColor], (id)[selectedBottom CGColor], nil];
-        selectedGrad.name = @"SelectedGradient";
-        [selected.layer insertSublayer:selectedGrad atIndex:1];
-        
+        if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+            // Load resources for iOS 6.1 or earlier
+            
+            CALayer *selectedBGLayer = [CALayer layer];
+            selectedBGLayer.frame = self.bounds;
+            selectedBGLayer.backgroundColor = [[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f] CGColor];
+            selectedBGLayer.name = @"SelectedBackground";
+            [selected.layer insertSublayer:selectedBGLayer atIndex:0];
+            
+            CAGradientLayer *selectedGrad = [CAGradientLayer layer];
+            selectedGrad.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y + 1, self.bounds.size.width, self.bounds.size.height - 1);
+            UIColor *selectedTop = [UIColor colorWithHue:0.5f saturation:0.0f brightness:0.2f alpha:1.0f];
+            UIColor *selectedBottom = [UIColor colorWithHue:0.5f saturation:0.0f brightness:0.3f alpha:1.0f];
+            selectedGrad.colors = [NSArray arrayWithObjects:(id)[selectedTop CGColor], (id)[selectedBottom CGColor], nil];
+            selectedGrad.name = @"SelectedGradient";
+            [selected.layer insertSublayer:selectedGrad atIndex:1];
+        } else {
+            // Load resources for iOS 7 or later
+            
+            [selected setBackgroundColor:[UIColor colorWithHue:1.0f saturation:0.0f brightness:0.2f alpha:1.0f]];
+        }
 
         self.selectedBackgroundView = selected;
         
@@ -158,7 +180,11 @@
             [shadow removeFromSuperview];
         }
     }
-    [avatarImageView makeInsetShadowWithRadius:4.0 Alpha:0.5f];
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        // Load resources for iOS 6.1 or earlier
+        [avatarImageView makeInsetShadowWithRadius:4.0 Alpha:0.5f];
+    }
+
     
     /*****Gradient*****/
     cellBackgroundView.frame = self.bounds;

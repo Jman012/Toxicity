@@ -49,14 +49,32 @@
     
     settingsButton.title = @"\u2699";
     UIFont *f1 = [UIFont fontWithName:@"Helvetica" size:24.0f];
-    NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:f1, UITextAttributeFont, nil];
+    NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:f1, UITextAttributeFont, [UIColor whiteColor], UITextAttributeTextColor, nil];
     [settingsButton setTitleTextAttributes:dict forState:UIControlStateNormal];
+
+    NSDictionary *dict2 = [[NSDictionary alloc] initWithObjectsAndKeys:[UIColor whiteColor], UITextAttributeTextColor, nil];
+    [requestsButton setTitleTextAttributes:dict2 forState:UIControlStateNormal];
+    
+    [self.navigationController.navigationBar setTitleTextAttributes:dict2];
     
     //color stuff
-    self.tableView.separatorColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        // Load resources for iOS 6.1 or earlier
+        self.tableView.separatorColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
+    } else {
+        // Load resources for iOS 7 or later
+        self.tableView.separatorColor = [UIColor clearColor];
+    }
+    
     self.tableView.backgroundColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
     
-    self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        // Load resources for iOS 6.1 or earlier
+        self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
+    } else {
+        // Load resources for iOS 7 or later
+        self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
+    }
     
     
     //dht connection status, put above table view
