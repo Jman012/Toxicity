@@ -43,6 +43,9 @@
             // Load resources for iOS 7 or later
             
             [cellBackgroundView setBackgroundColor:[UIColor colorWithHue:1.0f saturation:0.0f brightness:0.35f alpha:1.0f]];
+            
+            [self setBackgroundColor:[UIColor colorWithHue:1.0f saturation:0.0f brightness:0.35f alpha:1.0f]];
+            
         }
         
         [self setBackgroundView:cellBackgroundView];

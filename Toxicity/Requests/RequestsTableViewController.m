@@ -311,7 +311,7 @@
             break;
             
         case 1:
-            if ([_arrayOfInvites count] > 0) {
+            if ([_arrayOfRequests count] > 0) {
                 friendRequestsHeader.textLabel.text = @"Friend Requests";
                 return friendRequestsHeader;
             }
