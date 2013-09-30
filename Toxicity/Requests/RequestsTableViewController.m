@@ -42,13 +42,18 @@
     selectedRequests = [[NSMutableArray alloc] init];
     selectedInvites = [[NSMutableArray alloc] init];
     
+    
+    /***** Appearance *****/
+    
     UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
                                                                                   target:self
                                                                                   action:@selector(cameraButtonPressed)];
     [cameraButton setStyle:UIBarButtonItemStyleBordered];
+    [cameraButton setTintColor:[UIColor whiteColor]];
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                target:self
                                                                                action:@selector(addButtonPressed)];
+    [addButton setTintColor:[UIColor whiteColor]];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     acceptButton = [[UIBarButtonItem alloc] initWithTitle:@"Accept (0)"
                                                     style:UIBarButtonItemStyleBordered
@@ -67,22 +72,32 @@
     [self.navigationItem setTitle:@"Friend Requests"];
     
     //color stuff
-    self.tableView.separatorColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
     self.tableView.backgroundColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
     
-    [self.navigationController.toolbar setTintColor:[UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1]];
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        // Load resources for iOS 6.1 or earlier
+        self.tableView.separatorColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
+    } else {
+        // Load resources for iOS 7 or later
+        self.tableView.separatorColor = [UIColor clearColor];
+    }
+    
+    self.tableView.backgroundColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
+    
+    /***** End Appearance *****/
+    
+    
     
     [self.tableView registerClass:[FriendCell class] forCellReuseIdentifier:@"RequestFriendCell"];
-    
+    groupInvitesHeader = [[FriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+    friendRequestsHeader = [[FriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+
     
     
     UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToPopView)];
     swipeRight.cancelsTouchesInView = NO;
     swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
     [self.view addGestureRecognizer:swipeRight];
-    
-    groupInvitesHeader = [[FriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
-    friendRequestsHeader = [[FriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -110,6 +125,8 @@
     //get th view from the storyboard, modal it
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     QRReaderViewController *vc = (QRReaderViewController *)[sb instantiateViewControllerWithIdentifier:@"QRReaderVC"];
+    AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [ourDelegate configureNavigationControllerDesign:(UINavigationController *)vc];
     
     [self presentViewController:vc animated:YES completion:nil];
 }

@@ -47,17 +47,19 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView:) name:@"DHTDisconnected" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView:) name:@"NewNumberOfConnectedNodes" object:nil];
     
+    
+    /***** Appearance *****/
+    
+    AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [ourDelegate configureNavigationControllerDesign:self.navigationController];
+    
+    //set the font size of our settings button
     settingsButton.title = @"\u2699";
     UIFont *f1 = [UIFont fontWithName:@"Helvetica" size:24.0f];
     NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:f1, UITextAttributeFont, [UIColor whiteColor], UITextAttributeTextColor, nil];
     [settingsButton setTitleTextAttributes:dict forState:UIControlStateNormal];
-
-    NSDictionary *dict2 = [[NSDictionary alloc] initWithObjectsAndKeys:[UIColor whiteColor], UITextAttributeTextColor, nil];
-    [requestsButton setTitleTextAttributes:dict2 forState:UIControlStateNormal];
     
-    [self.navigationController.navigationBar setTitleTextAttributes:dict2];
-    
-    //color stuff
+    //table view separator colors
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         // Load resources for iOS 6.1 or earlier
         self.tableView.separatorColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
@@ -68,21 +70,16 @@
     
     self.tableView.backgroundColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
     
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-        // Load resources for iOS 6.1 or earlier
-        self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
-    } else {
-        // Load resources for iOS 7 or later
-        self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
-    }
-    
-    
     //dht connection status, put above table view
     connectionStatusToolbar = [[TransparentToolbar alloc] initWithFrame:CGRectMake(0, -55, self.tableView.bounds.size.width, 44)];
     [self updateConnectionStatusView:[NSNotification notificationWithName:@"" object:nil]];
-    
-    
     [self.tableView addSubview:connectionStatusToolbar];
+    
+    /***** End Appearance *****/
+    
+    [settingsButton setTarget:self];
+    [settingsButton setAction:@selector(settingsButtonPushed)];
+    
     
     [self updateRequestsButton];
     
@@ -105,6 +102,14 @@
 - (IBAction)requestsButtonPushed:(id)sender {
     RequestsTableViewController *requestsVC = [[RequestsTableViewController alloc] init];
     [self.navigationController pushViewController:requestsVC animated:YES];
+}
+
+- (void)settingsButtonPushed {
+    UINavigationController *settingsVC = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"SettingsNavController"];
+    AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [ourDelegate configureNavigationControllerDesign:settingsVC];
+    
+    [self.navigationController presentViewController:settingsVC animated:YES completion:nil];
 }
 
 - (void)friendListUpdate {

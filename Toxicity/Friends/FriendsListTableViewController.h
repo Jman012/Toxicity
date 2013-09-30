@@ -17,6 +17,7 @@
 #import "AppDelegate.h"
 #import "FriendListHeader.h"
 #import "GroupObject.h"
+#import "SettingsViewController.h"
 
 #include "tox.h"
 

@@ -144,6 +144,7 @@
     [ZBarReaderView class];
     
     
+    [self configureNavigationControllerDesign:(UINavigationController *)self.window.rootViewController];
     
     return YES;
 }
@@ -941,8 +942,10 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
             uint64_t temp_time = unix_time();
             uint16_t count = 0;
             for(i = 0; i < LCLIENT_LIST; ++i) {
-                if (!(m->dht->close_clientlist[i].timestamp + 70 <= temp_time))
+                if (!(m->dht->close_clientlist[i].assoc4.timestamp + 70 <= temp_time) ||
+                    !(m->dht->close_clientlist[i].assoc6.timestamp + 70 <= temp_time))
                     ++count;
+                
             }
             if (count != lastCount) {
                 NSLog(@"****Nodes connected: %d", count);
@@ -1039,5 +1042,31 @@ uint32_t resolve_addr(const char *address)
 
 #pragma mark - End Miscellaneous C Functions
 
+#pragma mark - Toxicity Visual Design Methods
+
+- (void)configureNavigationControllerDesign:(UINavigationController *)navController {
+    //first, non ios specific stuff:
+    NSDictionary *titleColorsDict = [[NSDictionary alloc] initWithObjectsAndKeys:[UIColor whiteColor], UITextAttributeTextColor, nil];
+    [[UIBarButtonItem appearance] setTitleTextAttributes:titleColorsDict forState:UIControlStateNormal];
+    
+    NSDictionary *pressedTitleColorsDict = [[NSDictionary alloc] initWithObjectsAndKeys:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0f], UITextAttributeTextColor, nil];
+    [[UIBarButtonItem appearance] setTitleTextAttributes:pressedTitleColorsDict forState:UIControlStateHighlighted];
+    
+    //ios specific stuff
+    
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        // Load resources for iOS 6.1 or earlier
+        navController.navigationBar.tintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
+        navController.toolbar.tintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
+    } else {
+        // Load resources for iOS 7 or later
+        navController.navigationBar.barTintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
+        navController.toolbar.barTintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
+    }
+    
+    [navController setNeedsStatusBarAppearanceUpdate];
+}
+
+#pragma mark - End Toxicity Visual Design Methods
 
 @end

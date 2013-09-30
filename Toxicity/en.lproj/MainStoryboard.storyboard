@@ -112,7 +112,7 @@
         <!--Navigation Controller-->
         <scene sceneID="gQo-xB-s5z">
             <objects>
-                <navigationController definesPresentationContext="YES" id="QCb-ng-23x" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="SettingsNavController" definesPresentationContext="YES" id="QCb-ng-23x" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="cCw-aD-13J">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -158,11 +158,7 @@
                         </prototypes>
                     </tableView>
                     <navigationItem key="navigationItem" title="Friends" id="Juo-Kc-pct">
-                        <barButtonItem key="leftBarButtonItem" title="⚙" id="cgR-hs-ovr">
-                            <connections>
-                                <segue destination="QCb-ng-23x" kind="modal" id="Ncy-FQ-0w2"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="leftBarButtonItem" title="⚙" id="cgR-hs-ovr"/>
                         <barButtonItem key="rightBarButtonItem" title="Requests" id="1cZ-ub-gEf">
                             <connections>
                                 <action selector="requestsButtonPushed:" destination="DHs-TY-8DU" id="RzR-vd-x4A"/>
@@ -171,7 +167,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="requestsButton" destination="1cZ-ub-gEf" id="hEQ-kk-N2f"/>
-                        <outlet property="settingsButton" destination="cgR-hs-ovr" id="75e-se-q7W"/>
+                        <outlet property="settingsButton" destination="cgR-hs-ovr" id="hvK-WV-0EM"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Djk-xX-lvs" userLabel="First Responder" sceneMemberID="firstResponder"/>

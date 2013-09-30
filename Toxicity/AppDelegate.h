@@ -45,4 +45,6 @@ unsigned char * hex_string_to_bin(char hex_string[]);
 - (int)deleteFriend:(int)theFriendNumber;
 - (int)deleteGroupchat:(int)theGroupNumber;
 
+- (void)configureNavigationControllerDesign:(UINavigationController *)navController;
+
 @end
