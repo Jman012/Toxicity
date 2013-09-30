@@ -49,11 +49,15 @@
                                                                                   target:self
                                                                                   action:@selector(cameraButtonPressed)];
     [cameraButton setStyle:UIBarButtonItemStyleBordered];
-    [cameraButton setTintColor:[UIColor whiteColor]];
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                target:self
                                                                                action:@selector(addButtonPressed)];
-    [addButton setTintColor:[UIColor whiteColor]];
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        
+    } else {
+        [cameraButton setTintColor:[UIColor whiteColor]];
+        [addButton setTintColor:[UIColor whiteColor]];
+    }
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     acceptButton = [[UIBarButtonItem alloc] initWithTitle:@"Accept (0)"
                                                     style:UIBarButtonItemStyleBordered
