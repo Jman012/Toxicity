@@ -206,19 +206,44 @@
 - (void)setStatusColor:(FriendCellStatusColor)statusColor {
     switch (statusColor) {
         case FriendCellStatusColor_Gray:
-            [statusImageView setImage:[UIImage imageNamed:@"status-gray"]];
+            if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+                // Load resources for iOS 6.1 or earlier
+                [statusImageView setImage:[UIImage imageNamed:@"status-gray"]];
+            } else {
+                // Load resources for iOS 7 or later
+                [statusImageView setImage:[UIImage imageNamed:@"status-gray-ios7"]];
+            }
             break;
             
         case FriendCellStatusColor_Green:
-            [statusImageView setImage:[UIImage imageNamed:@"status-green"]];
+            if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+                // Load resources for iOS 6.1 or earlier
+                [statusImageView setImage:[UIImage imageNamed:@"status-green"]];
+            } else {
+                // Load resources for iOS 7 or later
+                [statusImageView setImage:[UIImage imageNamed:@"status-green-ios7"]];
+            }
             break;
             
         case FriendCellStatusColor_Yellow:
-            [statusImageView setImage:[UIImage imageNamed:@"status-yellow"]];
+            if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+                // Load resources for iOS 6.1 or earlier
+                [statusImageView setImage:[UIImage imageNamed:@"status-yellow"]];
+            } else {
+                // Load resources for iOS 7 or later
+                [statusImageView setImage:[UIImage imageNamed:@"status-yellow-ios7"]];
+            }
             break;
             
         case FriendCellStatusColor_Red:
-            [statusImageView setImage:[UIImage imageNamed:@"status-red"]];
+            if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+                // Load resources for iOS 6.1 or earlier
+                [statusImageView setImage:[UIImage imageNamed:@"status-red"]];
+            } else {
+                // Load resources for iOS 7 or later
+                [statusImageView setImage:[UIImage imageNamed:@"status-red-ios7"]];
+            }
+            
             break;
             
         default:

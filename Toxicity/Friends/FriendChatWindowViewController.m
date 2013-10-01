@@ -66,11 +66,16 @@
     [self.view addGestureRecognizer:swipeRight];
     
     //setup the colored status indicator on the navbar
-    statusNavBarImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray-navbar"]];
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        // Load resources for iOS 6.1 or earlier
+        statusNavBarImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray-navbar"]];
+    } else {
+        // Load resources for iOS 7 or later
+        statusNavBarImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray-navbar-ios7"]];
+    }
     CGRect tempFrame = statusNavBarImageView.frame;
     tempFrame.origin.x = self.navigationController.navigationBar.frame.size.width - tempFrame.size.width;
     statusNavBarImageView.frame = tempFrame;
-//    [self.navigationController.navigationBar addSubview:statusNavBarImageView];
     [self updateColoredStatusIndicator];
 }
 
@@ -96,22 +101,46 @@
     if (_friendInfo.connectionType == ToxFriendConnectionStatus_Online) {
         switch (_friendInfo.statusType) {
             case ToxFriendUserStatus_None:
-                [statusNavBarImageView setImage:[UIImage imageNamed:@"status-green-navbar"]];
+                if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+                    // Load resources for iOS 6.1 or earlier
+                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-green-navbar"]];
+                } else {
+                    // Load resources for iOS 7 or later
+                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-green-navbar-ios7"]];
+                }
                 break;
                 
             case ToxFriendUserStatus_Away:
-                [statusNavBarImageView setImage:[UIImage imageNamed:@"status-yellow-navbar"]];
+                if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+                    // Load resources for iOS 6.1 or earlier
+                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-yellow-navbar"]];
+                } else {
+                    // Load resources for iOS 7 or later
+                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-yellow-navbar-ios7"]];
+                }
                 break;
                 
             case ToxFriendUserStatus_Busy:
-                [statusNavBarImageView setImage:[UIImage imageNamed:@"status-red-navbar"]];
+                if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+                    // Load resources for iOS 6.1 or earlier
+                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-red-navbar"]];
+                } else {
+                    // Load resources for iOS 7 or later
+                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-red-navbar-ios7"]];
+                }
                 break;
                 
             default:
                 break;
         }
     } else {
-        [statusNavBarImageView setImage:[UIImage imageNamed:@"status-gray-navbar"]];
+        if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+            // Load resources for iOS 6.1 or earlier
+            [statusNavBarImageView setImage:[UIImage imageNamed:@"status-gray-navbar"]];
+        } else {
+            // Load resources for iOS 7 or later
+            [statusNavBarImageView setImage:[UIImage imageNamed:@"status-gray-navbar-ios7"]];
+        }
     }
 }
 
