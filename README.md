@@ -11,12 +11,13 @@ Tox is a FOSS (free and open source) instant messenger application aimed to incr
 
 ### Screenshots:
 
-![Screenshot 1](http://i.imgur.com/bcaaqAC.png)
+[iOS6 Screenshots](http://imgur.com/a/HWe7X)
+
+[iOS7 Screenshots](http://imgur.com/a/L49iZ)
 
 ### Todo:
 
 + Redo the ! in chat to look better (currently using the avatar feature in Messages View Controller)
-+ Make the connection status above the friends list work
 + Add more to the settings page (About, Clear settings, etc.)
 + Reorder
 + More
