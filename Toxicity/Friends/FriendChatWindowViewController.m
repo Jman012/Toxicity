@@ -156,17 +156,12 @@
 }
 
 - (void)newMessage:(NSNotification *)notification {
-    NSString *theMessage = [notification userInfo][@"message"];
-    NSString *theirKey = [notification userInfo][@"their_public_key"];
+    MessageObject *receivedMessage = (MessageObject *)[notification object];
     
-    if ([theirKey isEqualToString:_friendInfo.publicKey]) {
+    if ([receivedMessage.senderKey isEqualToString:_friendInfo.publicKey]) {
         [self.tableView beginUpdates];
         
-        MessageObject *tempMessage = [[MessageObject alloc] init];
-        [tempMessage setMessage:theMessage];
-        [tempMessage setOrigin:MessageLocation_Them];
-        [tempMessage setDidFailToSend:NO];
-        [messages addObject:tempMessage];
+        [messages addObject:receivedMessage];
         
         [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:([messages count] - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
         [self.tableView endUpdates];
@@ -187,6 +182,7 @@
 - (void)sendPressed:(UIButton *)sender withText:(NSString *)text
 {
     MessageObject *tempMessage = [[MessageObject alloc] init];
+    tempMessage.recipientKey = _friendInfo.publicKey;
     
     if ([text length] >= 5) {
         //only check for the "/me " if the message is 5 or more characters in length.
@@ -195,8 +191,10 @@
         //text:"/me h" the action would be "h"
         if ([[text substringToIndex:4] isEqualToString:@"/me "]) {
             tempMessage.message = [[NSString alloc] initWithFormat:@"* %@", [text substringFromIndex:4]];
+            tempMessage.isActionMessage = YES;
         } else {
             tempMessage.message = [text copy];
+            tempMessage.isActionMessage = NO;
         }
     } else {
         tempMessage.message = [text copy];
@@ -207,21 +205,16 @@
     
     [JSMessageSoundEffect playMessageSentSound];
     
-    
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    [dict setObject:[_friendInfo publicKey] forKey:@"friend_public_key"];
-    [dict setObject:text forKey:@"message"];
-    [dict setObject:[NSNumber numberWithInt:friendIndex.row] forKey:@"friend_number"];
     if (friendIndex.section == 0) {
         //group
-        [dict setObject:[NSNumber numberWithBool:YES] forKey:@"is_group_message"];
+        [tempMessage setIsGroupMessage:YES];
     } else {
         //friend
-        [dict setObject:[NSNumber numberWithBool:NO] forKey:@"is_group_message"];
+        [tempMessage setIsGroupMessage:NO];
     }
     
     AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BOOL success = [ourDelegate sendMessage:dict];
+    BOOL success = [ourDelegate sendMessage:tempMessage];
     if (!success) {
         tempMessage.didFailToSend = YES;
     }

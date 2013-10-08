@@ -130,6 +130,9 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     // Configure the cell...
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     UITextField *textField = (UITextField *)[cell viewWithTag:100];
     [textField setDelegate:self];
     switch(indexPath.row){

@@ -215,7 +215,11 @@
     //used from toxic source, this tells tox core to make a connection into the dht network    
     [self killToxThread];
     unsigned char *binary_string = hex_string_to_bin((char *)dht_key);
-    tox_bootstrap_from_address([[Singleton sharedSingleton] toxCoreInstance], dht_ip, TOX_ENABLE_IPV6_DEFAULT, htons(atoi(dht_port)), binary_string); //actual connection
+    tox_bootstrap_from_address([[Singleton sharedSingleton] toxCoreInstance],
+                               dht_ip,
+                               TOX_ENABLE_IPV6_DEFAULT,
+                               htons(atoi(dht_port)),
+                               binary_string); //actual connection
     free(binary_string);
     [self startToxThread];
     
@@ -284,82 +288,74 @@
     [self startToxThread];
 }
 
-- (BOOL)sendMessage:(NSDictionary *)messageDict {
+- (BOOL)sendMessage:(MessageObject *)theMessage {
     //return type: TRUE = sent, FALSE = not sent, should error
-    
     //send a message to a friend, called primarily from the caht window vc
-    NSString *theirKey = messageDict[@"friend_public_key"];
-    NSString *theMessage = messageDict[@"message"];
-    BOOL isGroupMessage = [messageDict[@"is_group_message"] boolValue];
-    NSUInteger friendNum = [messageDict[@"friend_number"] integerValue];
+
+    
+    //organize our message data
+    NSString *theirKey = theMessage.recipientKey;
+    NSString *messageToSend = theMessage.message;
+    BOOL isGroupMessage = theMessage.isGroupMessage;
+    BOOL isActionMessage = theMessage.isActionMessage;
+    NSInteger friendNum = -1;
+    if (isGroupMessage) {
+        for (int i = 0; i < [[[Singleton sharedSingleton] groupList] count]; i++) {
+            GroupObject *tempGroup = [[[Singleton sharedSingleton] groupList] objectAtIndex:i];
+            if ([theirKey isEqualToString:tempGroup.groupPulicKey]) {
+                friendNum = i;
+                break;
+            }
+        }
+    } else {
+        for (int i = 0; i < [[[Singleton sharedSingleton] mainFriendList] count]; i++) {
+            FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:i];
+            if ([theirKey isEqualToString:tempFriend.publicKey]) {
+                friendNum = i;
+                break;
+            }
+        }
+    }
+    if (friendNum == -1) {
+        //in case something data-wise messed up and the friend no longer exists, or the key got messed up
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                            message:@"Uh oh, something went wrong! The friend key you're trying to send a message to doesn't seem to be in your friend list. Try restarting the app and send a bug report!"
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"Okay"
+                                                  otherButtonTitles:nil];
+        [alertView show];
+        return FALSE;
+    }
     
     NSLog(@"Sending Message: %@", theMessage);
 
     
-    char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
-    if (isGroupMessage == NO) {
-        //use the client id from the core to make sure we're sending it to the right person
-        uint8_t key[TOX_CLIENT_ID_SIZE];
-        tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendNum, key);
-        
-        int pos = 0;
-        for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
-            sprintf(&convertedKey[pos] ,"%02X", key[i] & 0xff);
+    //here we have to check to see if a "/me " exists, but before we do that we have to make sure the length is 5 or more
+    //dont want to get out of bounds error
+    [self killToxThread];
+    
+    int num;
+    char *utf8Message = (char *)[messageToSend UTF8String];
+    
+    if (isGroupMessage == NO) { //chat message
+        if (isActionMessage) {
+            char *utf8FormattedMessage = (char *)[[messageToSend substringFromIndex:2] UTF8String];
+            num = tox_sendaction([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8FormattedMessage, strlen(utf8FormattedMessage) + 1);
+        } else {
+            num = tox_sendmessage([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message) + 1);
         }
-    } else {
-        GroupObject *tempGroup = [[[Singleton sharedSingleton] groupList] objectAtIndex:friendNum];
-//        convertedKey = [[tempGroup groupPulicKey] UTF8String];
-        sprintf(convertedKey, "%s", [[tempGroup groupPulicKey] UTF8String]);
+    } else { //group message
+        num = tox_group_message_send([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message) + 1);
     }
     
-    //Gotta make sure the friend key with the message and the friend key fro mthe core match up with the friend numbers
-    //after all, we don't want to sedn encrypted messages to the wrong recipient...
-    if ([[NSString stringWithUTF8String:convertedKey] isEqualToString:theirKey]) {
-        //send message
-        int num;
-        
-        //here we have to check to see if a "/me " exists, but before we do that we have to make sure the length is 5 or more
-        //dont want to get out of bounds error
-        [self killToxThread];
-        if (isGroupMessage == NO) {
-            if ([theMessage length] >= 5) {
-                if([[theMessage substringToIndex:4] isEqualToString:@"/me "]) {
-                    char *utf8Action = (char *)[[theMessage substringFromIndex:4] UTF8String];
-                    num = tox_sendaction([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Action, strlen(utf8Action)+1);
-                } else {
-                    char *utf8Message = (char *)[theMessage UTF8String];
-                    num = tox_sendmessage([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message)+1);
-                }
-            } else {
-                //since the message is so short, it can't be a "/me "
-                char *utf8Message = (char *)[theMessage UTF8String];
-                num = tox_sendmessage([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message)+1);
-            }
-            
-            if (num == 0) {
-                NSLog(@"Failed to put message in send queue!");
-                return FALSE;
-            } else {
-                return TRUE;
-            }
-        } else { //group message
-            char *utf8Message = (char *)[theMessage UTF8String];
-            num = tox_group_message_send([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message)+1);
-            
-            if (num == -1) {
-                NSLog(@"Failed to put message in send queue!");
-                return FALSE;
-            } else {
-                return TRUE;
-            }
-        }
-        [self startToxThread];
-        
-    } else {
-        NSLog(@"Failed to send, mismatched friendnum and id");
+    if (num == -1) {
+        NSLog(@"Failed to put message in send queue!");
         return FALSE;
+    } else {
+        return TRUE;
     }
     
+    [self startToxThread];
 }
 
 - (void)addFriend:(NSString *)theirKey {
@@ -626,35 +622,21 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
         NSLog(@"Message from [%d]: %s", friendnumber, string);
         
         
-        uint8_t tempKey[TOX_CLIENT_ID_SIZE];
-        tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
+        MessageObject *theMessage = [[MessageObject alloc] init];
+        [theMessage setMessage:[NSString stringWithUTF8String:(char *)string]];
+        [theMessage setOrigin:MessageLocation_Them];
+        [theMessage setDidFailToSend:NO];
+        [theMessage setIsGroupMessage:NO];
+        [theMessage setIsActionMessage:NO];
+        [theMessage setSenderKey:[[[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber] publicKey]];
         
-        char convertedKey[(TOX_CLIENT_ID_SIZE * 2) + 1];
-        int pos = 0;
-        for (int i = 0; i < TOX_CLIENT_ID_SIZE; ++i, pos += 2) {
-            sprintf(&convertedKey[pos] ,"%02X", tempKey[i] & 0xff);
-        }
-        
-        if ([Singleton friendNumber:friendnumber matchesKey:[NSString stringWithUTF8String:convertedKey]]) {
-            
-        } else {
-            return;
-        }
-        
-        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-        [dict setObject:[NSString stringWithUTF8String:(char *)string] forKey:@"message"];
-        [dict setObject:[NSString stringWithUTF8String:convertedKey] forKey:@"their_public_key"];
-        NSLog(@"Message key: %@", [NSString stringWithUTF8String:convertedKey]);
         
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it
         if (friendnumber != [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] section] != 1) {
             NSMutableArray *tempMessages = [[[[Singleton sharedSingleton] mainFriendMessages] objectAtIndex:friendnumber] mutableCopy];
-            MessageObject *theMessage = [[MessageObject alloc] init];
-            [theMessage setMessage:[NSString stringWithUTF8String:(char *)string]];
-            [theMessage setOrigin:MessageLocation_Them];
-            [theMessage setDidFailToSend:NO];
             [tempMessages addObject:theMessage];
+            
             [[Singleton sharedSingleton] mainFriendMessages][friendnumber] = [tempMessages copy];
             
             FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
@@ -664,9 +646,9 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
                                                          cancelButtonTitle:@"Okay"
                                                          otherButtonTitles:nil];
             [messageAlert show];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessage" object:theMessage];
         }
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessage" object:nil userInfo:dict];
     });
 }
 
@@ -679,26 +661,25 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Group message received from group [%d], message: %s. Friend [%d]", groupnumber, message, friendgroupnumber);
         
-        NSString *thePublicKey = [[[[Singleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPulicKey];
         uint8_t *theirNameC[MAX_NICK_BYTES];
         tox_group_peername([[Singleton sharedSingleton] toxCoreInstance], groupnumber, friendgroupnumber, (uint8_t *)theirNameC);
         NSString *theirName = [NSString stringWithUTF8String:(const char *)theirNameC];
         NSString *newMessage = [theirName stringByAppendingFormat:@": %@", [NSString stringWithUTF8String:(const char *)message]];
         
-        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-        [dict setObject:newMessage forKey:@"message"];
-        [dict setObject:thePublicKey forKey:@"their_public_key"];
-        NSLog(@"Message key: %@", thePublicKey);
         
+        MessageObject *theMessage = [[MessageObject alloc] init];
+        [theMessage setMessage:newMessage];
+        [theMessage setOrigin:MessageLocation_Them];
+        [theMessage setDidFailToSend:NO];
+        [theMessage setIsActionMessage:NO];
+        [theMessage setIsGroupMessage:YES];
+        [theMessage setSenderKey:[[[[Singleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPulicKey]];
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it
         if (groupnumber != [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[Singleton sharedSingleton] currentlyOpenedFriendNumber] section] != 0) {
             NSMutableArray *tempMessages = [[[[Singleton sharedSingleton] groupMessages] objectAtIndex:groupnumber] mutableCopy];
-            MessageObject *theMessage = [[MessageObject alloc] init];
-            [theMessage setMessage:newMessage];
-            [theMessage setOrigin:MessageLocation_Them];
-            [theMessage setDidFailToSend:NO];
             [tempMessages addObject:theMessage];
+
             [[Singleton sharedSingleton] groupMessages][groupnumber] = [tempMessages copy];
             
             UIAlertView *messageAlert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Message from Group #%d", groupnumber]
@@ -707,9 +688,9 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
                                                          cancelButtonTitle:@"Okay"
                                                          otherButtonTitles:nil];
             [messageAlert show];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessage" object:theMessage];
         }
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessage" object:nil userInfo:dict];
         
     });
 }
