@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B94956731841B50500462145 /* assoc.c in Sources */ = {isa = PBXBuildFile; fileRef = B94956711841B50400462145 /* assoc.c */; };
 		B94F2C5B17AF25C0003EA6E8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B94F2C5A17AF25C0003EA6E8 /* UIKit.framework */; };
 		B94F2C5D17AF25C0003EA6E8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B94F2C5C17AF25C0003EA6E8 /* Foundation.framework */; };
 		B94F2C5F17AF25C0003EA6E8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B94F2C5E17AF25C0003EA6E8 /* CoreGraphics.framework */; };
@@ -273,6 +274,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B94956711841B50400462145 /* assoc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = assoc.c; path = "ProjectTox-Core/toxcore/assoc.c"; sourceTree = "<group>"; };
+		B94956721841B50500462145 /* assoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = assoc.h; path = "ProjectTox-Core/toxcore/assoc.h"; sourceTree = "<group>"; };
 		B94F2C5717AF25C0003EA6E8 /* Toxicity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Toxicity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B94F2C5A17AF25C0003EA6E8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B94F2C5C17AF25C0003EA6E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -802,6 +805,8 @@
 		B94F2C8317AF5BDB003EA6E8 /* ProjectTox-Core */ = {
 			isa = PBXGroup;
 			children = (
+				B94956711841B50400462145 /* assoc.c */,
+				B94956721841B50500462145 /* assoc.h */,
 				B9D5C97A17E5904600B84BEF /* DHT.c */,
 				B9D5C97B17E5904600B84BEF /* DHT.h */,
 				B9D5C97C17E5904600B84BEF /* friend_requests.c */,
@@ -2225,6 +2230,7 @@
 				B9BB99C817B0187D00A1ACEC /* verify_32.c in Sources */,
 				B9BB99C917B0187D00A1ACEC /* verify_32_api.c in Sources */,
 				B9BB99CD17B0187D00A1ACEC /* randombytes.c in Sources */,
+				B94956731841B50500462145 /* assoc.c in Sources */,
 				B9BB99CE17B0187D00A1ACEC /* randombytes_salsa20_random.c in Sources */,
 				B9BB99CF17B0187D00A1ACEC /* randombytes_sysrandom.c in Sources */,
 				B9BB99D017B0187D00A1ACEC /* compat.c in Sources */,

@@ -405,7 +405,8 @@
         } else {
             
             //friend delete
-            int num = [ourDelegate deleteFriend:indexPath.row];
+            FriendObject *tempFriend = _mainFriendList[indexPath.row];
+            int num = [ourDelegate deleteFriend:tempFriend.publicKey];
             
             if (num == 0) {
                 [self.tableView beginUpdates];

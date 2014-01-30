@@ -42,7 +42,7 @@ unsigned char * hex_string_to_bin(char hex_string[]);
 - (BOOL)sendMessage:(MessageObject *)theMessage;
 - (void)acceptFriendRequests:(NSArray *)theKeysToAccept;
 - (void)acceptGroupInvites:(NSArray *)theKeysToAccept;
-- (int)deleteFriend:(int)theFriendNumber;
+- (int)deleteFriend:(NSString*)friendKey;
 - (int)deleteGroupchat:(int)theGroupNumber;
 
 - (void)configureNavigationControllerDesign:(UINavigationController *)navController;

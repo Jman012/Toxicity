@@ -21,18 +21,22 @@
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
     //start messenger here for LAN discorvery without pesky dht. required for tox core
-    [[Singleton sharedSingleton] setToxCoreInstance:tox_new(TOX_ENABLE_IPV6_DEFAULT)];
+    Tox *tempTox = tox_new(0);
+    if (tempTox) {
+        [[Singleton sharedSingleton] setToxCoreInstance:tempTox];
+    }
     
     //callbacks
-    tox_callback_friendrequest(     [[Singleton sharedSingleton] toxCoreInstance], print_request,               NULL);
-    tox_callback_group_invite(      [[Singleton sharedSingleton] toxCoreInstance], print_groupinvite,           NULL);
-    tox_callback_friendmessage(     [[Singleton sharedSingleton] toxCoreInstance], print_message,               NULL);
-    tox_callback_action(            [[Singleton sharedSingleton] toxCoreInstance], print_action,                NULL);
-    tox_callback_group_message(     [[Singleton sharedSingleton] toxCoreInstance], print_groupmessage,          NULL);
-    tox_callback_namechange(        [[Singleton sharedSingleton] toxCoreInstance], print_nickchange,            NULL);
-    tox_callback_statusmessage(     [[Singleton sharedSingleton] toxCoreInstance], print_statuschange,          NULL);
-    tox_callback_connectionstatus(  [[Singleton sharedSingleton] toxCoreInstance], print_connectionstatuschange,NULL);
-    tox_callback_userstatus(        [[Singleton sharedSingleton] toxCoreInstance], print_userstatuschange,      NULL);
+    tox_callback_friendrequest(       [[Singleton sharedSingleton] toxCoreInstance], print_request,                NULL);
+    tox_callback_group_invite(        [[Singleton sharedSingleton] toxCoreInstance], print_groupinvite,            NULL);
+    tox_callback_friendmessage(       [[Singleton sharedSingleton] toxCoreInstance], print_message,                NULL);
+    tox_callback_action(              [[Singleton sharedSingleton] toxCoreInstance], print_action,                 NULL);
+    tox_callback_group_message(       [[Singleton sharedSingleton] toxCoreInstance], print_groupmessage,           NULL);
+    tox_callback_namechange(          [[Singleton sharedSingleton] toxCoreInstance], print_nickchange,             NULL);
+    tox_callback_statusmessage(       [[Singleton sharedSingleton] toxCoreInstance], print_statuschange,           NULL);
+    tox_callback_connectionstatus(    [[Singleton sharedSingleton] toxCoreInstance], print_connectionstatuschange, NULL);
+    tox_callback_userstatus(          [[Singleton sharedSingleton] toxCoreInstance], print_userstatuschange,       NULL);
+    tox_callback_group_namelistchange([[Singleton sharedSingleton] toxCoreInstance], print_groupnamelistchange,    NULL);
     
     /***** Start Loading from NSUserDefaults *****/
     /***** Load:    
@@ -308,13 +312,14 @@
             }
         }
     } else {
-        for (int i = 0; i < [[[Singleton sharedSingleton] mainFriendList] count]; i++) {
-            FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:i];
-            if ([theirKey isEqualToString:tempFriend.publicKey]) {
-                friendNum = i;
-                break;
-            }
-        }
+//        for (int i = 0; i < [[[Singleton sharedSingleton] mainFriendList] count]; i++) {
+//            FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:i];
+//            if ([theirKey isEqualToString:tempFriend.publicKey]) {
+//                friendNum = i;
+//                break;
+//            }
+//        }
+        friendNum = friendNumForID(theirKey);
     }
     if (friendNum == -1) {
         //in case something data-wise messed up and the friend no longer exists, or the key got messed up
@@ -461,7 +466,9 @@
 }
 
 - (void)acceptGroupInvites:(NSArray *)theKeysToAccept {
+    NSLog(@"Killing thread");
     [self killToxThread];
+    NSLog(@"Done");
     
     for (NSString *arrayKey in theKeysToAccept) {
         
@@ -469,9 +476,9 @@
         NSNumber *friendNumOfGroupKey = [[[Singleton sharedSingleton] pendingGroupInviteFriendNumbers] objectForKey:arrayKey];
         
         uint8_t *key = (uint8_t *)[data bytes];
-        
+        NSLog(@"Joining");
         int num = tox_join_groupchat([[Singleton sharedSingleton] toxCoreInstance], [friendNumOfGroupKey integerValue], key);
-        
+        NSLog(@"Done");
         switch (num) {
             case -1: {
                 NSLog(@"Accepting group invite failed");
@@ -485,7 +492,7 @@
             }
                 
             default: {
-                
+                NSLog(@"Doing stuff");
                 GroupObject *tempGroup = [[GroupObject alloc] init];
                 [tempGroup setGroupPulicKey:arrayKey];
                 [[[Singleton sharedSingleton] groupList] insertObject:tempGroup atIndex:num];
@@ -495,8 +502,10 @@
                 
                 [[[Singleton sharedSingleton] pendingGroupInvites] removeObjectForKey:arrayKey];
                 [[[Singleton sharedSingleton] pendingGroupInviteFriendNumbers] removeObjectForKey:arrayKey];
-                
+                NSLog(@"Done");
+                NSLog(@"Notification");
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"GroupAdded" object:nil];
+                NSLog(@"Done");
                 
                 break;
             }
@@ -507,13 +516,19 @@
     [self startToxThread];
 }
 
-- (int)deleteFriend:(int)theFriendNumber {
+- (int)deleteFriend:(NSString*)friendKey {
+    
+    int friendNum = friendNumForID(friendKey);
+    if (friendNum == -1) {
+        return -1;
+    }
     
     //thread safety: cancel our thread, delete friend, restart thread
     [self killToxThread];
     
+    
     //thread is now stopped, safe to remove friend
-    int num = tox_delfriend([[Singleton sharedSingleton] toxCoreInstance], theFriendNumber);
+    int num = tox_delfriend([[Singleton sharedSingleton] toxCoreInstance], friendNum);
     
     //all done, woo! restart thread
     [self startToxThread];
@@ -661,7 +676,7 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Group message received from group [%d], message: %s. Friend [%d]", groupnumber, message, friendgroupnumber);
         
-        uint8_t *theirNameC[MAX_NICK_BYTES];
+        uint8_t *theirNameC[TOX_MAX_NAME_LENGTH];
         tox_group_peername([[Singleton sharedSingleton] toxCoreInstance], groupnumber, friendgroupnumber, (uint8_t *)theirNameC);
         NSString *theirName = [NSString stringWithUTF8String:(const char *)theirNameC];
         NSString *newMessage = [theirName stringByAppendingFormat:@": %@", [NSString stringWithUTF8String:(const char *)message]];
@@ -848,6 +863,17 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
     });
 }
 
+void print_groupnamelistchange(Tox *m, int groupnumber, void *userdata) {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        NSLog(@"New names:");
+        uint8_t groupPeerList[256][TOX_MAX_NAME_LENGTH];
+        int groupPeerCount = tox_group_copy_names([[Singleton sharedSingleton] toxCoreInstance], groupnumber, groupPeerList, 256);
+        for (int i = 0; i < groupPeerCount; i++) {
+            NSLog(@"\t%s", groupPeerList[i]);
+        }
+    });
+}
+
 #pragma mark - End Tox Core Callback Functions
 
 #pragma mark - Thread methods
@@ -920,7 +946,7 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
             static int lastCount = 0;
             Messenger *m = (Messenger *)[[Singleton sharedSingleton] toxCoreInstance];
             uint32_t i;
-            uint64_t temp_time = unix_time();
+            uint64_t temp_time = time(0);
             uint16_t count = 0;
             for(i = 0; i < LCLIENT_LIST; ++i) {
                 if (!(m->dht->close_clientlist[i].assoc4.timestamp + 70 <= temp_time) ||
@@ -979,6 +1005,57 @@ unsigned char * hex_string_to_bin(char hex_string[])
         sscanf(pos,"%2hhX",&val[i]);
     
     return val;
+}
+
+/*
+ * Gives the friend number corresponding to
+ * the given Tox client ID (32bytes).
+ * Returns -1 if not found.
+ */
+int friendNumForID(NSString *theKey) {
+    //Convert key to uint8_t
+    uint8_t *newKey = hex_string_to_bin((char *)[theKey UTF8String]);
+    
+    //Copy the friendlist (kinda) into a variable
+    int friendList[256];
+    int friendListCount = tox_copy_friendlist([[Singleton sharedSingleton] toxCoreInstance], friendList, 256);
+    
+    //Loop through, check each key against the inputted key
+    if (friendListCount > 0) {
+        for (int i = 0; i < friendListCount; i++) {
+            uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+            tox_getclient_id([[Singleton sharedSingleton] toxCoreInstance], i, tempKey);
+            if (memcmp(newKey, tempKey, TOX_CLIENT_ID_SIZE) == 0) { // True
+                free(newKey);
+                return i;
+            }
+        }
+    }
+    free(newKey);
+    return -1;
+}
+
+/*
+ * Gives the group number corresponding to
+ * the given Tox client ID (32 bytes).
+ * Returns -1 of not found.
+ */
+int groupNumForID(NSString *theKey) {
+    //Convert key to uint8_t
+    uint8_t *newKey = hex_string_to_bin((char *)[theKey UTF8String]);
+    
+    //Copy the grouplist (kinda) into a variable
+    int groupList[256];
+    int groupListCount = tox_copy_chatlist([[Singleton sharedSingleton] toxCoreInstance], groupList, 256);
+    
+    //Loop through, check each key against the inputted key
+    if (groupListCount > 0) {
+        for (int i = 0; i < groupListCount; i++) {
+            uint8_t tempKey[TOX_CLIENT_ID_SIZE];
+            
+        }
+    }
+    
 }
 
 /*
