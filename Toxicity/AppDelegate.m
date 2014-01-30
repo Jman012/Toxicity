@@ -978,9 +978,6 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
             }
             if (count != lastCount) {
                 NSLog(@"****Nodes connected: %d", count);
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewNumberOfConnectedNodes" object:[NSNumber numberWithInt:count]];
-                });
             }
             lastCount = count;
         }

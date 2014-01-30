@@ -162,7 +162,7 @@
     // Return the number of sections.
     
     //Section 1: Name/Statuss
-    return 3;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

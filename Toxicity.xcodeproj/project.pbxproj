@@ -80,7 +80,6 @@
 		B97D60D817BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D60AD17BD7497001C07B8 /* UIView+AnimationOptionsForCurve.m */; };
 		B98C9C3617DACDFD008B10E0 /* default-avatar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B98C9C3517DACDFD008B10E0 /* default-avatar@2x.png */; };
 		B98C9C3F17DC0C36008B10E0 /* FriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B98C9C3C17DC0C36008B10E0 /* FriendCell.m */; };
-		B98C9C4017DC0C36008B10E0 /* TransparentToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = B98C9C3E17DC0C36008B10E0 /* TransparentToolbar.m */; };
 		B98C9C4317DC16D8008B10E0 /* UIView+Shadow.m in Sources */ = {isa = PBXBuildFile; fileRef = B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */; };
 		B9A5343117EAD17800F2FD94 /* GroupChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9A5343017EAD17800F2FD94 /* GroupChatWindowViewController.m */; };
 		B9B9C6D917D59E2F006BF8AC /* status-gray-navbar.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D117D59E2F006BF8AC /* status-gray-navbar.png */; };
@@ -373,8 +372,6 @@
 		B98C9C3517DACDFD008B10E0 /* default-avatar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "default-avatar@2x.png"; path = "Images/default-avatar@2x.png"; sourceTree = "<group>"; };
 		B98C9C3B17DC0C36008B10E0 /* FriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendCell.h; path = "Custom Views/FriendCell.h"; sourceTree = "<group>"; };
 		B98C9C3C17DC0C36008B10E0 /* FriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendCell.m; path = "Custom Views/FriendCell.m"; sourceTree = "<group>"; };
-		B98C9C3D17DC0C36008B10E0 /* TransparentToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TransparentToolbar.h; path = "Custom Views/TransparentToolbar.h"; sourceTree = "<group>"; };
-		B98C9C3E17DC0C36008B10E0 /* TransparentToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TransparentToolbar.m; path = "Custom Views/TransparentToolbar.m"; sourceTree = "<group>"; };
 		B98C9C4117DC16D8008B10E0 /* UIView+Shadow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Shadow.h"; path = "Custom Views/UIView+Shadow.h"; sourceTree = "<group>"; };
 		B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Shadow.m"; path = "Custom Views/UIView+Shadow.m"; sourceTree = "<group>"; };
 		B9A5342F17EAD17800F2FD94 /* GroupChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GroupChatWindowViewController.h; path = Friends/GroupChatWindowViewController.h; sourceTree = "<group>"; };
@@ -970,8 +967,6 @@
 				B98C9C3C17DC0C36008B10E0 /* FriendCell.m */,
 				B9D5C95B17E3E31500B84BEF /* FriendListHeader.h */,
 				B9D5C95C17E3E31500B84BEF /* FriendListHeader.m */,
-				B98C9C3D17DC0C36008B10E0 /* TransparentToolbar.h */,
-				B98C9C3E17DC0C36008B10E0 /* TransparentToolbar.m */,
 				B98C9C4117DC16D8008B10E0 /* UIView+Shadow.h */,
 				B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */,
 			);
@@ -2277,7 +2272,6 @@
 				B9D85A2217CB0942005FD2D2 /* QRReaderViewController.m in Sources */,
 				B9D85A2317CB0942005FD2D2 /* RequestsTableViewController.m in Sources */,
 				B98C9C3F17DC0C36008B10E0 /* FriendCell.m in Sources */,
-				B98C9C4017DC0C36008B10E0 /* TransparentToolbar.m in Sources */,
 				B98C9C4317DC16D8008B10E0 /* UIView+Shadow.m in Sources */,
 				B9D5C95D17E3E31500B84BEF /* FriendListHeader.m in Sources */,
 				B9D5C96017E54F5100B84BEF /* GroupObject.m in Sources */,

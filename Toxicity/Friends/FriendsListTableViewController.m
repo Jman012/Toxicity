@@ -42,10 +42,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"FriendRequestReceived" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"RejectedFriendRequest" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"GroupInviteReceived" object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView:) name:@"DHTConnected" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView:) name:@"DHTDisconnected" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConnectionStatusView:) name:@"NewNumberOfConnectedNodes" object:nil];
+
     
     
     /***** Appearance *****/
@@ -69,11 +66,6 @@
     }
     
     self.tableView.backgroundColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
-    
-    //dht connection status, put above table view
-    connectionStatusToolbar = [[TransparentToolbar alloc] initWithFrame:CGRectMake(0, -55, self.tableView.bounds.size.width, 44)];
-    [self updateConnectionStatusView:[NSNotification notificationWithName:@"" object:nil]];
-    [self.tableView addSubview:connectionStatusToolbar];
     
     /***** End Appearance *****/
     
@@ -125,25 +117,6 @@
     } else {
         self.navigationItem.rightBarButtonItem.title = @"Requests";
     }
-}
-     
-- (void)updateConnectionStatusView:(NSNotification *)notificaton {
-    UIBarButtonItem *dhtStatus = [[UIBarButtonItem alloc] init];
-    if (tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
-        if ([notificaton object] == nil || ![notificaton object]) {
-            dhtStatus.title = @"Connected to Network";
-        } else {
-            dhtStatus.title = [NSString stringWithFormat:@"Connected to Network: %d Nodes", [[notificaton object] integerValue]];
-        }
-        dhtStatus.tintColor = [UIColor colorWithRed:0.0f green:0.6f blue:0.0f alpha:1.0f];
-    } else {
-        dhtStatus.title = @"Not Connected";
-        dhtStatus.tintColor = [UIColor colorWithRed:0.6f green:0.0f blue:0.0f alpha:1.0f];
-    }
-    dhtStatus.style = UIBarButtonItemStyleBordered;
-    dhtStatus.width = 310;
-    
-    [connectionStatusToolbar setItems:[NSArray arrayWithObject:dhtStatus]];
 }
 
 #pragma mark - Table view data source

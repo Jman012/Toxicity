@@ -11,7 +11,6 @@
 #import "Singleton.h"
 #import "FriendChatWindowViewController.h"
 #import "GroupChatWindowViewController.h"
-#import "TransparentToolbar.h"
 #import "RequestsTableViewController.h"
 #import "FriendCell.h"
 #import "AppDelegate.h"
@@ -27,9 +26,7 @@
     IBOutlet UIBarButtonItem    *requestsButton;
     
     NSMutableArray              *_mainFriendList;
-    
-    TransparentToolbar          *connectionStatusToolbar;
-    
+        
     FriendListHeader            *headerForFriends;
     FriendListHeader            *headerForGroups;
 }

@@ -49,6 +49,8 @@
                                                                                   target:self
                                                                                   action:@selector(cameraButtonPressed)];
     [cameraButton setStyle:UIBarButtonItemStyleBordered];
+    UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    [fixedSpace setWidth:20.0f];
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                target:self
                                                                                action:@selector(addButtonPressed)];
@@ -69,7 +71,7 @@
                                                    action:@selector(rejectButtonPressed)];
 
     [addButton setStyle:UIBarButtonItemStyleBordered];
-    NSArray *array = [NSArray arrayWithObjects:cameraButton, addButton, flexibleSpace, acceptButton, rejectButton, nil];
+    NSArray *array = [NSArray arrayWithObjects:cameraButton, fixedSpace, addButton, flexibleSpace, acceptButton, rejectButton, nil];
     self.toolbarItems = array;
     [self.navigationController setToolbarHidden:NO animated:YES];
     
