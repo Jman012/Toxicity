@@ -28,10 +28,10 @@
     
     //callbacks
     tox_callback_friend_request(       [[Singleton sharedSingleton] toxCoreInstance], print_request,                NULL);
-    tox_callback_group_invite(        [[Singleton sharedSingleton] toxCoreInstance], print_groupinvite,            NULL);
+    tox_callback_group_invite(         [[Singleton sharedSingleton] toxCoreInstance], print_groupinvite,            NULL);
     tox_callback_friend_message(       [[Singleton sharedSingleton] toxCoreInstance], print_message,                NULL);
-    tox_callback_friend_action(              [[Singleton sharedSingleton] toxCoreInstance], print_action,                 NULL);
-    tox_callback_group_message(       [[Singleton sharedSingleton] toxCoreInstance], print_groupmessage,           NULL);
+    tox_callback_friend_action(        [[Singleton sharedSingleton] toxCoreInstance], print_action,                 NULL);
+    tox_callback_group_message(        [[Singleton sharedSingleton] toxCoreInstance], print_groupmessage,           NULL);
     tox_callback_name_change(          [[Singleton sharedSingleton] toxCoreInstance], print_nickchange,             NULL);
     tox_callback_status_message(       [[Singleton sharedSingleton] toxCoreInstance], print_statuschange,           NULL);
     tox_callback_connection_status(    [[Singleton sharedSingleton] toxCoreInstance], print_connectionstatuschange, NULL);
@@ -903,6 +903,17 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     //this function is called once, and runs a while loop
     //it doesn't do recursiveness
     
+    NSArray *dhtNodes = @[
+                          @{@"ip": @"192.254.75.98", @"port": @"33445", @"key": @"FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"},
+                          @{@"ip": @"192.184.81.118", @"port": @"33445", @"key": @"5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"},
+                          @{@"ip": @"144.76.60.215", @"port": @"33445", @"key": @"DDCF277B8B45B0D357D78AA4E201766932DF6CDB7179FC7D5C9F3C2E8E705326"},
+                          @{@"ip": @"193.107.16.73", @"port": @"33445", @"key": @"AE27E1E72ADA3DC423C60EEBACA241456174048BE76A283B41AD32D953182D49"},
+                          @{@"ip": @"66.74.15.98", @"port": @"33445", @"key": @"20C797E098701A848B07D0384222416B0EFB60D08CECB925B860CAEAAB572067"}
+                          ];
+    int lastAttemptedConnect = time(0);
+    
+    
+    srand(lastAttemptedConnect);
     while (TRUE) {
 //        NSLog(@"Loooooop");
         //check to see if our thread was cancelled, and if so, exit so it's not in the middle of tox_do
@@ -940,6 +951,17 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
         
         
         tox_do([[Singleton sharedSingleton] toxCoreInstance]);
+        
+        if (on == 0 && lastAttemptedConnect < time(0)+2) {
+            int num = rand() % [dhtNodes count];
+            unsigned char *binary_string = hex_string_to_bin((char *)[dhtNodes[num][@"key"] UTF8String]);
+            tox_bootstrap_from_address([[Singleton sharedSingleton] toxCoreInstance],
+                                       [dhtNodes[num][@"ip"] UTF8String],
+                                       TOX_ENABLE_IPV6_DEFAULT,
+                                       htons(atoi([dhtNodes[num][@"port"] UTF8String])),
+                                       binary_string); //actual connection
+            free(binary_string);
+        }
         
         if (on) {
             //print when the number of connected clients changes

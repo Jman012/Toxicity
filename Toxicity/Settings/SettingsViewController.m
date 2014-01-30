@@ -265,7 +265,7 @@
                 UISegmentedControl *statusTypeControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Online", @"Away", @"Busy", nil]];
                 statusTypeControl.segmentedControlStyle = UISegmentedControlStyleBar;
                 [statusTypeControl addTarget:self action:@selector(userStatusTypeDidChange:) forControlEvents:UIControlEventValueChanged];
-                statusTypeControl.frame = CGRectMake(10, 7, 280, 30);
+                statusTypeControl.frame = CGRectMake(cell.contentView.bounds.origin.x + 10, 7, cell.contentView.frame.size.width - 20, 30);
                 switch ([[Singleton sharedSingleton] userStatusType]) {
                     case ToxFriendUserStatus_None:
                         statusTypeControl.selectedSegmentIndex = 0;
