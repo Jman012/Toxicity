@@ -18,6 +18,9 @@
 		B94F2C6F17AF25C0003EA6E8 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C6E17AF25C0003EA6E8 /* Default@2x.png */; };
 		B94F2C7117AF25C0003EA6E8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C7017AF25C0003EA6E8 /* Default-568h@2x.png */; };
 		B94F2C7417AF25C0003EA6E8 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C7217AF25C0003EA6E8 /* MainStoryboard.storyboard */; };
+		B9748754189AE5EC0064B6FF /* onion_announce.c in Sources */ = {isa = PBXBuildFile; fileRef = B974874E189AE5EC0064B6FF /* onion_announce.c */; };
+		B9748755189AE5EC0064B6FF /* onion_client.c in Sources */ = {isa = PBXBuildFile; fileRef = B9748750189AE5EC0064B6FF /* onion_client.c */; };
+		B9748756189AE5EC0064B6FF /* onion.c in Sources */ = {isa = PBXBuildFile; fileRef = B9748752189AE5EC0064B6FF /* onion.c */; };
 		B97D603417B84328001C07B8 /* status-gray.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D602C17B84328001C07B8 /* status-gray.png */; };
 		B97D603517B84328001C07B8 /* status-gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D602D17B84328001C07B8 /* status-gray@2x.png */; };
 		B97D603617B84328001C07B8 /* status-green.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D602E17B84328001C07B8 /* status-green.png */; };
@@ -290,6 +293,12 @@
 		B94F2C6E17AF25C0003EA6E8 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		B94F2C7017AF25C0003EA6E8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		B94F2C7317AF25C0003EA6E8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		B974874E189AE5EC0064B6FF /* onion_announce.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = onion_announce.c; path = "ProjectTox-Core/toxcore/onion_announce.c"; sourceTree = "<group>"; };
+		B974874F189AE5EC0064B6FF /* onion_announce.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = onion_announce.h; path = "ProjectTox-Core/toxcore/onion_announce.h"; sourceTree = "<group>"; };
+		B9748750189AE5EC0064B6FF /* onion_client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = onion_client.c; path = "ProjectTox-Core/toxcore/onion_client.c"; sourceTree = "<group>"; };
+		B9748751189AE5EC0064B6FF /* onion_client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = onion_client.h; path = "ProjectTox-Core/toxcore/onion_client.h"; sourceTree = "<group>"; };
+		B9748752189AE5EC0064B6FF /* onion.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = onion.c; path = "ProjectTox-Core/toxcore/onion.c"; sourceTree = "<group>"; };
+		B9748753189AE5EC0064B6FF /* onion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = onion.h; path = "ProjectTox-Core/toxcore/onion.h"; sourceTree = "<group>"; };
 		B97D602C17B84328001C07B8 /* status-gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray.png"; path = "Images/status-gray.png"; sourceTree = "<group>"; };
 		B97D602D17B84328001C07B8 /* status-gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray@2x.png"; path = "Images/status-gray@2x.png"; sourceTree = "<group>"; };
 		B97D602E17B84328001C07B8 /* status-green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-green.png"; path = "Images/status-green.png"; sourceTree = "<group>"; };
@@ -824,6 +833,12 @@
 				B9D5C98817E5904600B84BEF /* net_crypto.h */,
 				B9D5C98917E5904600B84BEF /* network.c */,
 				B9D5C98A17E5904600B84BEF /* network.h */,
+				B9748752189AE5EC0064B6FF /* onion.c */,
+				B9748753189AE5EC0064B6FF /* onion.h */,
+				B974874E189AE5EC0064B6FF /* onion_announce.c */,
+				B974874F189AE5EC0064B6FF /* onion_announce.h */,
+				B9748750189AE5EC0064B6FF /* onion_client.c */,
+				B9748751189AE5EC0064B6FF /* onion_client.h */,
 				B9D5C98B17E5904600B84BEF /* ping.c */,
 				B9D5C98C17E5904600B84BEF /* ping.h */,
 				B9D5C98D17E5904600B84BEF /* tox.c */,
@@ -2111,10 +2126,12 @@
 				B9BB995117B0187D00A1ACEC /* hmac_hmacsha512256.c in Sources */,
 				B9BB995217B0187D00A1ACEC /* verify_hmacsha512256.c in Sources */,
 				B9BB995317B0187D00A1ACEC /* crypto_box.c in Sources */,
+				B9748754189AE5EC0064B6FF /* onion_announce.c in Sources */,
 				B9BB995417B0187D00A1ACEC /* box_curve25519xsalsa20poly1305_api.c in Sources */,
 				B9BB995517B0187D00A1ACEC /* after_curve25519xsalsa20poly1305.c in Sources */,
 				B9BB995617B0187D00A1ACEC /* before_curve25519xsalsa20poly1305.c in Sources */,
 				B9BB995717B0187D00A1ACEC /* box_curve25519xsalsa20poly1305.c in Sources */,
+				B9748756189AE5EC0064B6FF /* onion.c in Sources */,
 				B9BB995817B0187D00A1ACEC /* keypair_curve25519xsalsa20poly1305.c in Sources */,
 				B9BB995917B0187D00A1ACEC /* core_hsalsa20_api.c in Sources */,
 				B9BB995A17B0187D00A1ACEC /* core_hsalsa20.c in Sources */,
@@ -2180,6 +2197,7 @@
 				B9BB999617B0187D00A1ACEC /* ge_msub.c in Sources */,
 				B9BB999717B0187D00A1ACEC /* ge_p1p1_to_p2.c in Sources */,
 				B9BB999817B0187D00A1ACEC /* ge_p1p1_to_p3.c in Sources */,
+				B9748755189AE5EC0064B6FF /* onion_client.c in Sources */,
 				B9BB999917B0187D00A1ACEC /* ge_p2_0.c in Sources */,
 				B9BB999A17B0187D00A1ACEC /* ge_p2_dbl.c in Sources */,
 				B9BB999B17B0187D00A1ACEC /* ge_p3_0.c in Sources */,
