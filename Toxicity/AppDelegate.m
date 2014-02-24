@@ -684,7 +684,11 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
         
         MessageObject *theMessage = [[MessageObject alloc] init];
         [theMessage setMessage:newMessage];
-        [theMessage setOrigin:MessageLocation_Them];
+        if ([theirName isEqualToString:[[Singleton sharedSingleton] userNick]]) {
+            [theMessage setOrigin:MessageLocation_Me];
+        } else {
+            [theMessage setOrigin:MessageLocation_Them];
+        }
         [theMessage setDidFailToSend:NO];
         [theMessage setIsActionMessage:NO];
         [theMessage setIsGroupMessage:YES];
@@ -864,14 +868,19 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
 }
 
 void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t change, void *userdata) {
-    dispatch_sync(dispatch_get_main_queue(), ^{
+    void (^code_block)(void) = ^void(void) {
         NSLog(@"New names:");
         uint8_t groupPeerList[256][TOX_MAX_NAME_LENGTH];
         int groupPeerCount = tox_group_get_names([[Singleton sharedSingleton] toxCoreInstance], groupnumber, groupPeerList, 256);
         for (int i = 0; i < groupPeerCount; i++) {
             NSLog(@"\t%s", groupPeerList[i]);
         }
-    });
+    };
+    if ([NSThread isMainThread]) {
+        code_block();
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), code_block);
+    }
 }
 
 #pragma mark - End Tox Core Callback Functions
@@ -949,8 +958,11 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
             });
         }
         
-        
+        int a = time(0);
         tox_do([[Singleton sharedSingleton] toxCoreInstance]);
+        if (time(0) - a > 1) {
+            NSLog(@"tox_do took more than %lu seconds!", time(0) - a);
+        }
         
         if (on == 0 && lastAttemptedConnect < time(0)+2) {
             int num = rand() % [dhtNodes count];

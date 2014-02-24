@@ -192,7 +192,7 @@
     }
     
     //add the message after we know if it failed or not
-    [messages addObject:tempMessage];
+//    [messages addObject:tempMessage];
     
     [self finishSend];
 }
