@@ -25,5 +25,6 @@ typedef enum {
 @property (nonatomic, assign) BOOL              isActionMessage;
 @property (nonatomic, strong) NSString          *recipientKey;
 @property (nonatomic, strong) NSString          *senderKey;
+@property (nonatomic, strong) NSString          *senderName;
 
 @end

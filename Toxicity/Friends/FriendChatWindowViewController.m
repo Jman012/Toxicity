@@ -8,6 +8,9 @@
 
 #import "FriendChatWindowViewController.h"
 
+#define kSenderMe @"Me"
+#define kSenderThem @"Them"
+
 @interface FriendChatWindowViewController ()
 
 @end
@@ -43,13 +46,14 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-    
     self.delegate = self;
     self.dataSource = self;
+    [super viewDidLoad];
     
-    self.tableView.backgroundColor = [UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f];
-    self.tableView.separatorColor = [UIColor clearColor];
+    [[JSBubbleView appearance] setFont:[UIFont systemFontOfSize:16.0f]];
+    self.messageInputView.textView.placeHolder = @"";
+    self.sender = kSenderMe;
+    [self setBackgroundColor:[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f]];
     
     if ([_friendInfo.nickname isEqualToString:@""])
         self.title = _friendInfo.publicKey;
@@ -59,11 +63,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo) name:@"FriendAdded" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"NewMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColoredStatusIndicator) name:@"FriendUserStatusChanged" object:nil];
-    
-    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToPopView)];
-    swipeRight.cancelsTouchesInView = NO;
-    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.view addGestureRecognizer:swipeRight];
     
     //setup the colored status indicator on the navbar
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
@@ -79,22 +78,25 @@
     [self updateColoredStatusIndicator];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self scrollToBottomAnimated:NO];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
+//    [self viewDidAppear:animated];
     [self.navigationController.navigationBar addSubview:statusNavBarImageView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [statusNavBarImageView removeFromSuperview];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
     [[Singleton sharedSingleton] mainFriendMessages][friendIndex.row] = [messages mutableCopy];
     [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
-}
-
-- (void)swipeToPopView {
-    //user swiped from left to right, should pop the view back to friends list
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)updateColoredStatusIndicator {
@@ -168,7 +170,7 @@
         [self scrollToBottomAnimated:YES];
     }
     
-    
+    [self scrollToBottomAnimated:YES];
     [JSMessageSoundEffect playMessageReceivedSound];
 }
 
@@ -179,8 +181,9 @@
 }
 
 #pragma mark - Messages view delegate
-- (void)sendPressed:(UIButton *)sender withText:(NSString *)text
-{
+- (void)didSendText:(NSString *)text fromSender:(NSString *)sender onDate:(NSDate *)date {
+//- (void)sendPressed:(UIButton *)sender withText:(NSString *)text
+//{
     MessageObject *tempMessage = [[MessageObject alloc] init];
     tempMessage.recipientKey = _friendInfo.publicKey;
     
@@ -205,13 +208,7 @@
     
     [JSMessageSoundEffect playMessageSentSound];
     
-    if (friendIndex.section == 0) {
-        //group
-        [tempMessage setIsGroupMessage:YES];
-    } else {
-        //friend
-        [tempMessage setIsGroupMessage:NO];
-    }
+    [tempMessage setIsGroupMessage:NO];
     
     AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     BOOL success = [ourDelegate sendMessage:tempMessage];
@@ -221,6 +218,7 @@
     
     //add the message after we know if it failed or not
     [messages addObject:tempMessage];
+//    [messages addObject:[[JSMessage alloc] initWithText:tempMessage.message sender:kSenderMe date:nil]];
     
     [self finishSend];
 }
@@ -228,61 +226,51 @@
 - (JSBubbleMessageType)messageTypeForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
-    if ([tempMessage origin] == MessageLocation_Me)
-        return JSBubbleMessageTypeOutgoing;
-    else
-        return JSBubbleMessageTypeIncoming;
+    return tempMessage.origin == MessageLocation_Me ? JSBubbleMessageTypeOutgoing : JSBubbleMessageTypeIncoming;
 }
 
-- (JSBubbleMessageStyle)messageStyleForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return JSBubbleMessageStyleSquare;
+- (UIImageView *)bubbleImageViewWithType:(JSBubbleMessageType)type forRowAtIndexPath:(NSIndexPath *)indexPath {
+    MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
+    if (tempMessage.origin == MessageLocation_Me) {
+        return [JSBubbleImageViewFactory bubbleImageViewForType:type color:[UIColor js_bubbleBlueColor]];
+    } else {
+        return [JSBubbleImageViewFactory bubbleImageViewForType:type color:[UIColor js_bubbleLightGrayColor]];
+    }
 }
 
-- (JSMessagesViewTimestampPolicy)timestampPolicy
-{
-    return JSMessagesViewTimestampPolicyCustom;
+- (JSMessageInputViewStyle)inputViewStyle {
+    return JSMessageInputViewStyleFlat;
 }
 
-- (JSMessagesViewAvatarPolicy)avatarPolicy
-{
-    return JSMessagesViewAvatarPolicyNone;
+- (BOOL)shouldPreventScrollToBottomWhileUserScrolling {
+    return YES;
 }
 
-- (JSAvatarStyle)avatarStyle
-{
-    return JSAvatarStyleCircle;
+- (BOOL)shouldDisplayTimestampForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
+
+- (BOOL)allowsPanToDismissKeyboard {
+    return YES;
 }
 
 - (BOOL)hasTimestampForRowAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
 }
 
-- (BOOL)shouldHaveAvatarForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (JSMessage *)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
     MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
-    return [tempMessage didFailToSend];
+    return [[JSMessage alloc] initWithText:tempMessage.message sender:tempMessage.origin == MessageLocation_Me ? kSenderMe : kSenderThem date:nil];
 }
 
-#pragma mark - Messages view data source
-- (NSString *)textForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
-    return [tempMessage message];
+- (UIImageView *)avatarImageViewForRowAtIndexPath:(NSIndexPath *)indexPath sender:(NSString *)sender {
+    return nil;
 }
 
-- (NSDate *)timestampForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return [NSDate date];
-}
-
-- (UIImage *)avatarImageForIncomingMessage
-{
-    return [UIImage imageNamed:@"demo-avatar-woz"];
-}
-
-- (UIImage *)avatarImageForOutgoingMessage
-{
-    return [UIImage imageNamed:@"message-not-sent"];
+- (void)configureCell:(JSBubbleMessageCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    if (cell.subtitleLabel) {
+        cell.subtitleLabel.text = nil;
+    }
 }
 
 - (void)didReceiveMemoryWarning

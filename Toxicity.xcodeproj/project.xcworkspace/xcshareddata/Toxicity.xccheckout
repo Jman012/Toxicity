@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>F334DB6A-1E16-4314-B8D9-D1BF2E18467F</string>
 	<key>IDESourceControlProjectName</key>
@@ -38,9 +40,9 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>9C06D627-5004-46AE-98D7-44F26A6443C5</string>
+			<string>434A9D8E-D84C-4D35-84B3-4B86F0E3E2FC</string>
 			<key>IDESourceControlWCCName</key>
-			<string>Toxicity</string>
+			<string>MessagesTableViewController</string>
 		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
@@ -54,9 +56,9 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>434A9D8E-D84C-4D35-84B3-4B86F0E3E2FC</string>
+			<string>9C06D627-5004-46AE-98D7-44F26A6443C5</string>
 			<key>IDESourceControlWCCName</key>
-			<string>MessagesTableViewController</string>
+			<string>Toxicity</string>
 		</dict>
 	</array>
 </dict>

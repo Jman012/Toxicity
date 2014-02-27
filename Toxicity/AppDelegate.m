@@ -639,6 +639,7 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
         
         MessageObject *theMessage = [[MessageObject alloc] init];
         [theMessage setMessage:[NSString stringWithUTF8String:(char *)string]];
+        [theMessage setSenderName:[[Singleton sharedSingleton] userNick]];
         [theMessage setOrigin:MessageLocation_Them];
         [theMessage setDidFailToSend:NO];
         [theMessage setIsGroupMessage:NO];
@@ -679,11 +680,12 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
         uint8_t *theirNameC[TOX_MAX_NAME_LENGTH];
         tox_group_peername([[Singleton sharedSingleton] toxCoreInstance], groupnumber, friendgroupnumber, (uint8_t *)theirNameC);
         NSString *theirName = [NSString stringWithUTF8String:(const char *)theirNameC];
-        NSString *newMessage = [theirName stringByAppendingFormat:@": %@", [NSString stringWithUTF8String:(const char *)message]];
-        
+//        NSString *newMessage = [theirName stringByAppendingFormat:@": %@", [NSString stringWithUTF8String:(const char *)message]];
+        NSString *theirMessage = [NSString stringWithUTF8String:(const char *)message];
         
         MessageObject *theMessage = [[MessageObject alloc] init];
-        [theMessage setMessage:newMessage];
+        [theMessage setMessage:theirMessage];
+        [theMessage setSenderName:theirName];
         if ([theirName isEqualToString:[[Singleton sharedSingleton] userNick]]) {
             [theMessage setOrigin:MessageLocation_Me];
         } else {
@@ -702,7 +704,7 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
             [[Singleton sharedSingleton] groupMessages][groupnumber] = [tempMessages copy];
             
             UIAlertView *messageAlert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Message from Group #%d", groupnumber]
-                                                                   message:newMessage
+                                                                   message:theirMessage
                                                                   delegate:nil
                                                          cancelButtonTitle:@"Okay"
                                                          otherButtonTitles:nil];

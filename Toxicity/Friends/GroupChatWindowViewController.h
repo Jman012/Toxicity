@@ -7,6 +7,8 @@
 //
 
 #import "JSMessagesViewController.h"
+#import "JSMessage.h"
+#import "JSBubbleImageViewFactory.h"
 #import "Singleton.h"
 #import "AppDelegate.h"
 

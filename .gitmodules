@@ -4,3 +4,9 @@
 [submodule "MessagesTableViewController"]
 	path = MessagesTableViewController
 	url = https://github.com/jessesquires/MessagesTableViewController.git
+[submodule "JSQSystemSoundPlayer"]
+	path = JSQSystemSoundPlayer
+	url = https://github.com/jessesquires/JSQSystemSoundPlayer.git
+[submodule "JSQSystemSoundPlayer-submodule"]
+	path = JSQSystemSoundPlayer-submodule
+	url = https://github.com/jessesquires/JSQSystemSoundPlayer.git

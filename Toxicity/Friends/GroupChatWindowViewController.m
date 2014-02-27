@@ -8,6 +8,8 @@
 
 #import "GroupChatWindowViewController.h"
 
+#define kSenderMe @"Me"
+
 @interface GroupChatWindowViewController ()
 
 @end
@@ -43,13 +45,14 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-    
     self.delegate = self;
     self.dataSource = self;
+    [super viewDidLoad];
     
-    self.tableView.backgroundColor = [UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f];
-    self.tableView.separatorColor = [UIColor clearColor];
+    [[JSBubbleView appearance] setFont:[UIFont systemFontOfSize:16.0f]];
+    self.messageInputView.textView.placeHolder = @"";
+    self.sender = kSenderMe;
+    [self setBackgroundColor:[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f]];
     
     if ([_groupInfo.groupName isEqualToString:@""])
         self.title = _groupInfo.groupPulicKey;
@@ -59,60 +62,26 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo) name:@"FriendAdded" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"NewMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColoredStatusIndicator) name:@"FriendUserStatusChanged" object:nil];
-    
-    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToPopView)];
-    swipeRight.cancelsTouchesInView = NO;
-    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.view addGestureRecognizer:swipeRight];
-    
-    /*//setup the colored status indicator on the navbar
-    statusNavBarImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray-navbar"]];
-    CGRect tempFrame = statusNavBarImageView.frame;
-    tempFrame.origin.x = self.navigationController.navigationBar.frame.size.width - tempFrame.size.width;
-    statusNavBarImageView.frame = tempFrame;
-//    [self.navigationController.navigationBar addSubview:statusNavBarImageView];
-    [self updateColoredStatusIndicator];*/
+
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self scrollToBottomAnimated:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [self.navigationController.navigationBar addSubview:statusNavBarImageView];
+//    [super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [statusNavBarImageView removeFromSuperview];
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
     [[Singleton sharedSingleton] groupMessages][friendIndex.row] = [messages mutableCopy];
     [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
-}
-
-- (void)swipeToPopView {
-    //user swiped from left to right, should pop the view back to friends list
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)updateColoredStatusIndicator {
-    /*if (_groupInfo.connectionType == ToxFriendConnectionStatus_Online) {
-        switch (_groupInfo.statusType) {
-            case ToxFriendUserStatus_None:
-                [statusNavBarImageView setImage:[UIImage imageNamed:@"status-green-navbar"]];
-                break;
-                
-            case ToxFriendUserStatus_Away:
-                [statusNavBarImageView setImage:[UIImage imageNamed:@"status-yellow-navbar"]];
-                break;
-                
-            case ToxFriendUserStatus_Busy:
-                [statusNavBarImageView setImage:[UIImage imageNamed:@"status-red-navbar"]];
-                break;
-                
-            default:
-                break;
-        }
-    } else {
-        [statusNavBarImageView setImage:[UIImage imageNamed:@"status-gray-navbar"]];
-    }*/
 }
 
 #pragma mark - Notifications Center stuff
@@ -139,7 +108,7 @@
         [self scrollToBottomAnimated:YES];
     }
     
-    
+    [self scrollToBottomAnimated:YES];
     [JSMessageSoundEffect playMessageReceivedSound];
 }
 
@@ -150,7 +119,7 @@
 }
 
 #pragma mark - Messages view delegate
-- (void)sendPressed:(UIButton *)sender withText:(NSString *)text
+- (void)didSendText:(NSString *)text fromSender:(NSString *)sender onDate:(NSDate *)date
 {
     MessageObject *tempMessage = [[MessageObject alloc] init];
     tempMessage.recipientKey = _groupInfo.groupPulicKey;
@@ -177,13 +146,7 @@
     [JSMessageSoundEffect playMessageSentSound];
     
     
-    if (friendIndex.section == 0) {
-        //group
-        tempMessage.isGroupMessage = YES;
-    } else {
-        //friend
-        tempMessage.isGroupMessage = NO;
-    }
+    [tempMessage setIsGroupMessage:YES];
     
     AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     BOOL success = [ourDelegate sendMessage:tempMessage];
@@ -200,61 +163,56 @@
 - (JSBubbleMessageType)messageTypeForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
-    if ([tempMessage origin] == MessageLocation_Me)
-        return JSBubbleMessageTypeOutgoing;
-    else
-        return JSBubbleMessageTypeIncoming;
+    return tempMessage.origin == MessageLocation_Me ? JSBubbleMessageTypeOutgoing : JSBubbleMessageTypeIncoming;
 }
 
-- (JSBubbleMessageStyle)messageStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UIImageView *)bubbleImageViewWithType:(JSBubbleMessageType)type forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return JSBubbleMessageStyleSquare;
+    MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
+    if (tempMessage.origin == MessageLocation_Me) {
+        return [JSBubbleImageViewFactory bubbleImageViewForType:type color:[UIColor js_bubbleBlueColor]];
+    } else {
+        return [JSBubbleImageViewFactory bubbleImageViewForType:type color:[UIColor js_bubbleLightGrayColor]];
+    }
 }
 
-- (JSMessagesViewTimestampPolicy)timestampPolicy
-{
-    return JSMessagesViewTimestampPolicyCustom;
+- (JSMessageInputViewStyle)inputViewStyle {
+    return JSMessageInputViewStyleFlat;
 }
 
-- (JSMessagesViewAvatarPolicy)avatarPolicy
+- (BOOL)shouldPreventScrollToBottomWhileUserScrolling
 {
-    return JSMessagesViewAvatarPolicyNone;
+    return YES;
 }
 
-- (JSAvatarStyle)avatarStyle
-{
-    return JSAvatarStyleCircle;
+- (BOOL)shouldDisplayTimestampForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
+
+- (BOOL)allowsPanToDismissKeyboard {
+    return YES;
 }
 
 - (BOOL)hasTimestampForRowAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
 }
 
-- (BOOL)shouldHaveAvatarForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (JSMessage *)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
     MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
-    return [tempMessage didFailToSend];
+    return [[JSMessage alloc] initWithText:tempMessage.message sender:tempMessage.origin == MessageLocation_Me ? kSenderMe : tempMessage.senderName date:nil];
 }
 
-#pragma mark - Messages view data source
-- (NSString *)textForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UIImageView *)avatarImageViewForRowAtIndexPath:(NSIndexPath *)indexPath sender:(NSString *)sender
+{
+    return nil;
+}
+
+- (void)configureCell:(JSBubbleMessageCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
-    return [tempMessage message];
-}
-
-- (NSDate *)timestampForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return [NSDate date];
-}
-
-- (UIImage *)avatarImageForIncomingMessage
-{
-    return [UIImage imageNamed:@"demo-avatar-woz"];
-}
-
-- (UIImage *)avatarImageForOutgoingMessage
-{
-    return [UIImage imageNamed:@"message-not-sent"];
+    if (cell.subtitleLabel && tempMessage.origin == MessageLocation_Them) {
+        cell.subtitleLabel.text = [tempMessage senderName];
+    }
 }
 
 - (void)didReceiveMemoryWarning
