@@ -964,18 +964,9 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     }
     // Run tox_do
     int a = time(0);
-    time_t ret[9];
-    tox_do([[Singleton sharedSingleton] toxCoreInstance], ret);
+    tox_do([[Singleton sharedSingleton] toxCoreInstance]);
     if (time(0) - a > 1) {
         NSLog(@"tox_do took more than %lu seconds!", time(0) - a);
-        printf("Values: ");
-        time_t last = ret[0];
-        for (int i = 1; i < 9; i++) {
-            time_t new = ret[i];
-            printf("%ld ", new - last);
-            last = new;
-        }
-        printf("\n");
     }
 
     // Keep going
