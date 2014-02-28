@@ -10,6 +10,8 @@
 
 @implementation AppDelegate
 
+@synthesize toxMainThread;
+
 #pragma mark - Application Delegation Methods
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -150,6 +152,9 @@
     
     [self configureNavigationControllerDesign:(UINavigationController *)self.window.rootViewController];
     
+    // Tox thread
+    self.toxMainThread = dispatch_queue_create("com.Jman.Toxicity", DISPATCH_QUEUE_SERIAL);
+    
     return YES;
 }
 
@@ -179,10 +184,7 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-//    [self startToxThread];
-    toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
-    [toxMainThread setThreadPriority:1.0];
-    [toxMainThread start];
+    [self startToxThread];
     
 }
 
@@ -217,36 +219,28 @@
     
     
     //used from toxic source, this tells tox core to make a connection into the dht network    
-    [self killToxThread];
-    unsigned char *binary_string = hex_string_to_bin((char *)dht_key);
-    tox_bootstrap_from_address([[Singleton sharedSingleton] toxCoreInstance],
-                               dht_ip,
-                               TOX_ENABLE_IPV6_DEFAULT,
-                               htons(atoi(dht_port)),
-                               binary_string); //actual connection
-    free(binary_string);
-    [self startToxThread];
-    
-    
-    //add the connection info to the singleton, then a timer if the connection doesn't work
-    [[Singleton sharedSingleton] setCurrentConnectDHT:[theDHTInfo copy]];
-    [[[Singleton sharedSingleton] currentConnectDHT] setConnectionStatus:ToxDHTNodeConnectionStatus_Connecting];
-    
-    
-    //run this in 10 seconds. if no connection is made, tell the settings controller about failed connection.
-    //settings controller will remove the uiactivityview, and this method will clear the singleton's currentConnectDHT
-    [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(connectionTimeoutTimerDidEnd) userInfo:nil repeats:NO];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DidStartDHTNodeConnection" object:nil];
-    
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_async(self.toxMainThread, ^{
+        unsigned char *binary_string = hex_string_to_bin((char *)dht_key);
+        tox_bootstrap_from_address([[Singleton sharedSingleton] toxCoreInstance],
+                                   dht_ip,
+                                   TOX_ENABLE_IPV6_DEFAULT,
+                                   htons(atoi(dht_port)),
+                                   binary_string); //actual connection
+        free(binary_string);
+        dispatch_semaphore_signal(semaphore);
+    });
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+
 }
 
 - (void)userNickChanged {
     char *newNick = (char *)[[[Singleton sharedSingleton] userNick] UTF8String];
     
     //submit new nick to core
-    [self killToxThread];
-    tox_set_name([[Singleton sharedSingleton] toxCoreInstance], (uint8_t *)newNick, strlen(newNick) + 1);
-    [self startToxThread];
+    dispatch_async(self.toxMainThread, ^{
+        tox_set_name([[Singleton sharedSingleton] toxCoreInstance], (uint8_t *)newNick, strlen(newNick) + 1);
+    });
     
     //save to user defaults
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
@@ -258,9 +252,9 @@
     char *newStatus = (char *)[[[Singleton sharedSingleton] userStatusMessage] UTF8String];
     
     //submit new status to core
-    [self killToxThread];
-    tox_set_status_message([[Singleton sharedSingleton] toxCoreInstance], (uint8_t *)newStatus, strlen(newStatus) + 1);
-    [self startToxThread];
+    dispatch_async(self.toxMainThread, ^{
+        tox_set_status_message([[Singleton sharedSingleton] toxCoreInstance], (uint8_t *)newStatus, strlen(newStatus) + 1);
+    });
     
     //save to user defaults
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
@@ -287,9 +281,9 @@
             statusType = TOX_USERSTATUS_INVALID;
             break;
     }
-    [self killToxThread];
-    tox_set_user_status([[Singleton sharedSingleton] toxCoreInstance], statusType);
-    [self startToxThread];
+    dispatch_async(self.toxMainThread, ^{
+        tox_set_user_status([[Singleton sharedSingleton] toxCoreInstance], statusType);
+    });
 }
 
 - (BOOL)sendMessage:(MessageObject *)theMessage {
@@ -312,13 +306,6 @@
             }
         }
     } else {
-//        for (int i = 0; i < [[[Singleton sharedSingleton] mainFriendList] count]; i++) {
-//            FriendObject *tempFriend = [[[Singleton sharedSingleton] mainFriendList] objectAtIndex:i];
-//            if ([theirKey isEqualToString:tempFriend.publicKey]) {
-//                friendNum = i;
-//                break;
-//            }
-//        }
         friendNum = friendNumForID(theirKey);
     }
     if (friendNum == -1) {
@@ -337,39 +324,46 @@
     
     //here we have to check to see if a "/me " exists, but before we do that we have to make sure the length is 5 or more
     //dont want to get out of bounds error
-    [self killToxThread];
-    
-    int num;
-    char *utf8Message = (char *)[messageToSend UTF8String];
-    
-    if (isGroupMessage == NO) { //chat message
-        if (isActionMessage) {
-            char *utf8FormattedMessage = (char *)[[messageToSend substringFromIndex:2] UTF8String];
-            num = tox_send_action([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8FormattedMessage, strlen(utf8FormattedMessage) + 1);
-        } else {
-            num = tox_send_message([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message) + 1);
+    __block BOOL returnVar = TRUE;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_async(self.toxMainThread, ^{
+        int num;
+        char *utf8Message = (char *)[messageToSend UTF8String];
+        
+        if (isGroupMessage == NO) { //chat message
+            if (isActionMessage) {
+                char *utf8FormattedMessage = (char *)[[messageToSend substringFromIndex:2] UTF8String];
+                num = tox_send_action([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8FormattedMessage, strlen(utf8FormattedMessage) + 1);
+            } else {
+                num = tox_send_message([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message) + 1);
+            }
+        } else { //group message
+            num = tox_group_message_send([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message) + 1);
         }
-    } else { //group message
-        num = tox_group_message_send([[Singleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8Message, strlen(utf8Message) + 1);
-    }
-    
-    if (num == -1) {
-        NSLog(@"Failed to put message in send queue!");
-        return FALSE;
-    } else {
-        return TRUE;
-    }
-    
-    [self startToxThread];
+        
+        if (num == -1) {
+            NSLog(@"Failed to put message in send queue!");
+            returnVar =  FALSE;
+        } else {
+            returnVar =  TRUE;
+        }
+        dispatch_semaphore_signal(semaphore);
+    });
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW + (100000 * NSEC_PER_USEC));
+    return returnVar;
 }
 
 - (void)addFriend:(NSString *)theirKey {
     //sends a request to the key
     
     uint8_t *binID = hex_string_to_bin((char *)[theirKey UTF8String]);
-    [self killToxThread];
-    int num = tox_add_friend([[Singleton sharedSingleton] toxCoreInstance], binID, (uint8_t *)"Toxicity for iOS", strlen("Toxicity for iOS") + 1);
-    [self startToxThread];
+    __block int num = 0;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_async(self.toxMainThread, ^{
+        num = tox_add_friend([[Singleton sharedSingleton] toxCoreInstance], binID, (uint8_t *)"Toxicity for iOS", strlen("Toxicity for iOS") + 1);
+        dispatch_semaphore_signal(semaphore);
+    });
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     free(binID);
     
     switch (num) {
@@ -412,108 +406,106 @@
 }
 
 - (void)acceptFriendRequests:(NSArray *)theKeysToAccept {
-    [self killToxThread];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_async(self.toxMainThread, ^{
 
-    for (NSString *arrayKey in theKeysToAccept) {
+        for (NSString *arrayKey in theKeysToAccept) {
 
-        NSData *data = [[[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:arrayKey] copy];
+            NSData *data = [[[[Singleton sharedSingleton] pendingFriendRequests] objectForKey:arrayKey] copy];
 
-        uint8_t *key = (uint8_t *)[data bytes];
-        
-        int num = tox_add_friend_norequest([[Singleton sharedSingleton] toxCoreInstance], key);
-        
-        switch (num) {
-            case -1: {
-                NSLog(@"Accepting request failed");
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unknown Error"
-                                                                    message:[NSString stringWithFormat:@"[Error Code: %d] There was an unknown error with accepting that ID.", num]
-                                                                   delegate:nil
-                                                          cancelButtonTitle:@"Okay"
-                                                          otherButtonTitles:nil];
-                [alertView show];
-                break;
-            }
-                
-            default: //added friend successfully
-            {
-                //friend added through accept request
-                FriendObject *tempFriend = [[FriendObject alloc] init];
-                [tempFriend setPublicKey:[arrayKey substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
-                NSLog(@"new friend key: %@", [tempFriend publicKey]);
-                [tempFriend setNickname:@""];
-                [tempFriend setStatusMessage:@"Accepted..."];
-                
-                [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
-                [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
-                
-                //save in user defaults
-                [Singleton saveFriendListInUserDefaults];
-                
-                //remove from the pending requests
-                [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:arrayKey];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
-                
-                break;
+            uint8_t *key = (uint8_t *)[data bytes];
+            
+            int num = tox_add_friend_norequest([[Singleton sharedSingleton] toxCoreInstance], key);
+            
+            switch (num) {
+                case -1: {
+                    NSLog(@"Accepting request failed");
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unknown Error"
+                                                                        message:[NSString stringWithFormat:@"[Error Code: %d] There was an unknown error with accepting that ID.", num]
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"Okay"
+                                                              otherButtonTitles:nil];
+                    [alertView show];
+                    break;
+                }
+                    
+                default: //added friend successfully
+                {
+                    //friend added through accept request
+                    FriendObject *tempFriend = [[FriendObject alloc] init];
+                    [tempFriend setPublicKey:[arrayKey substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
+                    NSLog(@"new friend key: %@", [tempFriend publicKey]);
+                    [tempFriend setNickname:@""];
+                    [tempFriend setStatusMessage:@"Accepted..."];
+                    
+                    [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
+                    [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
+                    
+                    //save in user defaults
+                    [Singleton saveFriendListInUserDefaults];
+                    
+                    //remove from the pending requests
+                    [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:arrayKey];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
+                    
+                    break;
+                }
             }
         }
-    }
-    
-    [self startToxThread];
+        dispatch_semaphore_signal(semaphore);
+    });
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     [prefs setObject:[[Singleton sharedSingleton] pendingFriendRequests] forKey:@"pending_requests_list"];
 }
 
 - (void)acceptGroupInvites:(NSArray *)theKeysToAccept {
-    NSLog(@"Killing thread");
-    [self killToxThread];
-    NSLog(@"Done");
-    
-    for (NSString *arrayKey in theKeysToAccept) {
-        
-        NSData *data = [[[[Singleton sharedSingleton] pendingGroupInvites] objectForKey:arrayKey] copy];
-        NSNumber *friendNumOfGroupKey = [[[Singleton sharedSingleton] pendingGroupInviteFriendNumbers] objectForKey:arrayKey];
-        
-        uint8_t *key = (uint8_t *)[data bytes];
-        NSLog(@"Joining");
-        int num = tox_join_groupchat([[Singleton sharedSingleton] toxCoreInstance], [friendNumOfGroupKey integerValue], key);
-        NSLog(@"Done");
-        switch (num) {
-            case -1: {
-                NSLog(@"Accepting group invite failed");
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unknown Error"
-                                                                    message:[NSString stringWithFormat:@"[Error Code: %d] There was an unkown error with accepting that Group", num]
-                                                                   delegate:nil
-                                                          cancelButtonTitle:@"Okay"
-                                                          otherButtonTitles:nil];
-                [alertView show];
-                break;
-            }
-                
-            default: {
-                NSLog(@"Doing stuff");
-                GroupObject *tempGroup = [[GroupObject alloc] init];
-                [tempGroup setGroupPulicKey:arrayKey];
-                [[[Singleton sharedSingleton] groupList] insertObject:tempGroup atIndex:num];
-                [[[Singleton sharedSingleton] groupMessages] insertObject:[NSArray array] atIndex:num];
-                
-                [Singleton saveGroupListInUserDefaults];
-                
-                [[[Singleton sharedSingleton] pendingGroupInvites] removeObjectForKey:arrayKey];
-                [[[Singleton sharedSingleton] pendingGroupInviteFriendNumbers] removeObjectForKey:arrayKey];
-                NSLog(@"Done");
-                NSLog(@"Notification");
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"GroupAdded" object:nil];
-                NSLog(@"Done");
-                
-                break;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_async(self.toxMainThread, ^{
+        for (NSString *arrayKey in theKeysToAccept) {
+            
+            NSData *data = [[[[Singleton sharedSingleton] pendingGroupInvites] objectForKey:arrayKey] copy];
+            NSNumber *friendNumOfGroupKey = [[[Singleton sharedSingleton] pendingGroupInviteFriendNumbers] objectForKey:arrayKey];
+            
+            uint8_t *key = (uint8_t *)[data bytes];
+            int num = tox_join_groupchat([[Singleton sharedSingleton] toxCoreInstance], [friendNumOfGroupKey integerValue], key);
+
+            switch (num) {
+                case -1: {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSLog(@"Accepting group invite failed");
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unknown Error"
+                                                                            message:[NSString stringWithFormat:@"[Error Code: %d] There was an unkown error with accepting that Group", num]
+                                                                           delegate:nil
+                                                                  cancelButtonTitle:@"Okay"
+                                                                  otherButtonTitles:nil];
+                        [alertView show];
+                    });
+                    break;
+                }
+                    
+                default: {
+                    GroupObject *tempGroup = [[GroupObject alloc] init];
+                    [tempGroup setGroupPulicKey:arrayKey];
+                    [[[Singleton sharedSingleton] groupList] insertObject:tempGroup atIndex:num];
+                    [[[Singleton sharedSingleton] groupMessages] insertObject:[NSArray array] atIndex:num];
+                    
+                    [Singleton saveGroupListInUserDefaults];
+                    
+                    [[[Singleton sharedSingleton] pendingGroupInvites] removeObjectForKey:arrayKey];
+                    [[[Singleton sharedSingleton] pendingGroupInviteFriendNumbers] removeObjectForKey:arrayKey];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"GroupAdded" object:nil];
+                    
+                    break;
+                }
             }
         }
-        
-    }
+        dispatch_semaphore_signal(semaphore);
+    });
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     
-    [self startToxThread];
 }
 
 - (int)deleteFriend:(NSString*)friendKey {
@@ -523,15 +515,14 @@
         return -1;
     }
     
-    //thread safety: cancel our thread, delete friend, restart thread
-    [self killToxThread];
-    
-    
-    //thread is now stopped, safe to remove friend
-    int num = tox_del_friend([[Singleton sharedSingleton] toxCoreInstance], friendNum);
-    
-    //all done, woo! restart thread
-    [self startToxThread];
+
+    __block int num = 0;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_async(self.toxMainThread, ^{
+        num = tox_del_friend([[Singleton sharedSingleton] toxCoreInstance], friendNum);
+        dispatch_semaphore_signal(semaphore);
+    });
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     
     //and return delfriend's number
     return num;
@@ -539,11 +530,13 @@
 }
 
 - (int)deleteGroupchat:(int)theGroupNumber {
-    [self killToxThread];
-    
-    int num = tox_del_groupchat([[Singleton sharedSingleton] toxCoreInstance], theGroupNumber);
-    
-    [self startToxThread];
+    __block int num = 0;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_sync(self.toxMainThread, ^{
+        num = tox_del_groupchat([[Singleton sharedSingleton] toxCoreInstance], theGroupNumber);
+        dispatch_semaphore_signal(semaphore);
+    });
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     
     return num;
 }
@@ -590,8 +583,10 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
             [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendRequestReceived" object:nil];
         } else {
             //no need to kill thread, this is synchronous
-            tox_add_friend_norequest([[Singleton sharedSingleton] toxCoreInstance], public_key);
-
+            AppDelegate *tempAppDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            dispatch_async(tempAppDelegate.toxMainThread, ^{
+                tox_add_friend_norequest([[Singleton sharedSingleton] toxCoreInstance], public_key);
+            });
         }
         
     });
@@ -626,7 +621,10 @@ void print_groupinvite(Tox *tox, int friendnumber, uint8_t *group_public_key, vo
             [[NSNotificationCenter defaultCenter] postNotificationName:@"GroupInviteReceived" object:nil];
             
         } else {
-            tox_join_groupchat([[Singleton sharedSingleton] toxCoreInstance], friendnumber, group_public_key);
+            AppDelegate *tempAppDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            dispatch_async(tempAppDelegate.toxMainThread, ^{
+                tox_join_groupchat([[Singleton sharedSingleton] toxCoreInstance], friendnumber, group_public_key);
+            });
         }
         
     });
@@ -674,13 +672,12 @@ void print_action(Tox *m, int friendnumber, uint8_t * action, uint16_t length, v
 }
 
 void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_t * message, uint16_t length, void *userdata) {
+    NSLog(@"Group message received from group [%d], message: %s. Friend [%d]", groupnumber, message, friendgroupnumber);
     dispatch_sync(dispatch_get_main_queue(), ^{
-        NSLog(@"Group message received from group [%d], message: %s. Friend [%d]", groupnumber, message, friendgroupnumber);
         
         uint8_t *theirNameC[TOX_MAX_NAME_LENGTH];
         tox_group_peername([[Singleton sharedSingleton] toxCoreInstance], groupnumber, friendgroupnumber, (uint8_t *)theirNameC);
         NSString *theirName = [NSString stringWithUTF8String:(const char *)theirNameC];
-//        NSString *newMessage = [theirName stringByAppendingFormat:@": %@", [NSString stringWithUTF8String:(const char *)message]];
         NSString *theirMessage = [NSString stringWithUTF8String:(const char *)message];
         
         MessageObject *theMessage = [[MessageObject alloc] init];
@@ -870,7 +867,7 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
 }
 
 void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t change, void *userdata) {
-    void (^code_block)(void) = ^void(void) {
+    /*void (^code_block)(void) = ^void(void) {
         NSLog(@"New names:");
         uint8_t groupPeerList[256][TOX_MAX_NAME_LENGTH];
         int groupPeerCount = tox_group_get_names([[Singleton sharedSingleton] toxCoreInstance], groupnumber, groupPeerList, 256);
@@ -882,6 +879,19 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
         code_block();
     } else {
         dispatch_sync(dispatch_get_main_queue(), code_block);
+    }*/
+    switch (change) {
+        case TOX_CHAT_CHANGE_PEER_ADD:
+            NSLog(@"GroupChat[%d]: New Peer ([%d])", groupnumber, peernumber);
+            break;
+        case TOX_CHAT_CHANGE_PEER_NAME:
+            NSLog(@"GroupChat[%d]: Peer[%d] -> ", groupnumber, peernumber);
+            break;
+        case TOX_CHAT_CHANGE_PEER_DEL:
+            NSLog(@"GroupChat[%d]: Peer[%d] has left.", groupnumber, peernumber);
+            break;
+        default:
+            break;
     }
 }
 
@@ -890,141 +900,114 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
 #pragma mark - Thread methods
 
 - (void)killToxThread {
-    return;
-    [toxMainThread cancel];
-    //wait until it's not working
-    int count = 0;
-    NSLog(@"Kill thread");
-    while ([toxMainThread isExecuting] == YES && count < 20) {
-        //wait a millisecond before checking again
-        [toxMainThread cancel];
-        usleep(10000);
-        count++;
-    }
+    toxMainThreadShouldEnd = YES;
 }
 
 - (void)startToxThread {
-    return;
-    NSLog(@"Start thread");
-    toxMainThread = [[NSThread alloc] initWithTarget:self selector:@selector(toxCoreLoop) object:nil];
-    [toxMainThread start];
+    dhtNodes = @[
+                 @{@"ip": @"192.254.75.98", @"port": @"33445", @"key": @"FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"},
+                 @{@"ip": @"192.184.81.118", @"port": @"33445", @"key": @"5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"},
+                 @{@"ip": @"144.76.60.215", @"port": @"33445", @"key": @"DDCF277B8B45B0D357D78AA4E201766932DF6CDB7179FC7D5C9F3C2E8E705326"},
+                 @{@"ip": @"193.107.16.73", @"port": @"33445", @"key": @"AE27E1E72ADA3DC423C60EEBACA241456174048BE76A283B41AD32D953182D49"},
+                 @{@"ip": @"66.74.15.98", @"port": @"33445", @"key": @"20C797E098701A848B07D0384222416B0EFB60D08CECB925B860CAEAAB572067"}
+                ];
+    lastAttemptedConnect = time(0);
+    srand(lastAttemptedConnect);
+    
+    toxWaitData = NULL;
+    uint16_t rtmp = 0;
+    tox_wait_prepare([[Singleton sharedSingleton] toxCoreInstance], NULL, &rtmp);
+    toxWaitBufferSize = rtmp;
+    toxWaitData = malloc(toxWaitBufferSize);
+
+    
+    toxMainThreadShouldEnd = NO;
+    dispatch_async(self.toxMainThread, ^{
+        [self toxCoreLoop];
+    });
 }
 
 - (void)toxCoreLoop {
-    //this function is called once, and runs a while loop
-    //it doesn't do recursiveness
     
-    NSArray *dhtNodes = @[
-                          @{@"ip": @"192.254.75.98", @"port": @"33445", @"key": @"FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"},
-                          @{@"ip": @"192.184.81.118", @"port": @"33445", @"key": @"5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"},
-                          @{@"ip": @"144.76.60.215", @"port": @"33445", @"key": @"DDCF277B8B45B0D357D78AA4E201766932DF6CDB7179FC7D5C9F3C2E8E705326"},
-                          @{@"ip": @"193.107.16.73", @"port": @"33445", @"key": @"AE27E1E72ADA3DC423C60EEBACA241456174048BE76A283B41AD32D953182D49"},
-                          @{@"ip": @"66.74.15.98", @"port": @"33445", @"key": @"20C797E098701A848B07D0384222416B0EFB60D08CECB925B860CAEAAB572067"}
-                          ];
-    int lastAttemptedConnect = time(0);
+    //code to check if node connection has changed, if so notify the app
+    if (on == 0 && tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
+        NSLog(@"DHT Connected!");
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTConnected" object:nil];
+        });
+        on = 1;
+    }
+    if (on == 1 && !tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
+        NSLog(@"DHT Disconnected!");
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTDisconnected" object:nil];
+        });
+        on = 0;
+    }
+    // If we haven't been connected for over two seconds, bootstrap to another node.
+    if (on == 0 && lastAttemptedConnect < time(0)+2) {
+        int num = rand() % [dhtNodes count];
+        unsigned char *binary_string = hex_string_to_bin((char *)[dhtNodes[num][@"key"] UTF8String]);
+        tox_bootstrap_from_address([[Singleton sharedSingleton] toxCoreInstance],
+                                   [dhtNodes[num][@"ip"] UTF8String],
+                                   TOX_ENABLE_IPV6_DEFAULT,
+                                   htons(atoi([dhtNodes[num][@"port"] UTF8String])),
+                                   binary_string); //actual connection
+        free(binary_string);
+    }
     
     
-    srand(lastAttemptedConnect);
-    while (TRUE) {
-//        NSLog(@"Loooooop");
-        //check to see if our thread was cancelled, and if so, exit so it's not in the middle of tox_do
-        if ([[NSThread currentThread] isCancelled]) {
-            [NSThread exit];
-            return;
+    // Call Wait Execute for up to a second
+    if (toxWaitData && tox_wait_prepare([[Singleton sharedSingleton] toxCoreInstance], toxWaitData, &toxWaitBufferSize) == 1) {
+        tox_wait_execute([[Singleton sharedSingleton] toxCoreInstance], toxWaitData, toxWaitBufferSize, 999);
+        tox_wait_cleanup([[Singleton sharedSingleton] toxCoreInstance], toxWaitData, toxWaitBufferSize);
+    }
+    // Run tox_do
+    int a = time(0);
+    time_t ret[9];
+    tox_do([[Singleton sharedSingleton] toxCoreInstance], ret);
+    if (time(0) - a > 1) {
+        NSLog(@"tox_do took more than %lu seconds!", time(0) - a);
+        printf("Values: ");
+        time_t last = ret[0];
+        for (int i = 1; i < 9; i++) {
+            time_t new = ret[i];
+            printf("%ld ", new - last);
+            last = new;
         }
-        
-        //code to check if node connection has changed, if so notify the app
-        if (on == 0 && tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                NSLog(@"DHT Connected!");
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTConnected" object:nil];
-                DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
-                [tempDHT setConnectionStatus:ToxDHTNodeConnectionStatus_Connected];
-                on = 1;
-            });
-        }
-        if (on == 1 && !tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
-            NSLog(@"DHT Disconnected!");
+        printf("\n");
+    }
+
+    // Keep going
+    if (toxMainThreadShouldEnd == NO) {
+        dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(33333 * NSEC_PER_USEC));
+        dispatch_after(waitTime, toxMainThread, ^{
+            [self toxCoreLoop];
+        });
+    }
+    
+    
+    if (on) {
+        //print when the number of connected clients changes
+        static int lastCount = 0;
+        Messenger *m = (Messenger *)[[Singleton sharedSingleton] toxCoreInstance];
+        uint32_t i;
+        uint64_t temp_time = time(0);
+        uint16_t count = 0;
+        for(i = 0; i < LCLIENT_LIST; ++i) {
+            if (!(m->dht->close_clientlist[i].assoc4.timestamp + 70 <= temp_time) ||
+                !(m->dht->close_clientlist[i].assoc6.timestamp + 70 <= temp_time))
+                ++count;
             
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                //gotta clear the currently connected dht since we're no longer connected
-                DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
-                [tempDHT setDhtName:@""];
-                [tempDHT setDhtIP:@""];
-                [tempDHT setDhtPort:@""];
-                [tempDHT setDhtKey:@""];
-                [tempDHT setConnectionStatus:ToxDHTNodeConnectionStatus_NotConnected];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTDisconnected" object:nil];
-                on = 0;
-            });
         }
-        
-        int a = time(0);
-        tox_do([[Singleton sharedSingleton] toxCoreInstance]);
-        if (time(0) - a > 1) {
-            NSLog(@"tox_do took more than %lu seconds!", time(0) - a);
+        if (count != lastCount) {
+            NSLog(@"****Nodes connected: %d", count);
         }
-        
-        if (on == 0 && lastAttemptedConnect < time(0)+2) {
-            int num = rand() % [dhtNodes count];
-            unsigned char *binary_string = hex_string_to_bin((char *)[dhtNodes[num][@"key"] UTF8String]);
-            tox_bootstrap_from_address([[Singleton sharedSingleton] toxCoreInstance],
-                                       [dhtNodes[num][@"ip"] UTF8String],
-                                       TOX_ENABLE_IPV6_DEFAULT,
-                                       htons(atoi([dhtNodes[num][@"port"] UTF8String])),
-                                       binary_string); //actual connection
-            free(binary_string);
-        }
-        
-        if (on) {
-            //print when the number of connected clients changes
-            static int lastCount = 0;
-            Messenger *m = (Messenger *)[[Singleton sharedSingleton] toxCoreInstance];
-            uint32_t i;
-            uint64_t temp_time = time(0);
-            uint16_t count = 0;
-            for(i = 0; i < LCLIENT_LIST; ++i) {
-                if (!(m->dht->close_clientlist[i].assoc4.timestamp + 70 <= temp_time) ||
-                    !(m->dht->close_clientlist[i].assoc6.timestamp + 70 <= temp_time))
-                    ++count;
-                
-            }
-            if (count != lastCount) {
-                NSLog(@"****Nodes connected: %d", count);
-            }
-            lastCount = count;
-        }
-        
-        
-        usleep(1000);
-        
-        
+        lastCount = count;
     }
 }
 
 #pragma mark - End Thread Methods
-
-#pragma mark - NSTimer methods
-
-- (void)connectionTimeoutTimerDidEnd {
-    if (tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
-        //don't do anything, the toxCoreLoop will have changed the boolen in currentConnectDHT and posted the notification
-    } else {
-        //connection timeout
-        //remove the info from currentConnectDHT
-        DHTNodeObject *tempDHT = [[Singleton sharedSingleton] currentConnectDHT];
-        [tempDHT setDhtName:@""];
-        [tempDHT setDhtIP:@""];
-        [tempDHT setDhtPort:@""];
-        [tempDHT setDhtKey:@""];
-        [tempDHT setConnectionStatus:ToxDHTNodeConnectionStatus_NotConnected];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTFailedToConnect" object:nil];
-    }
-}
-
-#pragma mark - End NSTimer methods
 
 #pragma mark - Miscellaneous C Functions
 

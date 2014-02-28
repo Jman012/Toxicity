@@ -59,9 +59,7 @@
     else
         self.title = _groupInfo.groupName;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo) name:@"FriendAdded" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"NewMessage" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColoredStatusIndicator) name:@"FriendUserStatusChanged" object:nil];
 
 }
 

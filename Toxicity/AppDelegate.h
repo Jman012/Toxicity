@@ -26,10 +26,18 @@
     //used for tox
     int             on;
     
-    NSThread        *toxMainThread;
+//    NSThread        *toxMainThread;
+//    dispatch_queue_t    toxMainThread;
+    BOOL                toxMainThreadShouldEnd;
+    NSArray             *dhtNodes;
+    int                 lastAttemptedConnect;
+    uint8_t             *toxWaitData;
+    uint16_t            toxWaitBufferSize;
 }
 
 @property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, strong) dispatch_queue_t toxMainThread;
+//@property (nonatomic, assign) BOOL toxMainThreadShouldEnd;
 
 unsigned char * hex_string_to_bin(char hex_string[]);
 - (void)toxCoreLoop;
