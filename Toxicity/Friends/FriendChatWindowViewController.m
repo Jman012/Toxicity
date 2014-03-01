@@ -219,8 +219,8 @@
     //add the message after we know if it failed or not
     [messages addObject:tempMessage];
 //    [messages addObject:[[JSMessage alloc] initWithText:tempMessage.message sender:kSenderMe date:nil]];
-    
     [self finishSend];
+    [self scrollToBottomAnimated:YES];
 }
 
 - (JSBubbleMessageType)messageTypeForRowAtIndexPath:(NSIndexPath *)indexPath
