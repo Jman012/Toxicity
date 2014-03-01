@@ -19,6 +19,75 @@
     // Override point for customization after application launch.
     
     
+    [self setupTox];
+    
+    
+    // force view class to load so it may be referenced directly from NIB
+    [ZBarReaderView class];
+    
+    
+    [self configureNavigationControllerDesign:(UINavigationController *)self.window.rootViewController];
+    
+    // Tox thread
+    self.toxMainThread = dispatch_queue_create("com.Jman.Toxicity", DISPATCH_QUEUE_SERIAL);
+    
+    return YES;
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
+
+    [self killToxThread];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
+    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    if ([[Singleton sharedSingleton] toxCoreInstance] == NULL) {
+        [self setupTox];
+    }
+    [self startToxThread];
+    
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    
+    
+    [self killToxThread];
+    tox_kill([[Singleton sharedSingleton] toxCoreInstance]);
+    [[Singleton sharedSingleton] setToxCoreInstance:NULL];
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    NSLog(@"URL: %@", url);
+    
+    if ([Singleton friendPublicKeyIsValid:url.host]) {
+        [self addFriend:url.host];
+    }
+    
+    return YES;
+}
+
+- (void)setupTox
+{
     //user defaults is the easy way to save info between app launches. dont have to read a file manually, etc. basically a plist
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
@@ -41,13 +110,13 @@
     tox_callback_group_namelist_change([[Singleton sharedSingleton] toxCoreInstance], print_groupnamelistchange,    NULL);
     
     /***** Start Loading from NSUserDefaults *****/
-    /***** Load:    
-                    Public/Private Key Data - NSData with bytes
-                    Our Username/nick and Status Message - NSString for both
-                    Friend List - NSArray of Archived instances of FriendObject
-                    Saved DHT Nodes - NSArray of Archived instances of DHTNodeObject
+    /***** Load:
+     Public/Private Key Data - NSData with bytes
+     Our Username/nick and Status Message - NSString for both
+     Friend List - NSArray of Archived instances of FriendObject
+     Saved DHT Nodes - NSArray of Archived instances of DHTNodeObject
      *****/
-     
+    
     
     //load public/private key. key is held in NSData bytes in the user defaults
     if ([prefs objectForKey:@"self_key"] == nil) {
@@ -144,67 +213,6 @@
     }
     NSLog(@"Our Address: %s", convertedKey);
     NSLog(@"Our id: %@", [[NSString stringWithUTF8String:convertedKey] substringToIndex:63]);
-    
-    
-    // force view class to load so it may be referenced directly from NIB
-    [ZBarReaderView class];
-    
-    
-    [self configureNavigationControllerDesign:(UINavigationController *)self.window.rootViewController];
-    
-    // Tox thread
-    self.toxMainThread = dispatch_queue_create("com.Jman.Toxicity", DISPATCH_QUEUE_SERIAL);
-    
-    return YES;
-}
-
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    
-
-    [self killToxThread];
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    
-    
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    
-    [self startToxThread];
-    
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    
-    
-    [self killToxThread];
-    tox_kill([[Singleton sharedSingleton] toxCoreInstance]);
-}
-
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    NSLog(@"URL: %@", url);
-    
-    if ([Singleton friendPublicKeyIsValid:url.host]) {
-        [self addFriend:url.host];
-    }
-    
-    return YES;
 }
 
 #pragma mark - End Application Delegation
