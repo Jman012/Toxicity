@@ -540,7 +540,7 @@
 - (int)deleteGroupchat:(int)theGroupNumber {
     __block int num = 0;
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    dispatch_sync(self.toxMainThread, ^{
+    dispatch_async(self.toxMainThread, ^{
         num = tox_del_groupchat([[Singleton sharedSingleton] toxCoreInstance], theGroupNumber);
         dispatch_semaphore_signal(semaphore);
     });
