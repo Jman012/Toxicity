@@ -86,6 +86,103 @@
     return YES;
 }
 
+- (void)setupToxNew
+{
+    //user defaults is the easy way to save info between app launches. dont have to read a file manually, etc. basically a plist
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    //start messenger here for LAN discorvery without pesky dht. required for tox core
+    Tox *tempTox = tox_new(0);
+    if (tempTox) {
+        [[Singleton sharedSingleton] setToxCoreInstance:tempTox];
+    }
+    
+    //callbacks
+    tox_callback_friend_request(       [[Singleton sharedSingleton] toxCoreInstance], print_request,                NULL);
+    tox_callback_group_invite(         [[Singleton sharedSingleton] toxCoreInstance], print_groupinvite,            NULL);
+    tox_callback_friend_message(       [[Singleton sharedSingleton] toxCoreInstance], print_message,                NULL);
+    tox_callback_friend_action(        [[Singleton sharedSingleton] toxCoreInstance], print_action,                 NULL);
+    tox_callback_group_message(        [[Singleton sharedSingleton] toxCoreInstance], print_groupmessage,           NULL);
+    tox_callback_name_change(          [[Singleton sharedSingleton] toxCoreInstance], print_nickchange,             NULL);
+    tox_callback_status_message(       [[Singleton sharedSingleton] toxCoreInstance], print_statuschange,           NULL);
+    tox_callback_connection_status(    [[Singleton sharedSingleton] toxCoreInstance], print_connectionstatuschange, NULL);
+    tox_callback_user_status(          [[Singleton sharedSingleton] toxCoreInstance], print_userstatuschange,       NULL);
+    tox_callback_group_namelist_change([[Singleton sharedSingleton] toxCoreInstance], print_groupnamelistchange,    NULL);
+    
+    //load public/private key. key is held in NSData bytes in the user defaults
+    if ([prefs objectForKey:@"tox_data"] == nil) {
+        NSLog(@"loading new key");
+        //load a new key
+        int size = tox_size([[Singleton sharedSingleton] toxCoreInstance]);
+        uint8_t *data = malloc(size);
+        tox_save([[Singleton sharedSingleton] toxCoreInstance], data);
+        
+        //save to userdefaults
+        NSData *theKey = [NSData dataWithBytes:data length:size];
+        [prefs setObject:theKey forKey:@"tox_data"];
+        [prefs synchronize];
+        
+        free(data);
+    } else {
+        NSLog(@"using already made key");
+        //key already made, laod it from memory
+        NSData *theKey = [prefs objectForKey:@"tox_data"];
+        
+        int size = tox_size([[Singleton sharedSingleton] toxCoreInstance]);
+        uint8_t *data = (uint8_t *)[theKey bytes];
+        
+        tox_load([[Singleton sharedSingleton] toxCoreInstance], data, size);
+    }
+    
+    // Name
+    uint8_t nameUTF8[TOX_MAX_NAME_LENGTH];
+    tox_get_self_name([[Singleton sharedSingleton] toxCoreInstance], nameUTF8, TOX_MAX_NAME_LENGTH);
+    [[Singleton sharedSingleton] setUserNick:[NSString stringWithUTF8String:(const char *)nameUTF8]];
+    
+    // Status
+    uint8_t statusNoteUTF8[TOX_MAX_STATUSMESSAGE_LENGTH];
+    tox_get_self_status_message([[Singleton sharedSingleton] toxCoreInstance], statusNoteUTF8, TOX_MAX_STATUSMESSAGE_LENGTH);
+    [[Singleton sharedSingleton] setUserStatusMessage:[NSString stringWithUTF8String:(const char *)nameUTF8]];
+    
+    // Friends
+    uint32_t friendCount = tox_count_friendlist([[Singleton sharedSingleton] toxCoreInstance]);
+    for (int i = 0; i < friendCount; i++) {
+        FriendObject *tempFriend = [[FriendObject alloc] init];
+        
+        uint8_t theirID[TOX_CLIENT_ID_SIZE];
+        tox_get_client_id([[Singleton sharedSingleton] toxCoreInstance], i, theirID);
+        [tempFriend setPublicKey:[NSString stringWithUTF8String:(const char *)theirID]];
+        
+        uint8_t theirName[TOX_MAX_NAME_LENGTH];
+        tox_get_name([[Singleton sharedSingleton] toxCoreInstance], i, theirName);
+        [tempFriend setNickname:[NSString stringWithUTF8String:(const char *)theirName]];
+        
+        uint8_t theirStatus[TOX_MAX_STATUSMESSAGE_LENGTH];
+        tox_get_status_message([[Singleton sharedSingleton] toxCoreInstance], i, theirStatus, TOX_MAX_STATUSMESSAGE_LENGTH);
+        [tempFriend setStatusMessage:[NSString stringWithUTF8String:(const char *)theirStatus]];
+        
+        [tempFriend setStatusType:ToxFriendUserStatus_None];
+        [tempFriend setConnectionType:ToxFriendConnectionStatus_None];
+        
+        [[[Singleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:i];
+        [[[Singleton sharedSingleton] mainFriendMessages] insertObject:[NSMutableArray array] atIndex:i];
+    }
+
+    
+    //Miscellaneous
+    
+    //print our our client id/address
+    char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
+    int pos = 0;
+    uint8_t ourAddress1[TOX_FRIEND_ADDRESS_SIZE];
+    tox_get_address([[Singleton sharedSingleton] toxCoreInstance], ourAddress1);
+    for (int i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
+        sprintf(&convertedKey[pos] ,"%02X", ourAddress1[i] & 0xff);
+    }
+    NSLog(@"Our Address: %s", convertedKey);
+    NSLog(@"Our id: %@", [[NSString stringWithUTF8String:convertedKey] substringToIndex:63]);
+}
+
 - (void)setupTox
 {
     //user defaults is the easy way to save info between app launches. dont have to read a file manually, etc. basically a plist

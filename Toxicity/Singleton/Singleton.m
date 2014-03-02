@@ -136,6 +136,16 @@
     [prefs synchronize];
 }
 
++ (void)saveToxDataInUserDefaults {
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    uint32_t toxLength = tox_size([[Singleton sharedSingleton] toxCoreInstance]);
+    uint8_t *toxBuffer = malloc(toxLength);
+    tox_save([[Singleton sharedSingleton] toxCoreInstance], toxBuffer);
+    NSData *toxData = [[NSData alloc] initWithBytes:toxBuffer length:toxLength];
+    [prefs setObject:toxData forKey:@"tox_data"];
+    [prefs synchronize];
+}
+
 + (void)saveGroupListInUserDefaults {
     
 }
