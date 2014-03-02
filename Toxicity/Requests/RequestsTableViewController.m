@@ -114,6 +114,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [self.navigationController setToolbarHidden:YES animated:YES];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning

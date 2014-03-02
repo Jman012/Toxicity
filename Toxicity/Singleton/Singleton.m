@@ -78,12 +78,25 @@
 
 + (BOOL)friendPublicKeyIsValid:(NSString *)theKey {
     //validate
-    NSError *error = NULL;
-    NSRegularExpression *regexKey = [NSRegularExpression regularExpressionWithPattern:@"^[0-9A-Fa-f]+$" options:NSRegularExpressionCaseInsensitive error:&error];
-    NSUInteger matchKey = [regexKey numberOfMatchesInString:theKey options:0 range:NSMakeRange(0, [theKey length])];
-    if ([theKey length] != (TOX_FRIEND_ADDRESS_SIZE * 2) || matchKey == 0) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The Public Key isn't valid!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
-        [alert show];
+    if (!theKey) {
+        return NO;
+    }
+    
+    if ([theKey isEqualToString:@""]) {
+        return NO;
+    }
+    
+    @try {
+        NSError *error = NULL;
+        NSRegularExpression *regexKey = [NSRegularExpression regularExpressionWithPattern:@"^[0-9A-Fa-f]+$" options:NSRegularExpressionCaseInsensitive error:&error];
+        NSUInteger matchKey = [regexKey numberOfMatchesInString:theKey options:0 range:NSMakeRange(0, [theKey length])];
+        if ([theKey length] != (TOX_FRIEND_ADDRESS_SIZE * 2) || matchKey == 0) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The Public Key isn't valid!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+            [alert show];
+            return NO;
+        }
+    }
+    @catch (NSException *e) {
         return NO;
     }
     

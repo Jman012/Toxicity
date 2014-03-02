@@ -95,6 +95,10 @@
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)dhtConnected:(NSNotification *)notification {
     [self.tableView reloadData];
 }
