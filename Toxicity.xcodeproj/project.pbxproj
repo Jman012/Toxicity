@@ -289,6 +289,8 @@
 		B9EE597417FB528800D8A388 /* status-yellow-navbar-ios7.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE596417FB528700D8A388 /* status-yellow-navbar-ios7.png */; };
 		B9EE597517FB528800D8A388 /* status-yellow-navbar-ios7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE596517FB528700D8A388 /* status-yellow-navbar-ios7@2x.png */; };
 		B9F9DB2518BEAE7F003BD982 /* JSQSystemSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */; };
+		E6C97FE118C3327C007368F9 /* InputCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE018C3327C007368F9 /* InputCell.m */; };
+		E6C97FE418C39677007368F9 /* StatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE318C39677007368F9 /* StatusCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -753,6 +755,10 @@
 		B9EE596517FB528700D8A388 /* status-yellow-navbar-ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-navbar-ios7@2x.png"; path = "Images/status-yellow-navbar-ios7@2x.png"; sourceTree = "<group>"; };
 		B9F9DB2318BEAE7F003BD982 /* JSQSystemSoundPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSQSystemSoundPlayer.h; path = "JSQSystemSoundPlayer-submodule/JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.h"; sourceTree = SOURCE_ROOT; };
 		B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSQSystemSoundPlayer.m; path = "JSQSystemSoundPlayer-submodule/JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.m"; sourceTree = SOURCE_ROOT; };
+		E6C97FDF18C3327C007368F9 /* InputCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputCell.h; sourceTree = "<group>"; };
+		E6C97FE018C3327C007368F9 /* InputCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputCell.m; sourceTree = "<group>"; };
+		E6C97FE218C39677007368F9 /* StatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusCell.h; sourceTree = "<group>"; };
+		E6C97FE318C39677007368F9 /* StatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1970,6 +1976,7 @@
 		B9BB99DA17B0E2F400A1ACEC /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				E6C97FDE18C33231007368F9 /* Cells */,
 				B9BB99DF17B0E39200A1ACEC /* NewDHTNodeViewController.h */,
 				B9BB99E017B0E39200A1ACEC /* NewDHTNodeViewController.m */,
 				B9BB99E117B0E39200A1ACEC /* SettingsViewController.h */,
@@ -2091,6 +2098,17 @@
 				B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */,
 			);
 			path = JSQSystemSoundPlayer;
+			sourceTree = "<group>";
+		};
+		E6C97FDE18C33231007368F9 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				E6C97FDF18C3327C007368F9 /* InputCell.h */,
+				E6C97FE018C3327C007368F9 /* InputCell.m */,
+				E6C97FE218C39677007368F9 /* StatusCell.h */,
+				E6C97FE318C39677007368F9 /* StatusCell.m */,
+			);
+			name = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2285,6 +2303,7 @@
 				B9748755189AE5EC0064B6FF /* onion_client.c in Sources */,
 				B9F9DB2518BEAE7F003BD982 /* JSQSystemSoundPlayer.m in Sources */,
 				B9789EEB18C040A5004F1257 /* core_salsa208_api.c in Sources */,
+				E6C97FE118C3327C007368F9 /* InputCell.m in Sources */,
 				B9789EED18C040A5004F1257 /* generichash_blake2_api.c in Sources */,
 				B98040F618BC886B0069590C /* UIImage+JSMessagesView.m in Sources */,
 				B9789F5F18C040A5004F1257 /* version.c in Sources */,
@@ -2329,6 +2348,7 @@
 				B9789EE518C040A5004F1257 /* core_hsalsa20_api.c in Sources */,
 				B9789F4418C040A5004F1257 /* stream_aes256estream_api.c in Sources */,
 				B9789F2518C040A5004F1257 /* ge_p2_0.c in Sources */,
+				E6C97FE418C39677007368F9 /* StatusCell.m in Sources */,
 				B9789EF918C040A5004F1257 /* blocks_sha512.c in Sources */,
 				B9789EE818C040A5004F1257 /* core_salsa20.c in Sources */,
 				B9789F0F18C040A5004F1257 /* fe_1.c in Sources */,
