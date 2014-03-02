@@ -8,8 +8,8 @@
 
 #import "FriendChatWindowViewController.h"
 
-#define kSenderMe @"Me"
-#define kSenderThem @"Them"
+static NSString *const kSenderMe = @"Me";
+static NSString *const kSenderThem = @"Them";
 
 @interface FriendChatWindowViewController ()
 
@@ -17,8 +17,7 @@
 
 @implementation FriendChatWindowViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -32,8 +31,8 @@
     if (self) {
         friendIndex = theIndex;
         
-        _mainFriendList = [[Singleton sharedSingleton] mainFriendList];
-        _mainFriendMessages = [[Singleton sharedSingleton] mainFriendMessages];
+        _mainFriendList = [Singleton sharedSingleton].mainFriendList;
+        _mainFriendMessages = [Singleton sharedSingleton].mainFriendMessages;
         
         messages = [[_mainFriendMessages objectAtIndex:theIndex.row] mutableCopy];
         
@@ -44,8 +43,7 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     self.delegate = self;
     self.dataSource = self;
     [super viewDidLoad];
@@ -60,9 +58,20 @@
     else
         self.title = _friendInfo.nickname;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo) name:@"FriendAdded" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"NewMessage" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColoredStatusIndicator) name:@"FriendUserStatusChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateUserInfo)
+                                                 name:@"FriendAdded"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(newMessage:)
+                                                 name:@"NewMessage"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateColoredStatusIndicator)
+                                                 name:@"FriendUserStatusChanged"
+                                               object:nil];
     
     //setup the colored status indicator on the navbar
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
@@ -96,7 +105,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [[Singleton sharedSingleton] mainFriendMessages][friendIndex.row] = [messages mutableCopy];
+    [Singleton sharedSingleton].mainFriendMessages[friendIndex.row] = messages.mutableCopy;
     [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
 }
 
@@ -166,7 +175,8 @@
         
         [messages addObject:receivedMessage];
         
-        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:([messages count] - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:(messages.count - 1) inSection:0]]
+                              withRowAnimation:UITableViewRowAnimationBottom];
         [self.tableView endUpdates];
         [self scrollToBottomAnimated:YES];
     }
@@ -178,7 +188,7 @@
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [messages count];
+    return messages.count;
 }
 
 #pragma mark - Messages view delegate
@@ -211,7 +221,7 @@
     
     [tempMessage setIsGroupMessage:NO];
     
-    AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    AppDelegate *ourDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     BOOL success = [ourDelegate sendMessage:tempMessage];
     if (!success) {
         tempMessage.didFailToSend = YES;
@@ -224,8 +234,7 @@
     [self scrollToBottomAnimated:YES];
 }
 
-- (JSBubbleMessageType)messageTypeForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (JSBubbleMessageType)messageTypeForRowAtIndexPath:(NSIndexPath *)indexPath {
     MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
     return tempMessage.origin == MessageLocation_Me ? JSBubbleMessageTypeOutgoing : JSBubbleMessageTypeIncoming;
 }
@@ -261,7 +270,9 @@
 
 - (JSMessage *)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
     MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
-    return [[JSMessage alloc] initWithText:tempMessage.message sender:tempMessage.origin == MessageLocation_Me ? kSenderMe : kSenderThem date:nil];
+    return [[JSMessage alloc] initWithText:tempMessage.message
+                                    sender:tempMessage.origin == MessageLocation_Me ? kSenderMe : kSenderThem
+                                      date:nil];
 }
 
 - (UIImageView *)avatarImageViewForRowAtIndexPath:(NSIndexPath *)indexPath sender:(NSString *)sender {
@@ -272,12 +283,6 @@
     if (cell.subtitleLabel) {
         cell.subtitleLabel.text = nil;
     }
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

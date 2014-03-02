@@ -14,37 +14,41 @@
 
 @implementation FriendsListTableViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-        
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
     _mainFriendList = [[Singleton sharedSingleton] mainFriendList];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendListUpdate) name:@"FriendAdded" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendListUpdate) name:@"GroupAdded" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendListUpdate) name:@"FriendUserStatusChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"FriendRequestReceived" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"RejectedFriendRequest" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestsButton) name:@"GroupInviteReceived" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(friendListUpdate)
+                                                 name:@"FriendAdded"
+                                               object:nil];
 
-    
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(friendListUpdate)
+                                                 name:@"GroupAdded"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(friendListUpdate)
+                                                 name:@"FriendUserStatusChanged"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateRequestsButton)
+                                                 name:@"FriendRequestReceived"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateRequestsButton)
+                                                 name:@"RejectedFriendRequest"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateRequestsButton)
+                                                 name:@"GroupInviteReceived"
+                                               object:nil];
+
     /***** Appearance *****/
     
     AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -53,8 +57,13 @@
     //set the font size of our settings button
     settingsButton.title = @"\u2699";
     UIFont *f1 = [UIFont fontWithName:@"Helvetica" size:24.0f];
-    NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:f1, UITextAttributeFont, [UIColor whiteColor], UITextAttributeTextColor, nil];
-    [settingsButton setTitleTextAttributes:dict forState:UIControlStateNormal];
+
+    NSDictionary *attributes = @{
+            UITextAttributeFont:f1,
+            UITextAttributeTextColor:[UIColor whiteColor]
+    };
+
+    [settingsButton setTitleTextAttributes:attributes forState:UIControlStateNormal];
     
     //table view separator colors
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
@@ -82,17 +91,12 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [self updateRequestsButton];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (IBAction)requestsButtonPushed:(id)sender {
@@ -125,26 +129,20 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.    
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            return [[[Singleton sharedSingleton] groupList] count];
-            break;
-            
+            return [Singleton sharedSingleton].groupList.count;
+
         case 1:
-            return [_mainFriendList count];
-            break;
-            
+            return _mainFriendList.count;
+
         default:
             return 0;
-            break;
     }
 }
 
@@ -152,14 +150,14 @@
     
     switch (section) {
         case 0:
-            if ([[[Singleton sharedSingleton] groupList] count] > 0) {
+            if ([Singleton sharedSingleton].groupList.count > 0) {
                 headerForGroups.textLabel.text = @"Groups";
                 return headerForGroups;
             }
             break;
             
         case 1:
-            if ([_mainFriendList count] > 0) {
+            if (_mainFriendList.count > 0) {
                 headerForFriends.textLabel.text = @"Friends";
                 return headerForFriends;
             }
@@ -167,7 +165,6 @@
             
         default:
             return nil;
-            break;
     }
     
     return nil;
@@ -184,24 +181,21 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            if ([[[Singleton sharedSingleton] groupList] count] == 0) {
+            if ([Singleton sharedSingleton].groupList.count == 0) {
                 return 0;
             } else {
                 return 22;
             }
-            break;
-            
+
         case 1:
-            if ([_mainFriendList count] == 0) {
+            if (_mainFriendList.count == 0) {
                 return 0;
             } else {
                 return 22;
             }
-            break;
-            
+
         default:
             return 0;
-            break;
     }
 }
 
@@ -210,19 +204,18 @@
     return view;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"FriendListCell";
     FriendCell *cell = (FriendCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     if (indexPath.section == 0) {
         /***** Groups *****/
         //i have this all squashed down to save on visual space
-        GroupObject *tempGroup = [[[Singleton sharedSingleton] groupList] objectAtIndex:indexPath.row];
+        GroupObject *tempGroup = [[Singleton sharedSingleton].groupList objectAtIndex:indexPath.row];
         cell.friendIdentifier = tempGroup.groupPulicKey;
         NSString *temp = tempGroup.groupPulicKey;
         NSString *front = [temp substringToIndex:6];
-        NSString *end = [temp substringFromIndex:[temp length] - 6];
+        NSString *end = [temp substringFromIndex:temp.length - 6];
         NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
         cell.nickLabel.text = formattedString;
         cell.messageLabelText = [[tempGroup groupMembers] componentsJoinedByString:@", "]; //"JmanGuy, stqism, stal" etc
@@ -235,7 +228,7 @@
                     NSArray *visibleCells = [tableView visibleCells];
                     for (FriendCell *tempCell in visibleCells) {
                         if (tempCell) {
-                            if ([tempCell.friendIdentifier isEqualToString:[[[Singleton sharedSingleton] groupList] objectAtIndex:indexPath.row]]) {
+                            if ([tempCell.friendIdentifier isEqualToString:[[Singleton sharedSingleton].groupList objectAtIndex:indexPath.row]]) {
                                 tempCell.avatarImage = theAvatarImage;
                             }
                         }
@@ -259,7 +252,7 @@
         
         //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
         //e.g., AF4E32...B6C899
-        if ([tempFriend.nickname isEqualToString:@""]){
+        if (!tempFriend.nickname.length){
             NSString *temp = tempFriend.publicKey;
             NSString *front = [temp substringToIndex:6];
             NSString *end = [temp substringFromIndex:[temp length] - 6];
@@ -273,7 +266,7 @@
         cell.messageLabelText = tempFriend.statusMessage;
         
         //set the avatar image
-        cell.avatarImage = [[Singleton sharedSingleton] defaultAvatarImage];
+        cell.avatarImage = [Singleton sharedSingleton].defaultAvatarImage;
         [[Singleton sharedSingleton] avatarImageForKey:tempFriend.publicKey type:AvatarType_Friend finishBlock:^(UIImage *theAvatarImage) {
             
             if (cell) {
@@ -339,20 +332,15 @@
 }
 
 
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
 }
 
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         //delete the friend from the table view, singleton, and messenger instance
         
-        AppDelegate *ourDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        AppDelegate *ourDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         
         if (indexPath.section == 0) {
             
@@ -364,8 +352,8 @@
                 
                 [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
                 
-                [[[Singleton sharedSingleton] groupList] removeObjectAtIndex:indexPath.row];
-                [[[Singleton sharedSingleton] groupMessages] removeObjectAtIndex:indexPath.row];
+                [[Singleton sharedSingleton].groupList removeObjectAtIndex:indexPath.row];
+                [[Singleton sharedSingleton].groupMessages removeObjectAtIndex:indexPath.row];
 
                 //todo: save when i start saving these things
                 
@@ -390,8 +378,8 @@
                 
                 [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
                 
-                [[[Singleton sharedSingleton] mainFriendList] removeObjectAtIndex:indexPath.row];
-                [[[Singleton sharedSingleton] mainFriendMessages] removeObjectAtIndex:indexPath.row];
+                [[Singleton sharedSingleton].mainFriendList removeObjectAtIndex:indexPath.row];
+                [[Singleton sharedSingleton].mainFriendMessages removeObjectAtIndex:indexPath.row];
                 
                 //save in user defaults
                 [Singleton saveFriendListInUserDefaults];
@@ -413,27 +401,9 @@
     }   
 }
 
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         GroupChatWindowViewController *chatVC = [[GroupChatWindowViewController alloc] initWithFriendIndex:indexPath];
         [self.navigationController pushViewController:chatVC animated:YES];

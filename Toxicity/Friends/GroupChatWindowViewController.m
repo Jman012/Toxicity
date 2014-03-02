@@ -8,7 +8,7 @@
 
 #import "GroupChatWindowViewController.h"
 
-#define kSenderMe @"Me"
+static NSString *const kSenderMe = @"Me";
 
 @interface GroupChatWindowViewController ()
 
@@ -54,12 +54,16 @@
     self.sender = kSenderMe;
     [self setBackgroundColor:[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f]];
     
-    if ([_groupInfo.groupName isEqualToString:@""])
+    if (!_groupInfo.groupName.length) {
         self.title = _groupInfo.groupPulicKey;
-    else
+    } else {
         self.title = _groupInfo.groupName;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessage:) name:@"NewMessage" object:nil];
+    }
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(newMessage:)
+                                                 name:@"NewMessage"
+                                               object:nil];
 
 }
 
@@ -79,14 +83,14 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [[Singleton sharedSingleton] groupMessages][friendIndex.row] = [messages mutableCopy];
+    [Singleton sharedSingleton].groupMessages[friendIndex.row] = messages.mutableCopy;
     [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
 }
 
 #pragma mark - Notifications Center stuff
 
 - (void)updateUserInfo {
-    if ([_groupInfo.groupName isEqualToString:@""])
+    if (!_groupInfo.groupName.length)
         self.title = _groupInfo.groupPulicKey;
     else
         self.title = _groupInfo.groupName;
@@ -102,7 +106,7 @@
         
         [messages addObject:receivedMessage];
         
-        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:([messages count] - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:(messages.count - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
         [self.tableView endUpdates];
         [self scrollToBottomAnimated:YES];
     }
@@ -114,7 +118,7 @@
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [messages count];
+    return messages.count;
 }
 
 #pragma mark - Messages view delegate
@@ -198,7 +202,9 @@
 
 - (JSMessage *)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
     MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
-    return [[JSMessage alloc] initWithText:tempMessage.message sender:tempMessage.origin == MessageLocation_Me ? kSenderMe : tempMessage.senderName date:nil];
+    return [[JSMessage alloc] initWithText:tempMessage.message
+                                    sender:tempMessage.origin == MessageLocation_Me ? kSenderMe : tempMessage.senderName
+                                      date:nil];
 }
 
 - (UIImageView *)avatarImageViewForRowAtIndexPath:(NSIndexPath *)indexPath sender:(NSString *)sender
@@ -214,10 +220,5 @@
     }
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 @end
