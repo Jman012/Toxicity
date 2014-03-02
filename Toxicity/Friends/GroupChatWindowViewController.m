@@ -59,12 +59,6 @@ static NSString *const kSenderMe = @"Me";
     } else {
         self.title = _groupInfo.groupName;
     }
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(newMessage:)
-                                                 name:@"NewMessage"
-                                               object:nil];
-
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -74,6 +68,10 @@ static NSString *const kSenderMe = @"Me";
 
 - (void)viewDidAppear:(BOOL)animated {
 //    [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(newMessage:)
+                                                 name:@"NewMessage"
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

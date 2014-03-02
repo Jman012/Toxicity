@@ -26,16 +26,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetFriendRequest) name:@"FriendRequestReceived" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetGroupInvite) name:@"GroupInviteReceived" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToFriendsList) name:@"QRReaderDidAddFriend" object:nil];
     
     _arrayOfRequests = [[[Singleton sharedSingleton] pendingFriendRequests] allKeys];
     _arrayOfInvites = [[[Singleton sharedSingleton] pendingGroupInvites] allKeys];
@@ -110,6 +100,22 @@
     [self.tableView registerClass:[FriendCell class] forCellReuseIdentifier:@"RequestFriendCell"];
     
     [self.navigationController setToolbarHidden:NO animated:NO];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didGetFriendRequest)
+                                                 name:@"FriendRequestReceived"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didGetGroupInvite)
+                                                 name:@"GroupInviteReceived"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(returnToFriendsList)
+                                                 name:@"QRReaderDidAddFriend"
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

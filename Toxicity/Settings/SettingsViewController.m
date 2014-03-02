@@ -35,12 +35,6 @@
     
     _dhtNodeList = [[Singleton sharedSingleton] dhtNodeList];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addDHTServer:) name:@"NewDHT" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dhtConnected:) name:@"DHTConnected" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dhtDisonnected:) name:@"DHTDisonnected" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didStartDHTNodeConnection:) name:@"DidStartDHTNodeConnection" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didFailToConnect:) name:@"DHTFailedToConnect" object:nil];
-    
 }
 
 - (void)addDHTServer:(NSNotification *)notification {
@@ -93,6 +87,14 @@
         [prefs setObject:array forKey:@"dht_node_list"];
         [prefs synchronize];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addDHTServer:) name:@"NewDHT" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dhtConnected:) name:@"DHTConnected" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dhtDisonnected:) name:@"DHTDisonnected" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didStartDHTNodeConnection:) name:@"DidStartDHTNodeConnection" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didFailToConnect:) name:@"DHTFailedToConnect" object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

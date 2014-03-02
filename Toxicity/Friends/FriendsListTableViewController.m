@@ -18,36 +18,6 @@
     [super viewDidLoad];
 
     _mainFriendList = [[Singleton sharedSingleton] mainFriendList];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(friendListUpdate)
-                                                 name:@"FriendAdded"
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(friendListUpdate)
-                                                 name:@"GroupAdded"
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(friendListUpdate)
-                                                 name:@"FriendUserStatusChanged"
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateRequestsButton)
-                                                 name:@"FriendRequestReceived"
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateRequestsButton)
-                                                 name:@"RejectedFriendRequest"
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateRequestsButton)
-                                                 name:@"GroupInviteReceived"
-                                               object:nil];
 
     /***** Appearance *****/
     
@@ -93,6 +63,37 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self updateRequestsButton];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(friendListUpdate)
+                                                 name:@"FriendAdded"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(friendListUpdate)
+                                                 name:@"GroupAdded"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(friendListUpdate)
+                                                 name:@"FriendUserStatusChanged"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateRequestsButton)
+                                                 name:@"FriendRequestReceived"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateRequestsButton)
+                                                 name:@"RejectedFriendRequest"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateRequestsButton)
+                                                 name:@"GroupInviteReceived"
+                                               object:nil];
+    [self friendListUpdate];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

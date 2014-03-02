@@ -58,21 +58,6 @@ static NSString *const kSenderThem = @"Them";
     else
         self.title = _friendInfo.nickname;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateUserInfo)
-                                                 name:@"FriendAdded"
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(newMessage:)
-                                                 name:@"NewMessage"
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateColoredStatusIndicator)
-                                                 name:@"FriendUserStatusChanged"
-                                               object:nil];
-    
     //setup the colored status indicator on the navbar
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         // Load resources for iOS 6.1 or earlier
@@ -95,6 +80,21 @@ static NSString *const kSenderThem = @"Them";
 - (void)viewDidAppear:(BOOL)animated {
 //    [self viewDidAppear:animated];
     [self.navigationController.navigationBar addSubview:statusNavBarImageView];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateUserInfo)
+                                                 name:@"FriendAdded"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(newMessage:)
+                                                 name:@"NewMessage"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateColoredStatusIndicator)
+                                                 name:@"FriendUserStatusChanged"
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
