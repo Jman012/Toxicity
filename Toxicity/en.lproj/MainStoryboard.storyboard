@@ -14,13 +14,32 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell tag="101" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="settingsInfoCell" id="dfo-Wc-boP">
+                            <tableViewCell tag="101" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="settingsInfoCell" id="dfo-Wc-boP" customClass="InputCell">
                                 <rect key="frame" x="0.0" y="119" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dfo-Wc-boP" id="Rvi-j2-0Kx">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xr5-EY-wKA">
+                                            <rect key="frame" x="15" y="11" width="63" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="O3V-F7-mQf">
+                                            <rect key="frame" x="86" y="7" width="224" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="textField" destination="O3V-F7-mQf" id="D7u-xA-y7P"/>
+                                    <outlet property="titleLabel" destination="xr5-EY-wKA" id="bsw-We-NfZ"/>
+                                </connections>
                             </tableViewCell>
                             <tableViewCell tag="103" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="settingsNewDHTCell" textLabel="bAm-PQ-ohk" detailTextLabel="ilR-T0-Td9" style="IBUITableViewCellStyleValue1" id="lyZ-tQ-VRX">
                                 <rect key="frame" x="0.0" y="163" width="320" height="44"/>
@@ -85,6 +104,31 @@
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="settingsStatusCell" id="beh-Y4-J43" customClass="StatusCell">
+                                <rect key="frame" x="0.0" y="295" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="beh-Y4-J43" id="WgU-kV-lms">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="t8h-MQ-IUc">
+                                            <rect key="frame" x="14" y="8" width="293" height="29"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="Online"/>
+                                                <segment title="Away"/>
+                                                <segment title="Busy"/>
+                                            </segments>
+                                            <connections>
+                                                <action selector="userStatusTypeDidChange:" destination="AXn-cl-0UB" eventType="valueChanged" id="LJp-x8-mlD"/>
+                                            </connections>
+                                        </segmentedControl>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="segmentedControl" destination="t8h-MQ-IUc" id="dXa-cX-yjh"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                         <sections/>
                         <connections>
@@ -113,7 +157,7 @@
         <scene sceneID="gQo-xB-s5z">
             <objects>
                 <navigationController storyboardIdentifier="SettingsNavController" definesPresentationContext="YES" id="QCb-ng-23x" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="cCw-aD-13J">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="cCw-aD-13J">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -311,9 +355,11 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fqj-V3-9ab">
+                            <navigationBar contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="Fqj-V3-9ab">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                <color key="tintColor" red="0.29803921568627451" green="0.36862745098039218" blue="0.43137254901960786" alpha="1" colorSpace="calibratedRGB"/>
+                                <textAttributes key="titleTextAttributes">
+                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </textAttributes>
                                 <items>
                                     <navigationItem title="Friend Requests" id="hkT-FN-UUL"/>
                                 </items>
@@ -465,8 +511,9 @@
         <scene sceneID="WmS-OU-ilc">
             <objects>
                 <navigationController definesPresentationContext="YES" id="tWA-Jv-Pe1" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="vRu-hW-NEk">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="vRu-hW-NEk">
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </navigationBar>
                     <connections>
                         <segue destination="DHs-TY-8DU" kind="relationship" relationship="rootViewController" id="GnY-Y6-9DE"/>
