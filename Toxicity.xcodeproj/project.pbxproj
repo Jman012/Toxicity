@@ -291,7 +291,26 @@
 		B9F9DB2518BEAE7F003BD982 /* JSQSystemSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */; };
 		E6C97FE118C3327C007368F9 /* InputCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE018C3327C007368F9 /* InputCell.m */; };
 		E6C97FE418C39677007368F9 /* StatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE318C39677007368F9 /* StatusCell.m */; };
+		E6F9FC9318C9068A00C1D2C1 /* QRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6F9FC9218C9068A00C1D2C1 /* QRCodeViewController.m */; };
+		E6F9FC9C18C90CF800C1D2C1 /* libQREncoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6F9FC9918C90CA500C1D2C1 /* libQREncoder.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E6F9FC9818C90CA500C1D2C1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC07E0554694100DB518D;
+			remoteInfo = QREncoder;
+		};
+		E6F9FC9A18C90CA500C1D2C1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EB7DA3AE10A4F5D90071984A;
+			remoteInfo = QREncoderTest;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		B94956711841B50400462145 /* assoc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = assoc.c; path = "ProjectTox-Core/toxcore/assoc.c"; sourceTree = "<group>"; };
@@ -759,6 +778,9 @@
 		E6C97FE018C3327C007368F9 /* InputCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputCell.m; sourceTree = "<group>"; };
 		E6C97FE218C39677007368F9 /* StatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusCell.h; sourceTree = "<group>"; };
 		E6C97FE318C39677007368F9 /* StatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusCell.m; sourceTree = "<group>"; };
+		E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QREncoder.xcodeproj; path = ../Submodules/ObjQREncoder/src/QREncoder.xcodeproj; sourceTree = "<group>"; };
+		E6F9FC9118C9068A00C1D2C1 /* QRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeViewController.h; sourceTree = "<group>"; };
+		E6F9FC9218C9068A00C1D2C1 /* QRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -766,6 +788,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6F9FC9C18C90CF800C1D2C1 /* libQREncoder.a in Frameworks */,
 				B9D859E217C34553005FD2D2 /* libiconv.2.4.0.dylib in Frameworks */,
 				B9D859E017C34542005FD2D2 /* CoreVideo.framework in Frameworks */,
 				B9D859DE17C3453B005FD2D2 /* CoreMedia.framework in Frameworks */,
@@ -785,12 +808,8 @@
 		B94F2C4E17AF25C0003EA6E8 = {
 			isa = PBXGroup;
 			children = (
+				E6F9FC9018C9063C00C1D2C1 /* External */,
 				B94F2C6017AF25C0003EA6E8 /* Toxicity */,
-				B9789D9918C040A3004F1257 /* libsodium */,
-				B94F2C8317AF5BDB003EA6E8 /* ProjectTox-Core */,
-				B9BB99F317B36DE900A1ACEC /* JSMessagesTableViewController */,
-				B9F9DAE218BEA755003BD982 /* JSQSystemSoundPlayer */,
-				B9D859B817C3450E005FD2D2 /* ZBarSDK */,
 				B94F2C5917AF25C0003EA6E8 /* Frameworks */,
 				B94F2C5817AF25C0003EA6E8 /* Products */,
 			);
@@ -888,6 +907,7 @@
 				B9D5C99017E5904600B84BEF /* util.h */,
 			);
 			name = "ProjectTox-Core";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		B9789D9918C040A3004F1257 /* libsodium */ = {
@@ -910,7 +930,8 @@
 				B9789ECD18C040A5004F1257 /* randombytes */,
 				B9789ED318C040A5004F1257 /* sodium */,
 			);
-			path = libsodium;
+			name = libsodium;
+			path = ../libsodium;
 			sourceTree = "<group>";
 		};
 		B9789D9A18C040A3004F1257 /* crypto_auth */ = {
@@ -1981,6 +2002,8 @@
 				B9BB99E017B0E39200A1ACEC /* NewDHTNodeViewController.m */,
 				B9BB99E117B0E39200A1ACEC /* SettingsViewController.h */,
 				B9BB99E217B0E39200A1ACEC /* SettingsViewController.m */,
+				E6F9FC9118C9068A00C1D2C1 /* QRCodeViewController.h */,
+				E6F9FC9218C9068A00C1D2C1 /* QRCodeViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -2014,6 +2037,7 @@
 				B98040BF18BC886B0069590C /* Resources */,
 			);
 			name = JSMessagesTableViewController;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		B9D859B817C3450E005FD2D2 /* ZBarSDK */ = {
@@ -2023,7 +2047,8 @@
 				B9D859D017C3450E005FD2D2 /* libzbar.a */,
 				B9D859D117C3450E005FD2D2 /* Resources */,
 			);
-			path = ZBarSDK;
+			name = ZBarSDK;
+			path = ../ZBarSDK;
 			sourceTree = "<group>";
 		};
 		B9D859B917C3450E005FD2D2 /* Headers */ = {
@@ -2097,7 +2122,8 @@
 				B9F9DB2318BEAE7F003BD982 /* JSQSystemSoundPlayer.h */,
 				B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */,
 			);
-			path = JSQSystemSoundPlayer;
+			name = JSQSystemSoundPlayer;
+			path = ../JSQSystemSoundPlayer;
 			sourceTree = "<group>";
 		};
 		E6C97FDE18C33231007368F9 /* Cells */ = {
@@ -2109,6 +2135,29 @@
 				E6C97FE318C39677007368F9 /* StatusCell.m */,
 			);
 			name = Cells;
+			sourceTree = "<group>";
+		};
+		E6F9FC9018C9063C00C1D2C1 /* External */ = {
+			isa = PBXGroup;
+			children = (
+				B9789D9918C040A3004F1257 /* libsodium */,
+				B94F2C8317AF5BDB003EA6E8 /* ProjectTox-Core */,
+				B9BB99F317B36DE900A1ACEC /* JSMessagesTableViewController */,
+				B9F9DAE218BEA755003BD982 /* JSQSystemSoundPlayer */,
+				B9D859B817C3450E005FD2D2 /* ZBarSDK */,
+				E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */,
+			);
+			name = External;
+			path = Toxicity;
+			sourceTree = "<group>";
+		};
+		E6F9FC9418C90CA500C1D2C1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E6F9FC9918C90CA500C1D2C1 /* libQREncoder.a */,
+				E6F9FC9B18C90CA500C1D2C1 /* QREncoderTest.octest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2151,12 +2200,35 @@
 			mainGroup = B94F2C4E17AF25C0003EA6E8;
 			productRefGroup = B94F2C5817AF25C0003EA6E8 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E6F9FC9418C90CA500C1D2C1 /* Products */;
+					ProjectRef = E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				B94F2C5617AF25C0003EA6E8 /* Toxicity */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E6F9FC9918C90CA500C1D2C1 /* libQREncoder.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libQREncoder.a;
+			remoteRef = E6F9FC9818C90CA500C1D2C1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E6F9FC9B18C90CA500C1D2C1 /* QREncoderTest.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = QREncoderTest.octest;
+			remoteRef = E6F9FC9A18C90CA500C1D2C1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		B94F2C5517AF25C0003EA6E8 /* Resources */ = {
@@ -2312,6 +2384,7 @@
 				B9789F0518C040A5004F1257 /* base_curve25519_ref.c in Sources */,
 				B9789EDA18C040A5004F1257 /* hmac_hmacsha256.c in Sources */,
 				B9789F2318C040A5004F1257 /* ge_p1p1_to_p2.c in Sources */,
+				E6F9FC9318C9068A00C1D2C1 /* QRCodeViewController.m in Sources */,
 				B9789F0618C040A5004F1257 /* smult_curve25519_ref.c in Sources */,
 				B980410018BC886B0069590C /* JSMessageTableView.m in Sources */,
 				B9789F5018C040A5004F1257 /* xor_xsalsa20.c in Sources */,
@@ -2546,6 +2619,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(SRCROOT)/libsodium/include",
+					Submodules/ObjQREncoder/src/Classes,
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -2576,6 +2650,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(SRCROOT)/libsodium/include",
+					Submodules/ObjQREncoder/src/Classes,
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
 				LIBRARY_SEARCH_PATHS = (

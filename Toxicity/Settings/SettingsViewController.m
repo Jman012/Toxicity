@@ -9,12 +9,26 @@
 #import "SettingsViewController.h"
 #import "InputCell.h"
 #import "StatusCell.h"
+#import "QRCodeViewController.h"
+
+static NSString *const QRCodeViewControllerIdentifier = @"QRCodeViewController";
 
 @interface SettingsViewController ()
 
 @end
 
 @implementation SettingsViewController
+
+- (NSString *)clientID {
+    char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
+    int pos = 0;
+    uint8_t ourAddress[TOX_FRIEND_ADDRESS_SIZE];
+    tox_get_address([[Singleton sharedSingleton] toxCoreInstance], ourAddress);
+    for (int i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
+        sprintf(&convertedKey[pos] ,"%02X", ourAddress[i] & 0xff);
+    }
+    return [NSString stringWithUTF8String:convertedKey];
+}
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -189,7 +203,7 @@
         case 0:
             return 3;
         case 1:
-            return 1;
+            return 2;
         case 2:
             //Add ones for the row to add a new server
             return _dhtNodeList.count + 1;
@@ -266,9 +280,19 @@
         }
 
         case 1: {
+
             cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-            cell.textLabel.text = @"Copy ID to clipboard";
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
+
+            switch (indexPath.row) {
+                case 0:
+                    cell.textLabel.text = @"Copy ID to clipboard";
+                    break;
+                case 1:
+                    cell.textLabel.text = @"Generate QR-Code";
+                    break;
+                default:break;
+            }
 
             break;
         }
@@ -373,17 +397,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1 && indexPath.row == 0) {
-        char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
-        int pos = 0;
-        uint8_t ourAddress[TOX_FRIEND_ADDRESS_SIZE];
-        tox_get_address([[Singleton sharedSingleton] toxCoreInstance], ourAddress);
-        for (int i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
-            sprintf(&convertedKey[pos] ,"%02X", ourAddress[i] & 0xff);
-        }
+        NSString *myId = [self clientID];
 
-        [[UIPasteboard generalPasteboard] setString:[NSString stringWithUTF8String:convertedKey]];
-    }
-    else if (indexPath.section == 2 && indexPath.row == 0) {
+        [[UIPasteboard generalPasteboard] setString:myId];
+
+    } else if (indexPath.section == 1 && indexPath.row == 1) {
+        [self performSegueWithIdentifier:QRCodeViewControllerIdentifier sender:self];
+    } else if (indexPath.section == 2 && indexPath.row == 0) {
         //new dht connection
 
         //get our new dht viewcontroller
@@ -528,6 +548,15 @@
     }
     AppDelegate *ourDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [ourDelegate userStatusTypeChanged];
+}
+
+#pragma mark - Segue
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:QRCodeViewControllerIdentifier]) {
+        QRCodeViewController *qrCodeViewController = segue.destinationViewController;
+        qrCodeViewController.code = self.clientID;
+    }
 }
 
 @end
