@@ -10,3 +10,6 @@
 [submodule "JSQSystemSoundPlayer-submodule"]
 	path = JSQSystemSoundPlayer-submodule
 	url = https://github.com/jessesquires/JSQSystemSoundPlayer.git
+[submodule "Submodules/ObjQREncoder"]
+	path = Submodules/ObjQREncoder
+	url = https://github.com/wiruzx/ObjQREncoder.git
