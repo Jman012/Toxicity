@@ -931,7 +931,7 @@
 				B9789ED318C040A5004F1257 /* sodium */,
 			);
 			name = libsodium;
-			path = ../libsodium;
+			path = ../Other/libsodium;
 			sourceTree = "<group>";
 		};
 		B9789D9A18C040A3004F1257 /* crypto_auth */ = {
@@ -2048,7 +2048,7 @@
 				B9D859D117C3450E005FD2D2 /* Resources */,
 			);
 			name = ZBarSDK;
-			path = ../ZBarSDK;
+			path = ../Other/ZBarSDK;
 			sourceTree = "<group>";
 		};
 		B9D859B917C3450E005FD2D2 /* Headers */ = {
@@ -2617,14 +2617,14 @@
 				GCC_PREFIX_HEADER = "Toxicity/Toxicity-Prefix.pch";
 				GCC_UNROLL_LOOPS = NO;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(SRCROOT)/libsodium/include",
+					"$(SRCROOT)/Other",
+					"$(SRCROOT)/Other/libsodium/include",
 					Submodules/ObjQREncoder/src/Classes,
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/ZBarSDK",
+					"$(SRCROOT)/Other/ZBarSDK",
 				);
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2648,14 +2648,14 @@
 				GCC_PREFIX_HEADER = "Toxicity/Toxicity-Prefix.pch";
 				GCC_UNROLL_LOOPS = NO;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(SRCROOT)/libsodium/include",
+					"$(SRCROOT)/Other",
+					"$(SRCROOT)/Other/libsodium/include",
 					Submodules/ObjQREncoder/src/Classes,
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/ZBarSDK",
+					"$(SRCROOT)/Other/ZBarSDK",
 				);
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = YES;
