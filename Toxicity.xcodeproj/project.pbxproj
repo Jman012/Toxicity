@@ -772,8 +772,8 @@
 		B9EE596317FB528700D8A388 /* status-yellow-ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-ios7@2x.png"; path = "Images/status-yellow-ios7@2x.png"; sourceTree = "<group>"; };
 		B9EE596417FB528700D8A388 /* status-yellow-navbar-ios7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-navbar-ios7.png"; path = "Images/status-yellow-navbar-ios7.png"; sourceTree = "<group>"; };
 		B9EE596517FB528700D8A388 /* status-yellow-navbar-ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-navbar-ios7@2x.png"; path = "Images/status-yellow-navbar-ios7@2x.png"; sourceTree = "<group>"; };
-		B9F9DB2318BEAE7F003BD982 /* JSQSystemSoundPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSQSystemSoundPlayer.h; path = "JSQSystemSoundPlayer-submodule/JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.h"; sourceTree = SOURCE_ROOT; };
-		B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSQSystemSoundPlayer.m; path = "JSQSystemSoundPlayer-submodule/JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.m"; sourceTree = SOURCE_ROOT; };
+		B9F9DB2318BEAE7F003BD982 /* JSQSystemSoundPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSQSystemSoundPlayer.h; path = JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.h; sourceTree = "<group>"; };
+		B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSQSystemSoundPlayer.m; path = JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.m; sourceTree = "<group>"; };
 		E6C97FDF18C3327C007368F9 /* InputCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputCell.h; sourceTree = "<group>"; };
 		E6C97FE018C3327C007368F9 /* InputCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputCell.m; sourceTree = "<group>"; };
 		E6C97FE218C39677007368F9 /* StatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusCell.h; sourceTree = "<group>"; };
@@ -907,7 +907,7 @@
 				B9D5C99017E5904600B84BEF /* util.h */,
 			);
 			name = "ProjectTox-Core";
-			path = ..;
+			path = ../Submodules;
 			sourceTree = "<group>";
 		};
 		B9789D9918C040A3004F1257 /* libsodium */ = {
@@ -2037,7 +2037,7 @@
 				B98040BF18BC886B0069590C /* Resources */,
 			);
 			name = JSMessagesTableViewController;
-			path = ..;
+			path = ../Submodules;
 			sourceTree = "<group>";
 		};
 		B9D859B817C3450E005FD2D2 /* ZBarSDK */ = {
@@ -2123,7 +2123,7 @@
 				B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */,
 			);
 			name = JSQSystemSoundPlayer;
-			path = ../JSQSystemSoundPlayer;
+			path = "../Submodules/JSQSystemSoundPlayer-submodule";
 			sourceTree = "<group>";
 		};
 		E6C97FDE18C33231007368F9 /* Cells */ = {
