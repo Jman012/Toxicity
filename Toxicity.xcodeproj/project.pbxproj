@@ -291,6 +291,9 @@
 		B9F9DB2518BEAE7F003BD982 /* JSQSystemSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */; };
 		E6C97FE118C3327C007368F9 /* InputCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE018C3327C007368F9 /* InputCell.m */; };
 		E6C97FE418C39677007368F9 /* StatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE318C39677007368F9 /* StatusCell.m */; };
+		E6EC551918CB61CC005BE0FB /* tox_logo_ios6.png in Resources */ = {isa = PBXBuildFile; fileRef = E6EC551618CB61CC005BE0FB /* tox_logo_ios6.png */; };
+		E6EC551A18CB61CC005BE0FB /* tox_logo_ios6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6EC551718CB61CC005BE0FB /* tox_logo_ios6@2x.png */; };
+		E6EC551B18CB61CC005BE0FB /* tox_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6EC551818CB61CC005BE0FB /* tox_logo@2x.png */; };
 		E6F9FC9318C9068A00C1D2C1 /* QRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6F9FC9218C9068A00C1D2C1 /* QRCodeViewController.m */; };
 		E6F9FC9C18C90CF800C1D2C1 /* libQREncoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6F9FC9918C90CA500C1D2C1 /* libQREncoder.a */; };
 /* End PBXBuildFile section */
@@ -778,6 +781,9 @@
 		E6C97FE018C3327C007368F9 /* InputCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputCell.m; sourceTree = "<group>"; };
 		E6C97FE218C39677007368F9 /* StatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusCell.h; sourceTree = "<group>"; };
 		E6C97FE318C39677007368F9 /* StatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusCell.m; sourceTree = "<group>"; };
+		E6EC551618CB61CC005BE0FB /* tox_logo_ios6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tox_logo_ios6.png; path = Images/tox_logo_ios6.png; sourceTree = "<group>"; };
+		E6EC551718CB61CC005BE0FB /* tox_logo_ios6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tox_logo_ios6@2x.png"; path = "Images/tox_logo_ios6@2x.png"; sourceTree = "<group>"; };
+		E6EC551818CB61CC005BE0FB /* tox_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tox_logo@2x.png"; path = "Images/tox_logo@2x.png"; sourceTree = "<group>"; };
 		E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QREncoder.xcodeproj; path = ../Submodules/ObjQREncoder/src/QREncoder.xcodeproj; sourceTree = "<group>"; };
 		E6F9FC9118C9068A00C1D2C1 /* QRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeViewController.h; sourceTree = "<group>"; };
 		E6F9FC9218C9068A00C1D2C1 /* QRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeViewController.m; sourceTree = "<group>"; };
@@ -1757,6 +1763,9 @@
 		B97D602B17B8431A001C07B8 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E6EC551618CB61CC005BE0FB /* tox_logo_ios6.png */,
+				E6EC551718CB61CC005BE0FB /* tox_logo_ios6@2x.png */,
+				E6EC551818CB61CC005BE0FB /* tox_logo@2x.png */,
 				B97D604617B9EB29001C07B8 /* default-avatar.png */,
 				B98C9C3517DACDFD008B10E0 /* default-avatar@2x.png */,
 				B97D604F17BCBE58001C07B8 /* message-not-sent.png */,
@@ -2261,13 +2270,16 @@
 				B980410E18BC886B0069590C /* bubble-classic-square-blue.png in Resources */,
 				B97D603517B84328001C07B8 /* status-gray@2x.png in Resources */,
 				B980411818BC886B0069590C /* bubble-stroked-tailless.png in Resources */,
+				E6EC551A18CB61CC005BE0FB /* tox_logo_ios6@2x.png in Resources */,
 				B9EE596C17FB528800D8A388 /* status-green-navbar-ios7.png in Resources */,
 				B980411218BC886B0069590C /* bubble-classic-square-selected.png in Resources */,
 				B980412C18BC886B0069590C /* message-received.aiff in Resources */,
 				B97D603617B84328001C07B8 /* status-green.png in Resources */,
 				B980411318BC886B0069590C /* bubble-classic-square-selected@2x.png in Resources */,
 				B980410718BC886B0069590C /* bubble-classic-gray@2x.png in Resources */,
+				E6EC551918CB61CC005BE0FB /* tox_logo_ios6.png in Resources */,
 				B980412418BC886B0069590C /* send-button-pressed.png in Resources */,
+				E6EC551B18CB61CC005BE0FB /* tox_logo@2x.png in Resources */,
 				B97D603717B84328001C07B8 /* status-green@2x.png in Resources */,
 				B97D603A17B84328001C07B8 /* status-yellow.png in Resources */,
 				B97D603B17B84328001C07B8 /* status-yellow@2x.png in Resources */,
