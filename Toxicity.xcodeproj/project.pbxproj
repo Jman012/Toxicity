@@ -2631,7 +2631,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Other",
 					"$(SRCROOT)/Other/libsodium/include",
-					Submodules/ObjQREncoder/src/Classes,
+					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
+					"$(SRCROOT)/Submodules",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -2662,7 +2663,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Other",
 					"$(SRCROOT)/Other/libsodium/include",
-					Submodules/ObjQREncoder/src/Classes,
+					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
+					"$(SRCROOT)/Submodules",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
