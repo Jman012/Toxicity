@@ -8,6 +8,8 @@
 
 #import "NewDHTNodeViewController.h"
 
+NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
+
 @interface NewDHTNodeViewController ()
 
 @end
@@ -57,7 +59,7 @@
             [dict setObject:[NSIndexPath indexPathForItem:0 inSection:0] forKey:@"indexpath"];
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"NewDHT" object:nil userInfo:dict];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ToxNewDHTNodeViewControllerNotificatiobNewDHT object:nil userInfo:dict];
     }
 }
 

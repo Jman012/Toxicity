@@ -12,7 +12,9 @@
 #import "QRCodeViewController.h"
 
 static NSString *const QRCodeViewControllerIdentifier = @"QRCodeViewController";
-
+extern NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT;
+extern NSString *const ToxAppDelegateNotificationDHTConnected ;
+extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
 @interface SettingsViewController ()
 
 @end
@@ -100,17 +102,17 @@ static NSString *const QRCodeViewControllerIdentifier = @"QRCodeViewController";
     [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(addDHTServer:)
-                                                 name:@"NewDHT"
+                                                 name:ToxNewDHTNodeViewControllerNotificatiobNewDHT
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(dhtConnected:)
-                                                 name:@"DHTConnected"
+                                                 name:ToxAppDelegateNotificationDHTConnected
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(dhtDisconnected:)
-                                                 name:@"DHTDisonnected"
+                                                 name:ToxAppDelegateNotificationDHTDisconnected
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -124,10 +126,8 @@ static NSString *const QRCodeViewControllerIdentifier = @"QRCodeViewController";
                                                object:nil];
 }
 
-
-- (void)viewWillDisappear:(BOOL)animated {
+-(void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [super viewWillDisappear:animated];
 }
 
 - (void)dhtConnected:(NSNotification *)notification {
@@ -145,6 +145,8 @@ static NSString *const QRCodeViewControllerIdentifier = @"QRCodeViewController";
 - (void)didFailToConnect:(NSNotification *)notification {
     [self.tableView reloadData];
 }
+
+
 
 - (IBAction)saveButtonPushed:(id)sender {
     if (![nameTextField.text isEqualToString:[Singleton sharedSingleton].userNick]) {

@@ -11,6 +11,12 @@
 static NSString *const kSenderMe = @"Me";
 static NSString *const kSenderThem = @"Them";
 
+extern NSString *const ToxAppDelegateNotificationFriendAdded ;
+extern NSString *const ToxAppDelegateNotificationNewMessage ;
+extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
+
+
+
 @interface FriendChatWindowViewController ()
 
 @end
@@ -83,24 +89,23 @@ static NSString *const kSenderThem = @"Them";
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUserInfo)
-                                                 name:@"FriendAdded"
+                                                 name:ToxAppDelegateNotificationFriendAdded
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(newMessage:)
-                                                 name:@"NewMessage"
+                                                 name:ToxAppDelegateNotificationNewMessage
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateColoredStatusIndicator)
-                                                 name:@"FriendUserStatusChanged"
+                                                 name:ToxAppDelegateNotificatiobFriendUserStatusChanged
                                                object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [statusNavBarImageView removeFromSuperview];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -283,6 +288,10 @@ static NSString *const kSenderThem = @"Them";
     if (cell.subtitleLabel) {
         cell.subtitleLabel.text = nil;
     }
+}
+
+-(void) dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

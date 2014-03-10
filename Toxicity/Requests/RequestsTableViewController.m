@@ -8,6 +8,9 @@
 
 #import "RequestsTableViewController.h"
 
+extern NSString *const QRReaderViewControllerNotificationQRReaderDidAddFriend;
+extern NSString *const ToxAppDelegateNotificationFriendRequestReceived ;
+extern NSString *const ToxAppDelegateNotificationGroupInviteReceived ;
 @interface RequestsTableViewController ()
 
 @end
@@ -106,20 +109,24 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didGetFriendRequest)
-                                                 name:@"FriendRequestReceived"
+                                                 name:ToxAppDelegateNotificationFriendRequestReceived
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didGetGroupInvite)
-                                                 name:@"GroupInviteReceived"
+                                                 name:ToxAppDelegateNotificationGroupInviteReceived
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(returnToFriendsList)
-                                                 name:@"QRReaderDidAddFriend"
+                                                 name:QRReaderViewControllerNotificationQRReaderDidAddFriend
                                                object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [self.navigationController setToolbarHidden:YES animated:YES];
+}
+
+-(void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
