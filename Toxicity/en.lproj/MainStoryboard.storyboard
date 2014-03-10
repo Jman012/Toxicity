@@ -421,8 +421,9 @@
         <scene sceneID="EV4-wZ-amO">
             <objects>
                 <navigationController storyboardIdentifier="QRReaderVC" definesPresentationContext="YES" id="XJ3-1V-vlY" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="t4C-EK-nbL">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="t4C-EK-nbL">
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </navigationBar>
                     <connections>
                         <segue destination="0Ao-Ay-8Nh" kind="relationship" relationship="rootViewController" id="iOZ-Mp-2H6"/>
