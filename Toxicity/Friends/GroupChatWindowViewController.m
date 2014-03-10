@@ -9,7 +9,7 @@
 #import "GroupChatWindowViewController.h"
 
 static NSString *const kSenderMe = @"Me";
-
+extern NSString *const ToxAppDelegateNotificationNewMessage;
 @interface GroupChatWindowViewController ()
 
 @end
@@ -70,19 +70,18 @@ static NSString *const kSenderMe = @"Me";
 //    [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(newMessage:)
-                                                 name:@"NewMessage"
+                                                 name:ToxAppDelegateNotificationNewMessage
                                                object:nil];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [Singleton sharedSingleton].groupMessages[friendIndex.row] = messages.mutableCopy;
     [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
+}
+
+-(void) dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Notifications Center stuff

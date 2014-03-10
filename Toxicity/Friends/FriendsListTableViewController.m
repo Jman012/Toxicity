@@ -8,6 +8,13 @@
 
 #import "FriendsListTableViewController.h"
 
+extern NSString *const ToxAppDelegateNotificationFriendAdded ;
+extern NSString *const ToxAppDelegateNotificationNewMessage ;
+extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
+extern NSString *const ToxAppDelegateNotificationGroupAdded ;
+extern NSString *const ToxAppDelegateNotificationFriendRequestReceived ;
+extern NSString *const ToxAppDelegateNotificationGroupInviteReceived ;
+
 @interface FriendsListTableViewController ()
 
 @end
@@ -66,22 +73,22 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(friendListUpdate)
-                                                 name:@"FriendAdded"
+                                                 name:ToxAppDelegateNotificationFriendAdded
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(friendListUpdate)
-                                                 name:@"GroupAdded"
+                                                 name:ToxAppDelegateNotificationGroupAdded
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(friendListUpdate)
-                                                 name:@"FriendUserStatusChanged"
+                                                 name:ToxAppDelegateNotificatiobFriendUserStatusChanged
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateRequestsButton)
-                                                 name:@"FriendRequestReceived"
+                                                 name:ToxAppDelegateNotificationFriendRequestReceived
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -91,14 +98,12 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateRequestsButton)
-                                                 name:@"GroupInviteReceived"
+                                                 name:ToxAppDelegateNotificationGroupInviteReceived
                                                object:nil];
     [self friendListUpdate];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
+
 
 - (IBAction)requestsButtonPushed:(id)sender {
     RequestsTableViewController *requestsVC = [[RequestsTableViewController alloc] init];
@@ -126,6 +131,10 @@
     } else {
         self.navigationItem.rightBarButtonItem.title = @"Requests";
     }
+}
+
+-(void) dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Table view data source
@@ -415,5 +424,7 @@
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
+
+
 
 @end

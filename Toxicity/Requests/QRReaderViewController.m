@@ -8,6 +8,8 @@
 
 #import "QRReaderViewController.h"
 
+NSString *const QRReaderViewControllerNotificationQRReaderDidAddFriend = @"QRReaderDidAddFriend";
+
 @interface QRReaderViewController ()
 
 @end
@@ -73,7 +75,7 @@
             [ourDelegate addFriend:symbol.data];
             
             [self dismissViewControllerAnimated:YES completion:^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"QRReaderDidAddFriend" object:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:QRReaderViewControllerNotificationQRReaderDidAddFriend object:nil];
             }];
         }
     }

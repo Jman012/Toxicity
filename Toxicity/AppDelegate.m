@@ -8,6 +8,15 @@
 
 #import "AppDelegate.h"
 
+NSString *const ToxAppDelegateNotificationFriendAdded = @"FriendAdded";
+NSString *const ToxAppDelegateNotificationGroupAdded = @"GroupAdded";
+NSString *const ToxAppDelegateNotificationFriendRequestReceived = @"FriendRequestReceived";
+NSString *const ToxAppDelegateNotificationGroupInviteReceived = @"GroupInviteReceived";
+NSString *const ToxAppDelegateNotificationNewMessage = @"NewMessage";
+NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged = @"FriendUserStatusChanged";
+NSString *const ToxAppDelegateNotificationDHTConnected = @"DHTConnected";
+NSString *const ToxAppDelegateNotificationDHTDisconnected = @"DHTDisconnected";
+
 @implementation AppDelegate
 
 @synthesize toxMainThread;
@@ -504,7 +513,7 @@
             //save in user defaults
             [Singleton saveFriendListInUserDefaults];
                         
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationFriendAdded object:nil];
             break;
         }
     }
@@ -552,7 +561,7 @@
                     //remove from the pending requests
                     [[[Singleton sharedSingleton] pendingFriendRequests] removeObjectForKey:arrayKey];
                     
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationFriendAdded object:nil];
                     
                     break;
                 }
@@ -601,7 +610,7 @@
                     
                     [[[Singleton sharedSingleton] pendingGroupInvites] removeObjectForKey:arrayKey];
                     [[[Singleton sharedSingleton] pendingGroupInviteFriendNumbers] removeObjectForKey:arrayKey];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"GroupAdded" object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationGroupAdded object:nil];
                     
                     break;
                 }
@@ -685,7 +694,7 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
                                                                     forKey:[NSString stringWithUTF8String:convertedKey]];
             NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
             [prefs setObject:[[Singleton sharedSingleton] pendingFriendRequests] forKey:@"pending_requests_list"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendRequestReceived" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationFriendRequestReceived object:nil];
         } else {
             //no need to kill thread, this is synchronous
             AppDelegate *tempAppDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -723,7 +732,7 @@ void print_groupinvite(Tox *tox, int friendnumber, uint8_t *group_public_key, vo
             [[[Singleton sharedSingleton] pendingGroupInviteFriendNumbers] setObject:[NSNumber numberWithInt:friendnumber] forKey:theConvertedKey];
             NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
             [prefs setObject:[[Singleton sharedSingleton] pendingGroupInvites] forKey:@"pending_invites_list"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"GroupInviteReceived" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationGroupInviteReceived object:nil];
             
         } else {
             AppDelegate *tempAppDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -766,7 +775,7 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
                                                          otherButtonTitles:nil];
             [messageAlert show];
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessage" object:theMessage];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationNewMessage object:theMessage];
         }
     });
 }
@@ -812,7 +821,7 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
                                                          otherButtonTitles:nil];
             [messageAlert show];
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessage" object:theMessage];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationNewMessage object:theMessage];
         }
         
     });
@@ -845,7 +854,7 @@ void print_nickchange(Tox *m, int friendnumber, uint8_t * string, uint16_t lengt
         [Singleton saveFriendListInUserDefaults];
         
         //for now
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationFriendAdded object:nil];
     });
 }
 
@@ -876,7 +885,7 @@ void print_statuschange(Tox *m, int friendnumber,  uint8_t * string, uint16_t le
         [Singleton saveFriendListInUserDefaults];
         
         //for now
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendAdded" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationFriendAdded object:nil];
     });
 }
 
@@ -931,7 +940,7 @@ void print_userstatuschange(Tox *m, int friendnumber, TOX_USERSTATUS kind, void 
             default:
                 break;
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendUserStatusChanged" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificatiobFriendUserStatusChanged object:nil];
     });
 }
 
@@ -967,7 +976,7 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
             default:
                 break;
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"FriendUserStatusChanged" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificatiobFriendUserStatusChanged object:nil];
     });
 }
 
@@ -1038,14 +1047,14 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     if (on == 0 && tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
         NSLog(@"DHT Connected!");
         dispatch_sync(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTConnected" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationDHTConnected object:nil];
         });
         on = 1;
     }
     if (on == 1 && !tox_isconnected([[Singleton sharedSingleton] toxCoreInstance])) {
         NSLog(@"DHT Disconnected!");
         dispatch_sync(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DHTDisconnected" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationDHTDisconnected object:nil];
         });
         on = 0;
     }
