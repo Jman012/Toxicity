@@ -1,14 +1,11 @@
-[submodule "ProjectTox-Core"]
-	path = ProjectTox-Core
+[submodule "Submodules/ProjectTox-Core"]
+	path = Submodules/ProjectTox-Core
 	url = https://github.com/irungentoo/ProjectTox-Core.git
-[submodule "MessagesTableViewController"]
-	path = MessagesTableViewController
+[submodule "Submodules/MessagesTableViewController"]
+	path = Submodules/MessagesTableViewController
 	url = https://github.com/jessesquires/MessagesTableViewController.git
-[submodule "JSQSystemSoundPlayer"]
-	path = JSQSystemSoundPlayer
-	url = https://github.com/jessesquires/JSQSystemSoundPlayer.git
-[submodule "JSQSystemSoundPlayer-submodule"]
-	path = JSQSystemSoundPlayer-submodule
+[submodule "Submodules/JSQSystemSoundPlayer-submodule"]
+	path = Submodules/JSQSystemSoundPlayer-submodule
 	url = https://github.com/jessesquires/JSQSystemSoundPlayer.git
 [submodule "Submodules/ObjQREncoder"]
 	path = Submodules/ObjQREncoder
