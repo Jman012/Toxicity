@@ -19,16 +19,7 @@ static NSString *const QRCodeViewControllerIdentifier = @"QRCodeViewController";
 
 @implementation SettingsViewController
 
-- (NSString *)clientID {
-    char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
-    int pos = 0;
-    uint8_t ourAddress[TOX_FRIEND_ADDRESS_SIZE];
-    tox_get_address([[Singleton sharedSingleton] toxCoreInstance], ourAddress);
-    for (int i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
-        sprintf(&convertedKey[pos] ,"%02X", ourAddress[i] & 0xff);
-    }
-    return [NSString stringWithUTF8String:convertedKey];
-}
+#pragma mark - Initialization
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -38,10 +29,31 @@ static NSString *const QRCodeViewControllerIdentifier = @"QRCodeViewController";
     return self;
 }
 
+#pragma mark - View controller lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     _dhtNodeList = [Singleton sharedSingleton].dhtNodeList;
+}
+
+#pragma mark - Actions
+
+- (IBAction)returnButtonPressedInTextField:(UITextField *)textField {
+    [textField resignFirstResponder];
+}
+
+#pragma mark - Private methods
+
+- (NSString *)clientID {
+    char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
+    int pos = 0;
+    uint8_t ourAddress[TOX_FRIEND_ADDRESS_SIZE];
+    tox_get_address([[Singleton sharedSingleton] toxCoreInstance], ourAddress);
+    for (int i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
+        sprintf(&convertedKey[pos] ,"%02X", ourAddress[i] & 0xff);
+    }
+    return [NSString stringWithUTF8String:convertedKey];
 }
 
 - (void)addDHTServer:(NSNotification *)notification {
@@ -213,7 +225,7 @@ static NSString *const QRCodeViewControllerIdentifier = @"QRCodeViewController";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+
     static NSString *CellIdentifier;
     if (indexPath.section == 0 && indexPath.row != 2) {
         CellIdentifier = @"settingsInfoCell";
