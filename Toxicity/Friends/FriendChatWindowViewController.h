@@ -13,17 +13,6 @@
 #import "AppDelegate.h"
 
 @interface FriendChatWindowViewController : JSMessagesViewController <JSMessagesViewDataSource, JSMessagesViewDelegate>
-{
-    NSMutableArray      *_mainFriendList;
-    NSMutableArray      *_mainFriendMessages;
-    FriendObject        *_friendInfo;
-    
-    NSMutableArray      *messages;
-    
-    NSIndexPath         *friendIndex;
-    
-    UIImageView         *statusNavBarImageView;
-}
 
 - (id)initWithFriendIndex:(NSIndexPath *)friendIndex;
 

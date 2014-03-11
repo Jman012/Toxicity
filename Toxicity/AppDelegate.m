@@ -8,14 +8,14 @@
 
 #import "AppDelegate.h"
 
-NSString *const ToxAppDelegateNotificationFriendAdded = @"FriendAdded";
-NSString *const ToxAppDelegateNotificationGroupAdded = @"GroupAdded";
-NSString *const ToxAppDelegateNotificationFriendRequestReceived = @"FriendRequestReceived";
-NSString *const ToxAppDelegateNotificationGroupInviteReceived = @"GroupInviteReceived";
-NSString *const ToxAppDelegateNotificationNewMessage = @"NewMessage";
-NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged = @"FriendUserStatusChanged";
-NSString *const ToxAppDelegateNotificationDHTConnected = @"DHTConnected";
-NSString *const ToxAppDelegateNotificationDHTDisconnected = @"DHTDisconnected";
+NSString *const ToxAppDelegateNotificationFriendAdded               = @"FriendAdded";
+NSString *const ToxAppDelegateNotificationGroupAdded                = @"GroupAdded";
+NSString *const ToxAppDelegateNotificationFriendRequestReceived     = @"FriendRequestReceived";
+NSString *const ToxAppDelegateNotificationGroupInviteReceived       = @"GroupInviteReceived";
+NSString *const ToxAppDelegateNotificationNewMessage                = @"NewMessage";
+NSString *const ToxAppDelegateNotificationFriendUserStatusChanged   = @"FriendUserStatusChanged";
+NSString *const ToxAppDelegateNotificationDHTConnected              = @"DHTConnected";
+NSString *const ToxAppDelegateNotificationDHTDisconnected           = @"DHTDisconnected";
 
 @implementation AppDelegate
 
@@ -95,6 +95,7 @@ NSString *const ToxAppDelegateNotificationDHTDisconnected = @"DHTDisconnected";
     return YES;
 }
 
+#warning never called
 - (void)setupToxNew
 {
     //user defaults is the easy way to save info between app launches. dont have to read a file manually, etc. basically a plist
@@ -940,7 +941,7 @@ void print_userstatuschange(Tox *m, int friendnumber, TOX_USERSTATUS kind, void 
             default:
                 break;
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificatiobFriendUserStatusChanged object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationFriendUserStatusChanged object:nil];
     });
 }
 
@@ -976,7 +977,7 @@ void print_connectionstatuschange(Tox *m, int friendnumber, uint8_t status, void
             default:
                 break;
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificatiobFriendUserStatusChanged object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationFriendUserStatusChanged object:nil];
     });
 }
 

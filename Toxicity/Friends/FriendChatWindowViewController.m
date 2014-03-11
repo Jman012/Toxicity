@@ -7,47 +7,53 @@
 //
 
 #import "FriendChatWindowViewController.h"
+#import "UIColor+ToxicityColors.h"
 
 static NSString *const kSenderMe = @"Me";
 static NSString *const kSenderThem = @"Them";
 
-extern NSString *const ToxAppDelegateNotificationFriendAdded ;
-extern NSString *const ToxAppDelegateNotificationNewMessage ;
-extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
-
-
+extern NSString *const ToxAppDelegateNotificationFriendAdded;
+extern NSString *const ToxAppDelegateNotificationNewMessage;
+extern NSString *const ToxAppDelegateNotificationFriendUserStatusChanged;
 
 @interface FriendChatWindowViewController ()
+
+@property(nonatomic, strong) NSMutableArray *mainFriendList;
+@property(nonatomic, strong) NSMutableArray *mainFriendMessages;
+@property(nonatomic, strong) FriendObject *friendInfo;
+@property(nonatomic, strong) NSMutableArray *messages;
+@property(nonatomic, strong) NSIndexPath *friendIndex;
+
+@property (strong, nonatomic) UIColor *friendStatusColor;
+@property (strong, nonatomic) UILabel *titleLabel;
 
 @end
 
 @implementation FriendChatWindowViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+@synthesize friendStatusColor = _friendStatusColor;
+
+#pragma mark - Initialization
+
+- (id)initWithFriendIndex:(NSIndexPath *)theIndex {
+
+    self = [super init];
     if (self) {
-        // Custom initialization
+        self.friendIndex = theIndex;
+        
+        self.mainFriendList = [Singleton sharedSingleton].mainFriendList;
+        self.mainFriendMessages = [Singleton sharedSingleton].mainFriendMessages;
+        
+        self.messages = [[self.mainFriendMessages objectAtIndex:theIndex.row] mutableCopy];
+        
+        self.friendInfo = [self.mainFriendList objectAtIndex:theIndex.row];
+
+        [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:self.friendIndex];
     }
     return self;
 }
 
-- (id)initWithFriendIndex:(NSIndexPath *)theIndex {
-    
-    self = [super init];
-    if (self) {
-        friendIndex = theIndex;
-        
-        _mainFriendList = [Singleton sharedSingleton].mainFriendList;
-        _mainFriendMessages = [Singleton sharedSingleton].mainFriendMessages;
-        
-        messages = [[_mainFriendMessages objectAtIndex:theIndex.row] mutableCopy];
-        
-        _friendInfo = [_mainFriendList objectAtIndex:theIndex.row];
-        
-        [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:friendIndex];
-    }
-    return self;
-}
+#pragma mark - View controller life cycle
 
 - (void)viewDidLoad {
     self.delegate = self;
@@ -58,35 +64,24 @@ extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
     self.messageInputView.textView.placeHolder = @"";
     self.sender = kSenderMe;
     [self setBackgroundColor:[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f]];
-    
-    if ([_friendInfo.nickname isEqualToString:@""])
-        self.title = _friendInfo.publicKey;
-    else
-        self.title = _friendInfo.nickname;
-    
-    //setup the colored status indicator on the navbar
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-        // Load resources for iOS 6.1 or earlier
-        statusNavBarImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray-navbar"]];
-    } else {
-        // Load resources for iOS 7 or later
-        statusNavBarImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"status-gray-navbar-ios7"]];
-    }
-    CGRect tempFrame = statusNavBarImageView.frame;
-    tempFrame.origin.x = self.navigationController.navigationBar.frame.size.width - tempFrame.size.width;
-    statusNavBarImageView.frame = tempFrame;
+
+    self.titleLabel = [[UILabel alloc] init];
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.navigationItem.titleView = self.titleLabel;
+
+    [self updateUserInfo];
     [self updateColoredStatusIndicator];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self scrollToBottomAnimated:NO];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 //    [self viewDidAppear:animated];
-    [self.navigationController.navigationBar addSubview:statusNavBarImageView];
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUserInfo)
                                                  name:ToxAppDelegateNotificationFriendAdded
@@ -99,76 +94,94 @@ extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateColoredStatusIndicator)
-                                                 name:ToxAppDelegateNotificatiobFriendUserStatusChanged
+                                                 name:ToxAppDelegateNotificationFriendUserStatusChanged
                                                object:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    [statusNavBarImageView removeFromSuperview];
-}
-
 - (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [Singleton sharedSingleton].mainFriendMessages[friendIndex.row] = messages.mutableCopy;
+    [Singleton sharedSingleton].mainFriendMessages[self.friendIndex.row] = self.messages.mutableCopy;
     [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+    [super viewDidDisappear:animated];
+}
+
+#pragma mark - Setters
+
+- (void)setFriendStatusColor:(UIColor *)friendStatusColor {
+    if (_friendStatusColor != friendStatusColor) {
+        _friendStatusColor = friendStatusColor;
+        [self updateTitleLabelStatusAndText];
+    }
+}
+
+- (void)setTitle:(NSString *)title {
+    [super setTitle:title];
+    [self updateTitleLabelStatusAndText];
+}
+
+#pragma mark - Getters
+
+- (UIColor *)friendStatusColor {
+    if (!_friendStatusColor) {
+        _friendStatusColor = [UIColor toxicityStatusColorGray];
+    }
+    return _friendStatusColor;
+}
+
+#pragma mark - Methods
+
+- (void)updateTitleLabelStatusAndText {
+    NSAttributedString *dot = [[NSAttributedString alloc] initWithString:@"● " attributes:@{
+            NSForegroundColorAttributeName: self.friendStatusColor,
+            NSFontAttributeName: [UIFont boldSystemFontOfSize:17.0]
+    }];
+
+    NSAttributedString *title = [[NSAttributedString alloc] initWithString:self.title attributes:@{
+            NSForegroundColorAttributeName: self.navigationController.navigationBar.tintColor,
+            NSFontAttributeName: [UIFont boldSystemFontOfSize:17.0]
+    }];
+
+    self.titleLabel.attributedText = ({
+        NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] init];
+
+        [mutableAttributedString appendAttributedString:dot];
+        [mutableAttributedString appendAttributedString:title];
+
+        mutableAttributedString.copy;
+    });
+
+    [self.titleLabel sizeToFit];
+
 }
 
 - (void)updateColoredStatusIndicator {
-    if (_friendInfo.connectionType == ToxFriendConnectionStatus_Online) {
-        switch (_friendInfo.statusType) {
+
+    if (self.friendInfo.connectionType == ToxFriendConnectionStatus_Online) {
+        switch (self.friendInfo.statusType) {
             case ToxFriendUserStatus_None:
-                if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-                    // Load resources for iOS 6.1 or earlier
-                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-green-navbar"]];
-                } else {
-                    // Load resources for iOS 7 or later
-                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-green-navbar-ios7"]];
-                }
+                self.friendStatusColor = [UIColor toxicityStatusColorGreen];
                 break;
-                
             case ToxFriendUserStatus_Away:
-                if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-                    // Load resources for iOS 6.1 or earlier
-                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-yellow-navbar"]];
-                } else {
-                    // Load resources for iOS 7 or later
-                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-yellow-navbar-ios7"]];
-                }
+                self.friendStatusColor = [UIColor toxicityStatusColorYellow];
                 break;
-                
             case ToxFriendUserStatus_Busy:
-                if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-                    // Load resources for iOS 6.1 or earlier
-                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-red-navbar"]];
-                } else {
-                    // Load resources for iOS 7 or later
-                    [statusNavBarImageView setImage:[UIImage imageNamed:@"status-red-navbar-ios7"]];
-                }
+                self.friendStatusColor = [UIColor toxicityStatusColorRed];
                 break;
-                
-            default:
-                break;
+            default:break;
         }
     } else {
-        if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-            // Load resources for iOS 6.1 or earlier
-            [statusNavBarImageView setImage:[UIImage imageNamed:@"status-gray-navbar"]];
-        } else {
-            // Load resources for iOS 7 or later
-            [statusNavBarImageView setImage:[UIImage imageNamed:@"status-gray-navbar-ios7"]];
-        }
+        self.friendStatusColor = [UIColor toxicityStatusColorGray];
     }
+
+    [self updateTitleLabelStatusAndText];
 }
 
 #pragma mark - Notifications Center stuff
 
 - (void)updateUserInfo {
-    if ([_friendInfo.nickname isEqualToString:@""])
-        self.title = _friendInfo.publicKey;
-    else
-        self.title = _friendInfo.nickname;
+
+    self.title = self.friendInfo.nickname.length ? self.friendInfo.nickname : self.friendInfo.publicKey;
     
     //todo: status (where to display?) and status type
 }
@@ -176,12 +189,12 @@ extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
 - (void)newMessage:(NSNotification *)notification {
     MessageObject *receivedMessage = (MessageObject *)[notification object];
     
-    if ([receivedMessage.senderKey isEqualToString:_friendInfo.publicKey]) {
+    if ([receivedMessage.senderKey isEqualToString:self.friendInfo.publicKey]) {
         [self.tableView beginUpdates];
         
-        [messages addObject:receivedMessage];
+        [self.messages addObject:receivedMessage];
         
-        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:(messages.count - 1) inSection:0]]
+        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:(self.messages.count - 1) inSection:0]]
                               withRowAnimation:UITableViewRowAnimationBottom];
         [self.tableView endUpdates];
         [self scrollToBottomAnimated:YES];
@@ -194,7 +207,7 @@ extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return messages.count;
+    return self.messages.count;
 }
 
 #pragma mark - Messages view delegate
@@ -202,7 +215,7 @@ extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
 //- (void)sendPressed:(UIButton *)sender withText:(NSString *)text
 //{
     MessageObject *tempMessage = [[MessageObject alloc] init];
-    tempMessage.recipientKey = _friendInfo.publicKey;
+    tempMessage.recipientKey = self.friendInfo.publicKey;
     
     if ([text length] >= 5) {
         //only check for the "/me " if the message is 5 or more characters in length.
@@ -234,19 +247,19 @@ extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
     }
     
     //add the message after we know if it failed or not
-    [messages addObject:tempMessage];
+    [self.messages addObject:tempMessage];
 //    [messages addObject:[[JSMessage alloc] initWithText:tempMessage.message sender:kSenderMe date:nil]];
     [self finishSend];
     [self scrollToBottomAnimated:YES];
 }
 
 - (JSBubbleMessageType)messageTypeForRowAtIndexPath:(NSIndexPath *)indexPath {
-    MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
+    MessageObject *tempMessage = [self.messages objectAtIndex:indexPath.row];
     return tempMessage.origin == MessageLocation_Me ? JSBubbleMessageTypeOutgoing : JSBubbleMessageTypeIncoming;
 }
 
 - (UIImageView *)bubbleImageViewWithType:(JSBubbleMessageType)type forRowAtIndexPath:(NSIndexPath *)indexPath {
-    MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
+    MessageObject *tempMessage = [self.messages objectAtIndex:indexPath.row];
     if (tempMessage.origin == MessageLocation_Me) {
         return [JSBubbleImageViewFactory bubbleImageViewForType:type color:[UIColor js_bubbleBlueColor]];
     } else {
@@ -275,7 +288,7 @@ extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
 }
 
 - (JSMessage *)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
-    MessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
+    MessageObject *tempMessage = [self.messages objectAtIndex:indexPath.row];
     return [[JSMessage alloc] initWithText:tempMessage.message
                                     sender:tempMessage.origin == MessageLocation_Me ? kSenderMe : kSenderThem
                                       date:nil];
