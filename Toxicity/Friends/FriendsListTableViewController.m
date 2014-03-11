@@ -10,7 +10,7 @@
 
 extern NSString *const ToxAppDelegateNotificationFriendAdded ;
 extern NSString *const ToxAppDelegateNotificationNewMessage ;
-extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
+extern NSString *const ToxAppDelegateNotificationFriendUserStatusChanged;
 extern NSString *const ToxAppDelegateNotificationGroupAdded ;
 extern NSString *const ToxAppDelegateNotificationFriendRequestReceived ;
 extern NSString *const ToxAppDelegateNotificationGroupInviteReceived ;
@@ -83,7 +83,7 @@ extern NSString *const ToxAppDelegateNotificationGroupInviteReceived ;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(friendListUpdate)
-                                                 name:ToxAppDelegateNotificatiobFriendUserStatusChanged
+                                                 name:ToxAppDelegateNotificationFriendUserStatusChanged
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
