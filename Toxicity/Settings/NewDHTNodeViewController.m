@@ -61,6 +61,8 @@ NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
         
         [[NSNotificationCenter defaultCenter] postNotificationName:ToxNewDHTNodeViewControllerNotificatiobNewDHT object:nil userInfo:dict];
     }
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)swipeToPopView {

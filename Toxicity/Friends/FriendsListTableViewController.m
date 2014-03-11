@@ -103,7 +103,9 @@ extern NSString *const ToxAppDelegateNotificationGroupInviteReceived ;
     [self friendListUpdate];
 }
 
-
+- (void)viewDidDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (IBAction)requestsButtonPushed:(id)sender {
     RequestsTableViewController *requestsVC = [[RequestsTableViewController alloc] init];
@@ -131,10 +133,6 @@ extern NSString *const ToxAppDelegateNotificationGroupInviteReceived ;
     } else {
         self.navigationItem.rightBarButtonItem.title = @"Requests";
     }
-}
-
--(void) dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Table view data source

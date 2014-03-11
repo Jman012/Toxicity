@@ -140,11 +140,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Settings" id="TXU-fr-5SP">
-                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="xHW-rT-g55">
-                            <connections>
-                                <action selector="editButtonPushed:" destination="AXn-cl-0UB" id="tFc-tN-9zJ"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="save" id="Sez-j0-kSx">
                             <connections>
                                 <action selector="saveButtonPushed:" destination="AXn-cl-0UB" id="iul-Bg-Hto"/>

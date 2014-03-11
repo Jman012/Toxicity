@@ -78,9 +78,6 @@ extern NSString *const ToxAppDelegateNotificationNewMessage;
     [super viewDidDisappear:animated];
     [Singleton sharedSingleton].groupMessages[friendIndex.row] = messages.mutableCopy;
     [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
-}
-
--(void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

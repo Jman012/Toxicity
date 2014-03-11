@@ -126,7 +126,7 @@ extern NSString *const ToxAppDelegateNotificationGroupInviteReceived ;
     [self.navigationController setToolbarHidden:YES animated:YES];
 }
 
--(void) dealloc {
+-(void)viewDidDisappear:(BOOL)animated {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

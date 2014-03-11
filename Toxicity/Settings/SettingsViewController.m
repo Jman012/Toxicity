@@ -138,7 +138,7 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
                                                object:nil];
 }
 
--(void) dealloc {
+- (void)viewDidDisappear:(BOOL)animated {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -180,30 +180,6 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (IBAction)editButtonPushed:(id)sender {
-    UIBarButtonItem *doneEditingButton = [[UIBarButtonItem alloc] initWithTitle:@"Done"
-                                                                          style:UIBarButtonItemStyleDone
-                                                                         target:self
-                                                                         action:@selector(doneEditingButtonPushed)];
-
-    self.navigationItem.leftBarButtonItem = doneEditingButton;
-    self.navigationItem.rightBarButtonItem.enabled = NO;
-    
-    [self.tableView setEditing:YES animated:YES];
-}
-
-- (void)doneEditingButtonPushed {
-    UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit"
-                                                                   style:UIBarButtonItemStyleBordered
-                                                                  target:self
-                                                                  action:@selector(editButtonPushed:)];
-
-    self.navigationItem.leftBarButtonItem = editButton;
-    self.navigationItem.rightBarButtonItem.enabled = YES;
-    
-    [self.tableView setEditing:NO animated:YES];
 }
 
 #pragma mark - Table view data source

@@ -112,6 +112,7 @@ extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
     [super viewDidDisappear:animated];
     [Singleton sharedSingleton].mainFriendMessages[friendIndex.row] = messages.mutableCopy;
     [[Singleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)updateColoredStatusIndicator {
@@ -288,10 +289,6 @@ extern NSString *const ToxAppDelegateNotificatiobFriendUserStatusChanged ;
     if (cell.subtitleLabel) {
         cell.subtitleLabel.text = nil;
     }
-}
-
--(void) dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
