@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, ToxDHTNodeConnectionStatus) {
     ToxDHTNodeConnectionStatus_NotConnected,
     ToxDHTNodeConnectionStatus_Connecting,
     ToxDHTNodeConnectionStatus_Connected
-} ToxDHTNodeConnectionStatus;
+} ;
 
 @interface DHTNodeObject : NSObject
 {
