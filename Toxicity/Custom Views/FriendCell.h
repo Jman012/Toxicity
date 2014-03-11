@@ -10,12 +10,12 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+Shadow.h"
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, FriendCellStatusColor) {
     FriendCellStatusColor_Gray,
     FriendCellStatusColor_Green,
     FriendCellStatusColor_Yellow,
     FriendCellStatusColor_Red
-} FriendCellStatusColor;
+};
 
 @interface FriendCell : UITableViewCell
 {

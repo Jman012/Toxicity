@@ -8,16 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, ToxFriendUserStatus) {
     ToxFriendUserStatus_Busy,
     ToxFriendUserStatus_Away,
     ToxFriendUserStatus_None
-} ToxFriendUserStatus;
+} ;
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, ToxFriendConnectionStatus) {
     ToxFriendConnectionStatus_None,
     ToxFriendConnectionStatus_Online
-} ToxFriendConnectionStatus;
+} ;
 
 @interface FriendObject : NSObject
 {

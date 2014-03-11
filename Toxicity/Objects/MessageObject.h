@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, MessageOrigin) {
     MessageLocation_Me,
     MessageLocation_Them
-} MessageOrigin;
+} ;
 
 @interface MessageObject : NSObject
 {
