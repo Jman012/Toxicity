@@ -10,3 +10,6 @@
 [submodule "Submodules/ObjQREncoder"]
 	path = Submodules/ObjQREncoder
 	url = https://github.com/wiruzx/ObjQREncoder.git
+[submodule "Submodules/TWMessageBarManager"]
+	path = Submodules/TWMessageBarManager
+	url = https://github.com/terryworona/TWMessageBarManager.git

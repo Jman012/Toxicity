@@ -7,6 +7,7 @@
 //
 
 #import "TXCAppDelegate.h"
+#import "TWMessageBarManager.h"
 
 NSString *const TXCToxAppDelegateNotificationFriendAdded = @"FriendAdded";
 NSString *const TXCToxAppDelegateNotificationGroupAdded = @"GroupAdded";
@@ -775,12 +776,9 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
             [[TXCSingleton sharedSingleton] mainFriendMessages][friendnumber] = [tempMessages copy];
             
             TXCFriendObject *tempFriend = [[[TXCSingleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
-            UIAlertView *messageAlert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Message from: %@", tempFriend.nickname]
-                                                                   message:[NSString stringWithUTF8String:(char *)string]
-                                                                  delegate:nil
-                                                         cancelButtonTitle:@"Okay"
-                                                         otherButtonTitles:nil];
-            [messageAlert show];
+            [[TWMessageBarManager sharedInstance] showMessageWithTitle:[NSString stringWithFormat:@"Message from: %@", tempFriend.nickname]
+                                                           description:@((char *)string)
+                                                                  type:TWMessageBarMessageTypeInfo];
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage];
         }
@@ -821,12 +819,9 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
 
             [[TXCSingleton sharedSingleton] groupMessages][groupnumber] = [tempMessages copy];
             
-            UIAlertView *messageAlert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Message from Group #%d", groupnumber]
-                                                                   message:theirMessage
-                                                                  delegate:nil
-                                                         cancelButtonTitle:@"Okay"
-                                                         otherButtonTitles:nil];
-            [messageAlert show];
+            [[TWMessageBarManager sharedInstance] showMessageWithTitle:[NSString stringWithFormat:@"Message from Group #%d", groupnumber]
+                                                           description:theirMessage
+                                                                  type:TWMessageBarMessageTypeSuccess];
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage];
         }
