@@ -13,7 +13,7 @@
 		B94F2C5F17AF25C0003EA6E8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B94F2C5E17AF25C0003EA6E8 /* CoreGraphics.framework */; };
 		B94F2C6517AF25C0003EA6E8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C6317AF25C0003EA6E8 /* InfoPlist.strings */; };
 		B94F2C6717AF25C0003EA6E8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B94F2C6617AF25C0003EA6E8 /* main.m */; };
-		B94F2C6B17AF25C0003EA6E8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B94F2C6A17AF25C0003EA6E8 /* AppDelegate.m */; };
+		B94F2C6B17AF25C0003EA6E8 /* TXCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B94F2C6A17AF25C0003EA6E8 /* TXCAppDelegate.m */; };
 		B94F2C6D17AF25C0003EA6E8 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C6C17AF25C0003EA6E8 /* Default.png */; };
 		B94F2C6F17AF25C0003EA6E8 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C6E17AF25C0003EA6E8 /* Default@2x.png */; };
 		B94F2C7117AF25C0003EA6E8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C7017AF25C0003EA6E8 /* Default-568h@2x.png */; };
@@ -163,14 +163,14 @@
 		B97D603717B84328001C07B8 /* status-green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D602F17B84328001C07B8 /* status-green@2x.png */; };
 		B97D603A17B84328001C07B8 /* status-yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D603217B84328001C07B8 /* status-yellow.png */; };
 		B97D603B17B84328001C07B8 /* status-yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D603317B84328001C07B8 /* status-yellow@2x.png */; };
-		B97D604217B95145001C07B8 /* DHTNodeObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D604117B95145001C07B8 /* DHTNodeObject.m */; };
-		B97D604517B95154001C07B8 /* FriendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D604417B95154001C07B8 /* FriendObject.m */; };
+		B97D604217B95145001C07B8 /* TXCDHTNodeObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D604117B95145001C07B8 /* TXCDHTNodeObject.m */; };
+		B97D604517B95154001C07B8 /* TXCFriendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D604417B95154001C07B8 /* TXCFriendObject.m */; };
 		B97D604717B9EB29001C07B8 /* default-avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D604617B9EB29001C07B8 /* default-avatar.png */; };
 		B97D604A17BB33E7001C07B8 /* status-red.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D604817BB33E7001C07B8 /* status-red.png */; };
 		B97D604B17BB33E7001C07B8 /* status-red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D604917BB33E7001C07B8 /* status-red@2x.png */; };
 		B97D605117BCBE58001C07B8 /* message-not-sent.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D604F17BCBE58001C07B8 /* message-not-sent.png */; };
 		B97D605217BCBE58001C07B8 /* message-not-sent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B97D605017BCBE58001C07B8 /* message-not-sent@2x.png */; };
-		B97D605517BCBF77001C07B8 /* MessageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D605417BCBF77001C07B8 /* MessageObject.m */; };
+		B97D605517BCBF77001C07B8 /* TXCMessageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B97D605417BCBF77001C07B8 /* TXCMessageObject.m */; };
 		B98040F418BC886B0069590C /* NSString+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = B98040A218BC886B0069590C /* NSString+JSMessagesView.m */; };
 		B98040F518BC886B0069590C /* UIColor+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = B98040A418BC886B0069590C /* UIColor+JSMessagesView.m */; };
 		B98040F618BC886B0069590C /* UIImage+JSMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = B98040A618BC886B0069590C /* UIImage+JSMessagesView.m */; };
@@ -230,9 +230,9 @@
 		B980412C18BC886B0069590C /* message-received.aiff in Resources */ = {isa = PBXBuildFile; fileRef = B98040F218BC886B0069590C /* message-received.aiff */; };
 		B980412D18BC886B0069590C /* message-sent.aiff in Resources */ = {isa = PBXBuildFile; fileRef = B98040F318BC886B0069590C /* message-sent.aiff */; };
 		B98C9C3617DACDFD008B10E0 /* default-avatar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B98C9C3517DACDFD008B10E0 /* default-avatar@2x.png */; };
-		B98C9C3F17DC0C36008B10E0 /* FriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B98C9C3C17DC0C36008B10E0 /* FriendCell.m */; };
+		B98C9C3F17DC0C36008B10E0 /* TXCFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B98C9C3C17DC0C36008B10E0 /* TXCFriendCell.m */; };
 		B98C9C4317DC16D8008B10E0 /* UIView+Shadow.m in Sources */ = {isa = PBXBuildFile; fileRef = B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */; };
-		B9A5343117EAD17800F2FD94 /* GroupChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9A5343017EAD17800F2FD94 /* GroupChatWindowViewController.m */; };
+		B9A5343117EAD17800F2FD94 /* TXCGroupChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9A5343017EAD17800F2FD94 /* TXCGroupChatWindowViewController.m */; };
 		B9B9C6D917D59E2F006BF8AC /* status-gray-navbar.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D117D59E2F006BF8AC /* status-gray-navbar.png */; };
 		B9B9C6DA17D59E2F006BF8AC /* status-gray-navbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D217D59E2F006BF8AC /* status-gray-navbar@2x.png */; };
 		B9B9C6DB17D59E2F006BF8AC /* status-green-navbar.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D317D59E2F006BF8AC /* status-green-navbar.png */; };
@@ -241,15 +241,15 @@
 		B9B9C6DE17D59E2F006BF8AC /* status-red-navbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D617D59E2F006BF8AC /* status-red-navbar@2x.png */; };
 		B9B9C6DF17D59E2F006BF8AC /* status-yellow-navbar.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D717D59E2F006BF8AC /* status-yellow-navbar.png */; };
 		B9B9C6E017D59E2F006BF8AC /* status-yellow-navbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D817D59E2F006BF8AC /* status-yellow-navbar@2x.png */; };
-		B9BB99DE17B0E38900A1ACEC /* FriendsListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99DD17B0E38900A1ACEC /* FriendsListTableViewController.m */; };
-		B9BB99E317B0E39200A1ACEC /* NewDHTNodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E017B0E39200A1ACEC /* NewDHTNodeViewController.m */; };
-		B9BB99E417B0E39200A1ACEC /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E217B0E39200A1ACEC /* SettingsViewController.m */; };
-		B9BB99E817B0E41F00A1ACEC /* Singleton.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E717B0E41F00A1ACEC /* Singleton.m */; };
+		B9BB99DE17B0E38900A1ACEC /* TXCFriendsListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99DD17B0E38900A1ACEC /* TXCFriendsListTableViewController.m */; };
+		B9BB99E317B0E39200A1ACEC /* TXCNewDHTNodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E017B0E39200A1ACEC /* TXCNewDHTNodeViewController.m */; };
+		B9BB99E417B0E39200A1ACEC /* TXCSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E217B0E39200A1ACEC /* TXCSettingsViewController.m */; };
+		B9BB99E817B0E41F00A1ACEC /* TXCSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E717B0E41F00A1ACEC /* TXCSingleton.m */; };
 		B9BB9A5B17B377BF00A1ACEC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */; };
-		B9BB9A5E17B4B20100A1ACEC /* FriendChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB9A5D17B4B20100A1ACEC /* FriendChatWindowViewController.m */; };
+		B9BB9A5E17B4B20100A1ACEC /* TXCFriendChatWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB9A5D17B4B20100A1ACEC /* TXCFriendChatWindowViewController.m */; };
 		B9BB9A6317B7128300A1ACEC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */; };
-		B9D5C95D17E3E31500B84BEF /* FriendListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C95C17E3E31500B84BEF /* FriendListHeader.m */; };
-		B9D5C96017E54F5100B84BEF /* GroupObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C95F17E54F5100B84BEF /* GroupObject.m */; };
+		B9D5C95D17E3E31500B84BEF /* TXCFriendListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C95C17E3E31500B84BEF /* TXCFriendListHeader.m */; };
+		B9D5C96017E54F5100B84BEF /* TXCGroupObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C95F17E54F5100B84BEF /* TXCGroupObject.m */; };
 		B9D5C99117E5904600B84BEF /* DHT.c in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C97A17E5904600B84BEF /* DHT.c */; };
 		B9D5C99217E5904600B84BEF /* friend_requests.c in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C97C17E5904600B84BEF /* friend_requests.c */; };
 		B9D5C99317E5904600B84BEF /* group_chats.c in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C97E17E5904600B84BEF /* group_chats.c */; };
@@ -270,8 +270,8 @@
 		B9D859DE17C3453B005FD2D2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859DD17C3453B005FD2D2 /* CoreMedia.framework */; };
 		B9D859E017C34542005FD2D2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859DF17C34542005FD2D2 /* CoreVideo.framework */; };
 		B9D859E217C34553005FD2D2 /* libiconv.2.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */; };
-		B9D85A2217CB0942005FD2D2 /* QRReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A1F17CB0942005FD2D2 /* QRReaderViewController.m */; };
-		B9D85A2317CB0942005FD2D2 /* RequestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A2117CB0942005FD2D2 /* RequestsTableViewController.m */; };
+		B9D85A2217CB0942005FD2D2 /* TXCQRReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A1F17CB0942005FD2D2 /* TXCQRReaderViewController.m */; };
+		B9D85A2317CB0942005FD2D2 /* TXCRequestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A2117CB0942005FD2D2 /* TXCRequestsTableViewController.m */; };
 		B9EE596617FB528700D8A388 /* status-gray-ios7.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE595617FB528700D8A388 /* status-gray-ios7.png */; };
 		B9EE596717FB528700D8A388 /* status-gray-ios7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE595717FB528700D8A388 /* status-gray-ios7@2x.png */; };
 		B9EE596817FB528800D8A388 /* status-gray-navbar-ios7.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE595817FB528700D8A388 /* status-gray-navbar-ios7.png */; };
@@ -295,7 +295,7 @@
 		E6EC551918CB61CC005BE0FB /* tox_logo_ios6.png in Resources */ = {isa = PBXBuildFile; fileRef = E6EC551618CB61CC005BE0FB /* tox_logo_ios6.png */; };
 		E6EC551A18CB61CC005BE0FB /* tox_logo_ios6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6EC551718CB61CC005BE0FB /* tox_logo_ios6@2x.png */; };
 		E6EC551B18CB61CC005BE0FB /* tox_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6EC551818CB61CC005BE0FB /* tox_logo@2x.png */; };
-		E6F9FC9318C9068A00C1D2C1 /* QRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6F9FC9218C9068A00C1D2C1 /* QRCodeViewController.m */; };
+		E6F9FC9318C9068A00C1D2C1 /* TXCQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6F9FC9218C9068A00C1D2C1 /* TXCQRCodeViewController.m */; };
 		E6F9FC9C18C90CF800C1D2C1 /* libQREncoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6F9FC9918C90CA500C1D2C1 /* libQREncoder.a */; };
 /* End PBXBuildFile section */
 
@@ -327,8 +327,8 @@
 		B94F2C6417AF25C0003EA6E8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B94F2C6617AF25C0003EA6E8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B94F2C6817AF25C0003EA6E8 /* Toxicity-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Toxicity-Prefix.pch"; sourceTree = "<group>"; };
-		B94F2C6917AF25C0003EA6E8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		B94F2C6A17AF25C0003EA6E8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		B94F2C6917AF25C0003EA6E8 /* TXCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TXCAppDelegate.h; sourceTree = "<group>"; };
+		B94F2C6A17AF25C0003EA6E8 /* TXCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TXCAppDelegate.m; sourceTree = "<group>"; };
 		B94F2C6C17AF25C0003EA6E8 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		B94F2C6E17AF25C0003EA6E8 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		B94F2C7017AF25C0003EA6E8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -589,17 +589,17 @@
 		B97D602F17B84328001C07B8 /* status-green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-green@2x.png"; path = "Images/status-green@2x.png"; sourceTree = "<group>"; };
 		B97D603217B84328001C07B8 /* status-yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow.png"; path = "Images/status-yellow.png"; sourceTree = "<group>"; };
 		B97D603317B84328001C07B8 /* status-yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow@2x.png"; path = "Images/status-yellow@2x.png"; sourceTree = "<group>"; };
-		B97D604017B95145001C07B8 /* DHTNodeObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHTNodeObject.h; path = Objects/DHTNodeObject.h; sourceTree = "<group>"; };
-		B97D604117B95145001C07B8 /* DHTNodeObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHTNodeObject.m; path = Objects/DHTNodeObject.m; sourceTree = "<group>"; };
-		B97D604317B95154001C07B8 /* FriendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendObject.h; path = Objects/FriendObject.h; sourceTree = "<group>"; };
-		B97D604417B95154001C07B8 /* FriendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendObject.m; path = Objects/FriendObject.m; sourceTree = "<group>"; };
+		B97D604017B95145001C07B8 /* TXCDHTNodeObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCDHTNodeObject.h; path = Objects/TXCDHTNodeObject.h; sourceTree = "<group>"; };
+		B97D604117B95145001C07B8 /* TXCDHTNodeObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCDHTNodeObject.m; path = Objects/TXCDHTNodeObject.m; sourceTree = "<group>"; };
+		B97D604317B95154001C07B8 /* TXCFriendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCFriendObject.h; path = Objects/TXCFriendObject.h; sourceTree = "<group>"; };
+		B97D604417B95154001C07B8 /* TXCFriendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCFriendObject.m; path = Objects/TXCFriendObject.m; sourceTree = "<group>"; };
 		B97D604617B9EB29001C07B8 /* default-avatar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "default-avatar.png"; path = "Images/default-avatar.png"; sourceTree = "<group>"; };
 		B97D604817BB33E7001C07B8 /* status-red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-red.png"; path = "Images/status-red.png"; sourceTree = "<group>"; };
 		B97D604917BB33E7001C07B8 /* status-red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-red@2x.png"; path = "Images/status-red@2x.png"; sourceTree = "<group>"; };
 		B97D604F17BCBE58001C07B8 /* message-not-sent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "message-not-sent.png"; path = "Images/message-not-sent.png"; sourceTree = "<group>"; };
 		B97D605017BCBE58001C07B8 /* message-not-sent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "message-not-sent@2x.png"; path = "Images/message-not-sent@2x.png"; sourceTree = "<group>"; };
-		B97D605317BCBF77001C07B8 /* MessageObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageObject.h; path = Objects/MessageObject.h; sourceTree = "<group>"; };
-		B97D605417BCBF77001C07B8 /* MessageObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageObject.m; path = Objects/MessageObject.m; sourceTree = "<group>"; };
+		B97D605317BCBF77001C07B8 /* TXCMessageObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCMessageObject.h; path = Objects/TXCMessageObject.h; sourceTree = "<group>"; };
+		B97D605417BCBF77001C07B8 /* TXCMessageObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCMessageObject.m; path = Objects/TXCMessageObject.m; sourceTree = "<group>"; };
 		B98040A118BC886B0069590C /* NSString+JSMessagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+JSMessagesView.h"; sourceTree = "<group>"; };
 		B98040A218BC886B0069590C /* NSString+JSMessagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+JSMessagesView.m"; sourceTree = "<group>"; };
 		B98040A318BC886B0069590C /* UIColor+JSMessagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+JSMessagesView.h"; sourceTree = "<group>"; };
@@ -674,12 +674,12 @@
 		B98040F218BC886B0069590C /* message-received.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = "message-received.aiff"; sourceTree = "<group>"; };
 		B98040F318BC886B0069590C /* message-sent.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = "message-sent.aiff"; sourceTree = "<group>"; };
 		B98C9C3517DACDFD008B10E0 /* default-avatar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "default-avatar@2x.png"; path = "Images/default-avatar@2x.png"; sourceTree = "<group>"; };
-		B98C9C3B17DC0C36008B10E0 /* FriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendCell.h; path = "Custom Views/FriendCell.h"; sourceTree = "<group>"; };
-		B98C9C3C17DC0C36008B10E0 /* FriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendCell.m; path = "Custom Views/FriendCell.m"; sourceTree = "<group>"; };
+		B98C9C3B17DC0C36008B10E0 /* TXCFriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCFriendCell.h; path = "Custom Views/TXCFriendCell.h"; sourceTree = "<group>"; };
+		B98C9C3C17DC0C36008B10E0 /* TXCFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCFriendCell.m; path = "Custom Views/TXCFriendCell.m"; sourceTree = "<group>"; };
 		B98C9C4117DC16D8008B10E0 /* UIView+Shadow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Shadow.h"; path = "Custom Views/UIView+Shadow.h"; sourceTree = "<group>"; };
 		B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Shadow.m"; path = "Custom Views/UIView+Shadow.m"; sourceTree = "<group>"; };
-		B9A5342F17EAD17800F2FD94 /* GroupChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GroupChatWindowViewController.h; path = Friends/GroupChatWindowViewController.h; sourceTree = "<group>"; };
-		B9A5343017EAD17800F2FD94 /* GroupChatWindowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GroupChatWindowViewController.m; path = Friends/GroupChatWindowViewController.m; sourceTree = "<group>"; };
+		B9A5342F17EAD17800F2FD94 /* TXCGroupChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCGroupChatWindowViewController.h; path = Friends/TXCGroupChatWindowViewController.h; sourceTree = "<group>"; };
+		B9A5343017EAD17800F2FD94 /* TXCGroupChatWindowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCGroupChatWindowViewController.m; path = Friends/TXCGroupChatWindowViewController.m; sourceTree = "<group>"; };
 		B9B9C6D117D59E2F006BF8AC /* status-gray-navbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray-navbar.png"; path = "Images/status-gray-navbar.png"; sourceTree = "<group>"; };
 		B9B9C6D217D59E2F006BF8AC /* status-gray-navbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray-navbar@2x.png"; path = "Images/status-gray-navbar@2x.png"; sourceTree = "<group>"; };
 		B9B9C6D317D59E2F006BF8AC /* status-green-navbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-green-navbar.png"; path = "Images/status-green-navbar.png"; sourceTree = "<group>"; };
@@ -688,22 +688,22 @@
 		B9B9C6D617D59E2F006BF8AC /* status-red-navbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-red-navbar@2x.png"; path = "Images/status-red-navbar@2x.png"; sourceTree = "<group>"; };
 		B9B9C6D717D59E2F006BF8AC /* status-yellow-navbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-navbar.png"; path = "Images/status-yellow-navbar.png"; sourceTree = "<group>"; };
 		B9B9C6D817D59E2F006BF8AC /* status-yellow-navbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-navbar@2x.png"; path = "Images/status-yellow-navbar@2x.png"; sourceTree = "<group>"; };
-		B9BB99DC17B0E38900A1ACEC /* FriendsListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendsListTableViewController.h; path = Friends/FriendsListTableViewController.h; sourceTree = "<group>"; };
-		B9BB99DD17B0E38900A1ACEC /* FriendsListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendsListTableViewController.m; path = Friends/FriendsListTableViewController.m; sourceTree = "<group>"; };
-		B9BB99DF17B0E39200A1ACEC /* NewDHTNodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewDHTNodeViewController.h; path = Settings/NewDHTNodeViewController.h; sourceTree = "<group>"; };
-		B9BB99E017B0E39200A1ACEC /* NewDHTNodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewDHTNodeViewController.m; path = Settings/NewDHTNodeViewController.m; sourceTree = "<group>"; };
-		B9BB99E117B0E39200A1ACEC /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = Settings/SettingsViewController.h; sourceTree = "<group>"; };
-		B9BB99E217B0E39200A1ACEC /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsViewController.m; path = Settings/SettingsViewController.m; sourceTree = "<group>"; };
-		B9BB99E617B0E41F00A1ACEC /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Singleton.h; path = Singleton/Singleton.h; sourceTree = "<group>"; };
-		B9BB99E717B0E41F00A1ACEC /* Singleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Singleton.m; path = Singleton/Singleton.m; sourceTree = "<group>"; };
+		B9BB99DC17B0E38900A1ACEC /* TXCFriendsListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCFriendsListTableViewController.h; path = Friends/TXCFriendsListTableViewController.h; sourceTree = "<group>"; };
+		B9BB99DD17B0E38900A1ACEC /* TXCFriendsListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCFriendsListTableViewController.m; path = Friends/TXCFriendsListTableViewController.m; sourceTree = "<group>"; };
+		B9BB99DF17B0E39200A1ACEC /* TXCNewDHTNodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCNewDHTNodeViewController.h; path = Settings/TXCNewDHTNodeViewController.h; sourceTree = "<group>"; };
+		B9BB99E017B0E39200A1ACEC /* TXCNewDHTNodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCNewDHTNodeViewController.m; path = Settings/TXCNewDHTNodeViewController.m; sourceTree = "<group>"; };
+		B9BB99E117B0E39200A1ACEC /* TXCSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCSettingsViewController.h; path = Settings/TXCSettingsViewController.h; sourceTree = "<group>"; };
+		B9BB99E217B0E39200A1ACEC /* TXCSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCSettingsViewController.m; path = Settings/TXCSettingsViewController.m; sourceTree = "<group>"; };
+		B9BB99E617B0E41F00A1ACEC /* TXCSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCSingleton.h; path = Singleton/TXCSingleton.h; sourceTree = "<group>"; };
+		B9BB99E717B0E41F00A1ACEC /* TXCSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCSingleton.m; path = Singleton/TXCSingleton.m; sourceTree = "<group>"; };
 		B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		B9BB9A5C17B4B20100A1ACEC /* FriendChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendChatWindowViewController.h; path = Friends/FriendChatWindowViewController.h; sourceTree = "<group>"; };
-		B9BB9A5D17B4B20100A1ACEC /* FriendChatWindowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendChatWindowViewController.m; path = Friends/FriendChatWindowViewController.m; sourceTree = "<group>"; };
+		B9BB9A5C17B4B20100A1ACEC /* TXCFriendChatWindowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCFriendChatWindowViewController.h; path = Friends/TXCFriendChatWindowViewController.h; sourceTree = "<group>"; };
+		B9BB9A5D17B4B20100A1ACEC /* TXCFriendChatWindowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCFriendChatWindowViewController.m; path = Friends/TXCFriendChatWindowViewController.m; sourceTree = "<group>"; };
 		B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		B9D5C95B17E3E31500B84BEF /* FriendListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendListHeader.h; path = "Custom Views/FriendListHeader.h"; sourceTree = "<group>"; };
-		B9D5C95C17E3E31500B84BEF /* FriendListHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendListHeader.m; path = "Custom Views/FriendListHeader.m"; sourceTree = "<group>"; };
-		B9D5C95E17E54F5100B84BEF /* GroupObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GroupObject.h; path = Objects/GroupObject.h; sourceTree = "<group>"; };
-		B9D5C95F17E54F5100B84BEF /* GroupObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GroupObject.m; path = Objects/GroupObject.m; sourceTree = "<group>"; };
+		B9D5C95B17E3E31500B84BEF /* TXCFriendListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCFriendListHeader.h; path = "Custom Views/TXCFriendListHeader.h"; sourceTree = "<group>"; };
+		B9D5C95C17E3E31500B84BEF /* TXCFriendListHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCFriendListHeader.m; path = "Custom Views/TXCFriendListHeader.m"; sourceTree = "<group>"; };
+		B9D5C95E17E54F5100B84BEF /* TXCGroupObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCGroupObject.h; path = Objects/TXCGroupObject.h; sourceTree = "<group>"; };
+		B9D5C95F17E54F5100B84BEF /* TXCGroupObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCGroupObject.m; path = Objects/TXCGroupObject.m; sourceTree = "<group>"; };
 		B9D5C97A17E5904600B84BEF /* DHT.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DHT.c; path = "ProjectTox-Core/toxcore/DHT.c"; sourceTree = "<group>"; };
 		B9D5C97B17E5904600B84BEF /* DHT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHT.h; path = "ProjectTox-Core/toxcore/DHT.h"; sourceTree = "<group>"; };
 		B9D5C97C17E5904600B84BEF /* friend_requests.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = friend_requests.c; path = "ProjectTox-Core/toxcore/friend_requests.c"; sourceTree = "<group>"; };
@@ -756,10 +756,10 @@
 		B9D859DD17C3453B005FD2D2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		B9D859DF17C34542005FD2D2 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.4.0.dylib; path = usr/lib/libiconv.2.4.0.dylib; sourceTree = SDKROOT; };
-		B9D85A1E17CB0942005FD2D2 /* QRReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QRReaderViewController.h; path = Requests/QRReaderViewController.h; sourceTree = "<group>"; };
-		B9D85A1F17CB0942005FD2D2 /* QRReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QRReaderViewController.m; path = Requests/QRReaderViewController.m; sourceTree = "<group>"; };
-		B9D85A2017CB0942005FD2D2 /* RequestsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RequestsTableViewController.h; path = Requests/RequestsTableViewController.h; sourceTree = "<group>"; };
-		B9D85A2117CB0942005FD2D2 /* RequestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RequestsTableViewController.m; path = Requests/RequestsTableViewController.m; sourceTree = "<group>"; };
+		B9D85A1E17CB0942005FD2D2 /* TXCQRReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCQRReaderViewController.h; path = Requests/TXCQRReaderViewController.h; sourceTree = "<group>"; };
+		B9D85A1F17CB0942005FD2D2 /* TXCQRReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCQRReaderViewController.m; path = Requests/TXCQRReaderViewController.m; sourceTree = "<group>"; };
+		B9D85A2017CB0942005FD2D2 /* TXCRequestsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCRequestsTableViewController.h; path = Requests/TXCRequestsTableViewController.h; sourceTree = "<group>"; };
+		B9D85A2117CB0942005FD2D2 /* TXCRequestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCRequestsTableViewController.m; path = Requests/TXCRequestsTableViewController.m; sourceTree = "<group>"; };
 		B9EE595617FB528700D8A388 /* status-gray-ios7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray-ios7.png"; path = "Images/status-gray-ios7.png"; sourceTree = "<group>"; };
 		B9EE595717FB528700D8A388 /* status-gray-ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray-ios7@2x.png"; path = "Images/status-gray-ios7@2x.png"; sourceTree = "<group>"; };
 		B9EE595817FB528700D8A388 /* status-gray-navbar-ios7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray-navbar-ios7.png"; path = "Images/status-gray-navbar-ios7.png"; sourceTree = "<group>"; };
@@ -788,8 +788,8 @@
 		E6EC551718CB61CC005BE0FB /* tox_logo_ios6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tox_logo_ios6@2x.png"; path = "Images/tox_logo_ios6@2x.png"; sourceTree = "<group>"; };
 		E6EC551818CB61CC005BE0FB /* tox_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tox_logo@2x.png"; path = "Images/tox_logo@2x.png"; sourceTree = "<group>"; };
 		E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QREncoder.xcodeproj; path = ../Submodules/ObjQREncoder/src/QREncoder.xcodeproj; sourceTree = "<group>"; };
-		E6F9FC9118C9068A00C1D2C1 /* QRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeViewController.h; sourceTree = "<group>"; };
-		E6F9FC9218C9068A00C1D2C1 /* QRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeViewController.m; sourceTree = "<group>"; };
+		E6F9FC9118C9068A00C1D2C1 /* TXCQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TXCQRCodeViewController.h; sourceTree = "<group>"; };
+		E6F9FC9218C9068A00C1D2C1 /* TXCQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TXCQRCodeViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -851,8 +851,8 @@
 		B94F2C6017AF25C0003EA6E8 /* Toxicity */ = {
 			isa = PBXGroup;
 			children = (
-				B94F2C6917AF25C0003EA6E8 /* AppDelegate.h */,
-				B94F2C6A17AF25C0003EA6E8 /* AppDelegate.m */,
+				B94F2C6917AF25C0003EA6E8 /* TXCAppDelegate.h */,
+				B94F2C6A17AF25C0003EA6E8 /* TXCAppDelegate.m */,
 				B94F2C7217AF25C0003EA6E8 /* MainStoryboard.storyboard */,
 				B9BB99E517B0E3F800A1ACEC /* Singleton */,
 				B9BB99DB17B0E31100A1ACEC /* Friends */,
@@ -1813,14 +1813,14 @@
 		B97D603F17B95121001C07B8 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
-				B97D604017B95145001C07B8 /* DHTNodeObject.h */,
-				B97D604117B95145001C07B8 /* DHTNodeObject.m */,
-				B97D604317B95154001C07B8 /* FriendObject.h */,
-				B97D604417B95154001C07B8 /* FriendObject.m */,
-				B97D605317BCBF77001C07B8 /* MessageObject.h */,
-				B97D605417BCBF77001C07B8 /* MessageObject.m */,
-				B9D5C95E17E54F5100B84BEF /* GroupObject.h */,
-				B9D5C95F17E54F5100B84BEF /* GroupObject.m */,
+				B97D604017B95145001C07B8 /* TXCDHTNodeObject.h */,
+				B97D604117B95145001C07B8 /* TXCDHTNodeObject.m */,
+				B97D604317B95154001C07B8 /* TXCFriendObject.h */,
+				B97D604417B95154001C07B8 /* TXCFriendObject.m */,
+				B97D605317BCBF77001C07B8 /* TXCMessageObject.h */,
+				B97D605417BCBF77001C07B8 /* TXCMessageObject.m */,
+				B9D5C95E17E54F5100B84BEF /* TXCGroupObject.h */,
+				B9D5C95F17E54F5100B84BEF /* TXCGroupObject.m */,
 			);
 			name = Objects;
 			sourceTree = "<group>";
@@ -1997,10 +1997,10 @@
 		B98C9C3717DC0BA2008B10E0 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
-				B98C9C3B17DC0C36008B10E0 /* FriendCell.h */,
-				B98C9C3C17DC0C36008B10E0 /* FriendCell.m */,
-				B9D5C95B17E3E31500B84BEF /* FriendListHeader.h */,
-				B9D5C95C17E3E31500B84BEF /* FriendListHeader.m */,
+				B98C9C3B17DC0C36008B10E0 /* TXCFriendCell.h */,
+				B98C9C3C17DC0C36008B10E0 /* TXCFriendCell.m */,
+				B9D5C95B17E3E31500B84BEF /* TXCFriendListHeader.h */,
+				B9D5C95C17E3E31500B84BEF /* TXCFriendListHeader.m */,
 				B98C9C4117DC16D8008B10E0 /* UIView+Shadow.h */,
 				B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */,
 			);
@@ -2011,12 +2011,12 @@
 			isa = PBXGroup;
 			children = (
 				E6C97FDE18C33231007368F9 /* Cells */,
-				B9BB99DF17B0E39200A1ACEC /* NewDHTNodeViewController.h */,
-				B9BB99E017B0E39200A1ACEC /* NewDHTNodeViewController.m */,
-				B9BB99E117B0E39200A1ACEC /* SettingsViewController.h */,
-				B9BB99E217B0E39200A1ACEC /* SettingsViewController.m */,
-				E6F9FC9118C9068A00C1D2C1 /* QRCodeViewController.h */,
-				E6F9FC9218C9068A00C1D2C1 /* QRCodeViewController.m */,
+				B9BB99DF17B0E39200A1ACEC /* TXCNewDHTNodeViewController.h */,
+				B9BB99E017B0E39200A1ACEC /* TXCNewDHTNodeViewController.m */,
+				B9BB99E117B0E39200A1ACEC /* TXCSettingsViewController.h */,
+				B9BB99E217B0E39200A1ACEC /* TXCSettingsViewController.m */,
+				E6F9FC9118C9068A00C1D2C1 /* TXCQRCodeViewController.h */,
+				E6F9FC9218C9068A00C1D2C1 /* TXCQRCodeViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -2024,12 +2024,12 @@
 		B9BB99DB17B0E31100A1ACEC /* Friends */ = {
 			isa = PBXGroup;
 			children = (
-				B9BB99DC17B0E38900A1ACEC /* FriendsListTableViewController.h */,
-				B9BB99DD17B0E38900A1ACEC /* FriendsListTableViewController.m */,
-				B9BB9A5C17B4B20100A1ACEC /* FriendChatWindowViewController.h */,
-				B9BB9A5D17B4B20100A1ACEC /* FriendChatWindowViewController.m */,
-				B9A5342F17EAD17800F2FD94 /* GroupChatWindowViewController.h */,
-				B9A5343017EAD17800F2FD94 /* GroupChatWindowViewController.m */,
+				B9BB99DC17B0E38900A1ACEC /* TXCFriendsListTableViewController.h */,
+				B9BB99DD17B0E38900A1ACEC /* TXCFriendsListTableViewController.m */,
+				B9BB9A5C17B4B20100A1ACEC /* TXCFriendChatWindowViewController.h */,
+				B9BB9A5D17B4B20100A1ACEC /* TXCFriendChatWindowViewController.m */,
+				B9A5342F17EAD17800F2FD94 /* TXCGroupChatWindowViewController.h */,
+				B9A5343017EAD17800F2FD94 /* TXCGroupChatWindowViewController.m */,
 			);
 			name = Friends;
 			sourceTree = "<group>";
@@ -2037,8 +2037,8 @@
 		B9BB99E517B0E3F800A1ACEC /* Singleton */ = {
 			isa = PBXGroup;
 			children = (
-				B9BB99E617B0E41F00A1ACEC /* Singleton.h */,
-				B9BB99E717B0E41F00A1ACEC /* Singleton.m */,
+				B9BB99E617B0E41F00A1ACEC /* TXCSingleton.h */,
+				B9BB99E717B0E41F00A1ACEC /* TXCSingleton.m */,
 			);
 			name = Singleton;
 			sourceTree = "<group>";
@@ -2121,10 +2121,10 @@
 		B9D85A1A17CB079E005FD2D2 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				B9D85A1E17CB0942005FD2D2 /* QRReaderViewController.h */,
-				B9D85A1F17CB0942005FD2D2 /* QRReaderViewController.m */,
-				B9D85A2017CB0942005FD2D2 /* RequestsTableViewController.h */,
-				B9D85A2117CB0942005FD2D2 /* RequestsTableViewController.m */,
+				B9D85A1E17CB0942005FD2D2 /* TXCQRReaderViewController.h */,
+				B9D85A1F17CB0942005FD2D2 /* TXCQRReaderViewController.m */,
+				B9D85A2017CB0942005FD2D2 /* TXCRequestsTableViewController.h */,
+				B9D85A2117CB0942005FD2D2 /* TXCRequestsTableViewController.m */,
 			);
 			name = Requests;
 			sourceTree = "<group>";
@@ -2369,7 +2369,7 @@
 				B9789EEE18C040A5004F1257 /* blake2b-ref.c in Sources */,
 				B9789F4D18C040A5004F1257 /* xor_salsa208.c in Sources */,
 				B94F2C6717AF25C0003EA6E8 /* main.m in Sources */,
-				B94F2C6B17AF25C0003EA6E8 /* AppDelegate.m in Sources */,
+				B94F2C6B17AF25C0003EA6E8 /* TXCAppDelegate.m in Sources */,
 				B9748754189AE5EC0064B6FF /* onion_announce.c in Sources */,
 				B9789F4B18C040A5004F1257 /* stream_salsa2012_api.c in Sources */,
 				B9748756189AE5EC0064B6FF /* onion.c in Sources */,
@@ -2409,7 +2409,7 @@
 				B9789F0518C040A5004F1257 /* base_curve25519_ref.c in Sources */,
 				B9789EDA18C040A5004F1257 /* hmac_hmacsha256.c in Sources */,
 				B9789F2318C040A5004F1257 /* ge_p1p1_to_p2.c in Sources */,
-				E6F9FC9318C9068A00C1D2C1 /* QRCodeViewController.m in Sources */,
+				E6F9FC9318C9068A00C1D2C1 /* TXCQRCodeViewController.m in Sources */,
 				B9789F0618C040A5004F1257 /* smult_curve25519_ref.c in Sources */,
 				B980410018BC886B0069590C /* JSMessageTableView.m in Sources */,
 				B9789F5018C040A5004F1257 /* xor_xsalsa20.c in Sources */,
@@ -2439,7 +2439,7 @@
 				B9789F4F18C040A5004F1257 /* stream_xsalsa20.c in Sources */,
 				B9789F1C18C040A5004F1257 /* fe_sub.c in Sources */,
 				B9789F5918C040A5004F1257 /* randombytes.c in Sources */,
-				B9BB99DE17B0E38900A1ACEC /* FriendsListTableViewController.m in Sources */,
+				B9BB99DE17B0E38900A1ACEC /* TXCFriendsListTableViewController.m in Sources */,
 				B9789F1918C040A5004F1257 /* fe_pow22523.c in Sources */,
 				B9789ED918C040A5004F1257 /* auth_hmacsha256_api.c in Sources */,
 				B9789F3F18C040A5004F1257 /* int128_aes128ctr.c in Sources */,
@@ -2453,7 +2453,7 @@
 				B9789F3318C040A5004F1257 /* sc_reduce.c in Sources */,
 				B9789F0118C040A5004F1257 /* verify_poly1305_ref.c in Sources */,
 				B9789EDD18C040A5004F1257 /* hmac_hmacsha512256.c in Sources */,
-				B9BB99E317B0E39200A1ACEC /* NewDHTNodeViewController.m in Sources */,
+				B9BB99E317B0E39200A1ACEC /* TXCNewDHTNodeViewController.m in Sources */,
 				B9789F1A18C040A5004F1257 /* fe_sq.c in Sources */,
 				B9789F2218C040A5004F1257 /* ge_msub.c in Sources */,
 				B9789F5218C040A5004F1257 /* verify_16.c in Sources */,
@@ -2461,16 +2461,16 @@
 				B9789EE418C040A5004F1257 /* keypair_curve25519xsalsa20poly1305.c in Sources */,
 				B9789F1618C040A5004F1257 /* fe_isnonzero.c in Sources */,
 				B9789F3D18C040A5004F1257 /* common_aes128ctr.c in Sources */,
-				B9BB99E417B0E39200A1ACEC /* SettingsViewController.m in Sources */,
+				B9BB99E417B0E39200A1ACEC /* TXCSettingsViewController.m in Sources */,
 				B9789F5A18C040A5004F1257 /* randombytes_salsa20_random.c in Sources */,
 				B9789EF118C040A5004F1257 /* crypto_hash.c in Sources */,
-				B9BB99E817B0E41F00A1ACEC /* Singleton.m in Sources */,
-				B9BB9A5E17B4B20100A1ACEC /* FriendChatWindowViewController.m in Sources */,
-				B97D604217B95145001C07B8 /* DHTNodeObject.m in Sources */,
-				B97D604517B95154001C07B8 /* FriendObject.m in Sources */,
-				B97D605517BCBF77001C07B8 /* MessageObject.m in Sources */,
+				B9BB99E817B0E41F00A1ACEC /* TXCSingleton.m in Sources */,
+				B9BB9A5E17B4B20100A1ACEC /* TXCFriendChatWindowViewController.m in Sources */,
+				B97D604217B95145001C07B8 /* TXCDHTNodeObject.m in Sources */,
+				B97D604517B95154001C07B8 /* TXCFriendObject.m in Sources */,
+				B97D605517BCBF77001C07B8 /* TXCMessageObject.m in Sources */,
 				B9789F3718C040A5004F1257 /* ge25519_edwards25519sha512batch.c in Sources */,
-				B9D85A2217CB0942005FD2D2 /* QRReaderViewController.m in Sources */,
+				B9D85A2217CB0942005FD2D2 /* TXCQRReaderViewController.m in Sources */,
 				B9789EF018C040A5004F1257 /* crypto_generichash.c in Sources */,
 				B9789F4C18C040A5004F1257 /* stream_salsa208.c in Sources */,
 				B9789F2B18C040A5004F1257 /* ge_p3_tobytes.c in Sources */,
@@ -2484,14 +2484,14 @@
 				B9789EF318C040A5004F1257 /* hash_sha256.c in Sources */,
 				B9789EF218C040A5004F1257 /* hash_sha256_api.c in Sources */,
 				B9789EF618C040A5004F1257 /* hashblocks_sha256_api.c in Sources */,
-				B9D85A2317CB0942005FD2D2 /* RequestsTableViewController.m in Sources */,
+				B9D85A2317CB0942005FD2D2 /* TXCRequestsTableViewController.m in Sources */,
 				B9789F1118C040A5004F1257 /* fe_cmov.c in Sources */,
-				B98C9C3F17DC0C36008B10E0 /* FriendCell.m in Sources */,
+				B98C9C3F17DC0C36008B10E0 /* TXCFriendCell.m in Sources */,
 				B98C9C4317DC16D8008B10E0 /* UIView+Shadow.m in Sources */,
 				B9789F0218C040A5004F1257 /* crypto_scalarmult.c in Sources */,
-				B9D5C95D17E3E31500B84BEF /* FriendListHeader.m in Sources */,
+				B9D5C95D17E3E31500B84BEF /* TXCFriendListHeader.m in Sources */,
 				B9789F0D18C040A5004F1257 /* crypto_sign.c in Sources */,
-				B9D5C96017E54F5100B84BEF /* GroupObject.m in Sources */,
+				B9D5C96017E54F5100B84BEF /* TXCGroupObject.m in Sources */,
 				B9789EFE18C040A5004F1257 /* onetimeauth_poly1305_api.c in Sources */,
 				B9789EE318C040A5004F1257 /* box_curve25519xsalsa20poly1305.c in Sources */,
 				B9D5C99117E5904600B84BEF /* DHT.c in Sources */,
@@ -2539,7 +2539,7 @@
 				B9789F3C18C040A5004F1257 /* beforenm_aes128ctr.c in Sources */,
 				B9789F3918C040A5004F1257 /* sign_edwards25519sha512batch.c in Sources */,
 				B9789F1D18C040A5004F1257 /* fe_tobytes.c in Sources */,
-				B9A5343117EAD17800F2FD94 /* GroupChatWindowViewController.m in Sources */,
+				B9A5343117EAD17800F2FD94 /* TXCGroupChatWindowViewController.m in Sources */,
 				B9789F2818C040A5004F1257 /* ge_p3_dbl.c in Sources */,
 				B9789EF418C040A5004F1257 /* hash_sha512_api.c in Sources */,
 				B9789EDB18C040A5004F1257 /* verify_hmacsha256.c in Sources */,

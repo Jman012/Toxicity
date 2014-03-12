@@ -8,7 +8,7 @@
         <!--Settings View Controller - Settings-->
         <scene sceneID="Y1z-n3-Gjw">
             <objects>
-                <tableViewController id="AXn-cl-0UB" customClass="SettingsViewController" sceneMemberID="viewController">
+                <tableViewController id="AXn-cl-0UB" customClass="TXCSettingsViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" sectionIndexMinimumDisplayRowCount="-1" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="xeZ-KP-oNy">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -147,7 +147,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <segue destination="Itm-qP-QqR" kind="push" identifier="QRCodeViewController" id="YIs-xQ-xeo"/>
+                        <segue destination="Itm-qP-QqR" kind="push" identifier="TXCQRCodeViewController" id="YIs-xQ-xeo"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hxc-gH-RFp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -173,7 +173,7 @@
         <!--Friends List Table View Controller - Friends-->
         <scene sceneID="Qyl-CF-anI">
             <objects>
-                <tableViewController id="DHs-TY-8DU" customClass="FriendsListTableViewController" sceneMemberID="viewController">
+                <tableViewController id="DHs-TY-8DU" customClass="TXCFriendsListTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="OpC-rJ-Psr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -431,7 +431,7 @@
         <!--Reader View Controller - Scan QR Code-->
         <scene sceneID="xZg-E9-mm6">
             <objects>
-                <viewController id="0Ao-Ay-8Nh" customClass="QRReaderViewController" sceneMemberID="viewController">
+                <viewController id="0Ao-Ay-8Nh" customClass="TXCQRReaderViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="3kU-O4-miD"/>
                         <viewControllerLayoutGuide type="bottom" id="l8P-S0-vkd"/>
@@ -529,7 +529,7 @@
         <!--Code View Controller-->
         <scene sceneID="MpU-sj-iay">
             <objects>
-                <viewController id="Itm-qP-QqR" customClass="QRCodeViewController" sceneMemberID="viewController">
+                <viewController id="Itm-qP-QqR" customClass="TXCQRCodeViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="0US-xW-i82"/>
                         <viewControllerLayoutGuide type="bottom" id="tPS-E5-Wv0"/>
@@ -557,7 +557,7 @@
         <!--NewDHT Node View Controller-->
         <scene sceneID="Ekp-vh-3uF">
             <objects>
-                <viewController storyboardIdentifier="NewDHTView" id="fff-xb-LNC" customClass="NewDHTNodeViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewDHTView" id="fff-xb-LNC" customClass="TXCNewDHTNodeViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8kE-I7-BvY"/>
                         <viewControllerLayoutGuide type="bottom" id="S7G-qN-2J5"/>
