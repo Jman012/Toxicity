@@ -7,10 +7,22 @@
 //
 
 #import "TXCFriendCell.h"
+#import <QuartzCore/QuartzCore.h>
+#import "UIView+Shadow.h"
+
+@interface TXCFriendCell ()
+
+@property (nonatomic, strong) UILabel *messageLabel;
+@property (nonatomic, strong) UIImageView *statusImageView;
+@property (nonatomic, strong) UIImageView *avatarImageView;
+@property (nonatomic, strong) UIView *cellBackgroundView;
+@property (nonatomic, strong) CAGradientLayer *mainLayerGradient;
+@property (nonatomic, strong) CALayer *mainLayerBG;
+
+@end
 
 @implementation TXCFriendCell
 
-@synthesize nickLabel = _nickLabel, messageLabelText = _messageLabelText, statusColor = _statusColor, friendIdentifier = _friendIdentifier, shouldShowFriendStatus = _shouldShowFriendStatus;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -18,44 +30,44 @@
     if (self) {
         // Initialization code
         
-        cellBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
+        self.cellBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
         
         if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
             // Load resources for iOS 6.1 or earlier
             
             /*****Background Grey Color*****/
-            mainLayerBG = [CALayer layer];
-            mainLayerBG.frame = self.bounds;
-            mainLayerBG.backgroundColor = [[UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f] CGColor];
-            mainLayerBG.name = @"Background";
-            [cellBackgroundView.layer insertSublayer:mainLayerBG atIndex:0];
+            self.mainLayerBG = [CALayer layer];
+            self.mainLayerBG.frame = self.bounds;
+            self.mainLayerBG.backgroundColor = [[UIColor colorWithRed:0.6f green:0.6f blue:0.6f alpha:1.0f] CGColor];
+            self.mainLayerBG.name = @"Background";
+            [self.cellBackgroundView.layer insertSublayer:self.mainLayerBG atIndex:0];
             
             /*****Background Gradient*****/
-            mainLayerGradient = [CAGradientLayer layer];
-            mainLayerGradient.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y + 1, self.bounds.size.width, self.bounds.size.height - 1);
+            self.mainLayerGradient = [CAGradientLayer layer];
+            self.mainLayerGradient.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y + 1, self.bounds.size.width, self.bounds.size.height - 1);
             UIColor *top = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.4f alpha:1.0f];
             UIColor *bottom = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.3f alpha:1.0f];
-            mainLayerGradient.colors = [NSArray arrayWithObjects:(id)[top CGColor], (id)[bottom CGColor], nil];
-            mainLayerGradient.name = @"Gradient";
+            self.mainLayerGradient.colors = [NSArray arrayWithObjects:(id)[top CGColor], (id)[bottom CGColor], nil];
+            self.mainLayerGradient.name = @"Gradient";
             
-            [cellBackgroundView.layer insertSublayer:mainLayerGradient atIndex:1];
+            [self.cellBackgroundView.layer insertSublayer:self.mainLayerGradient atIndex:1];
         } else {
             // Load resources for iOS 7 or later
             
-            [cellBackgroundView setBackgroundColor:[UIColor colorWithHue:1.0f saturation:0.0f brightness:0.35f alpha:1.0f]];
+            [self.cellBackgroundView setBackgroundColor:[UIColor colorWithHue:1.0f saturation:0.0f brightness:0.35f alpha:1.0f]];
             
             [self setBackgroundColor:[UIColor colorWithHue:1.0f saturation:0.0f brightness:0.35f alpha:1.0f]];
             
         }
         
-        [self setBackgroundView:cellBackgroundView];
+        [self setBackgroundView:self.cellBackgroundView];
         
         /*****Friend Status Image*****/
         //default is gray
-        statusImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - 16, 0, 16, 64)];
-        [statusImageView setImage:[UIImage imageNamed:@"status-gray"]];
+        self.statusImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - 16, 0, 16, 64)];
+        [self.statusImageView setImage:[UIImage imageNamed:@"status-gray"]];
         if (self.shouldShowFriendStatus)
-            [self addSubview:statusImageView];
+            [self addSubview:self.statusImageView];
         
         /*****Nick Label*****/
         self.nickLabel = [[UILabel alloc] init];
@@ -71,30 +83,30 @@
         [self.contentView addSubview:self.nickLabel];
         
         /*****Message Label*****/
-        messageLabel = [[UILabel alloc] init];
-        [messageLabel setTextAlignment:NSTextAlignmentLeft];
-        [messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
-        [messageLabel setNumberOfLines:2];
+        self.messageLabel = [[UILabel alloc] init];
+        [self.messageLabel setTextAlignment:NSTextAlignmentLeft];
+        [self.messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
+        [self.messageLabel setNumberOfLines:2];
         
-        [messageLabel setTextColor:[UIColor colorWithRed:0.55f green:0.62f blue:0.68f alpha:1.0f]];
-        [messageLabel setBackgroundColor:[UIColor clearColor]];
-        [messageLabel setFont:[UIFont systemFontOfSize:12.0f]];
+        [self.messageLabel setTextColor:[UIColor colorWithRed:0.55f green:0.62f blue:0.68f alpha:1.0f]];
+        [self.messageLabel setBackgroundColor:[UIColor clearColor]];
+        [self.messageLabel setFont:[UIFont systemFontOfSize:12.0f]];
 
         if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
             // Load resources for iOS 6.1 or earlier
-            [messageLabel setShadowColor:[UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f]];
-            [messageLabel setShadowOffset:CGSizeMake(0.5f, 0.5f)];
+            [self.messageLabel setShadowColor:[UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f]];
+            [self.messageLabel setShadowOffset:CGSizeMake(0.5f, 0.5f)];
         }
         
-        [self.contentView addSubview:messageLabel];
+        [self.contentView addSubview:self.messageLabel];
         
         /*****Avatar Image View*****/
-        avatarImageView = [[UIImageView alloc] init];
-        [avatarImageView setBackgroundColor:[UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f]];
-        [avatarImageView.layer setCornerRadius:4.0f];
-        [avatarImageView.layer setMasksToBounds:YES];
+        self.avatarImageView = [[UIImageView alloc] init];
+        [self.avatarImageView setBackgroundColor:[UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f]];
+        [self.avatarImageView.layer setCornerRadius:4.0f];
+        [self.avatarImageView.layer setMasksToBounds:YES];
         
-        [self.contentView addSubview:avatarImageView];
+        [self.contentView addSubview:self.avatarImageView];
         
         
         /*****Selected Background View*****/
@@ -167,33 +179,33 @@
     if (self.editing) {
         labelWidth = self.contentView.bounds.size.width - padding - avatarWidth;
     } else {
-        labelWidth = self.bounds.size.width - padding - statusImageView.frame.size.width - avatarWidth;
+        labelWidth = self.bounds.size.width - padding - self.statusImageView.frame.size.width - avatarWidth;
     }
     
     /*****Nick Label*****/
     [self.nickLabel setFrame:CGRectMake(64, 8, labelWidth, 22)];
     
     /*****Message Label*****/
-    [messageLabel setFrame:CGRectMake(64, 30, labelWidth, messageLabel.frame.size.height)];
+    [self.messageLabel setFrame:CGRectMake(64, 30, labelWidth, self.messageLabel.frame.size.height)];
     
     /*****Avatar Image View*****/
-    [avatarImageView setFrame:CGRectMake(8, 8, 48, 48)];
-    for (UIView *shadow in [avatarImageView subviews]) {
+    [self.avatarImageView setFrame:CGRectMake(8, 8, 48, 48)];
+    for (UIView *shadow in [self.avatarImageView subviews]) {
         if ([shadow tag] == kShadowViewTag) {
             [shadow removeFromSuperview];
         }
     }
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         // Load resources for iOS 6.1 or earlier
-        [avatarImageView makeInsetShadowWithRadius:4.0 Alpha:0.5f];
+        [self.avatarImageView makeInsetShadowWithRadius:4.0 Alpha:0.5f];
     }
 
     
     /*****Gradient*****/
-    cellBackgroundView.frame = self.bounds;
+    self.cellBackgroundView.frame = self.bounds;
     //have to redo gradient on height change
-    mainLayerGradient.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y + 1, self.bounds.size.width, self.bounds.size.height - 1);
-    mainLayerBG.frame = self.bounds;
+    self.mainLayerGradient.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y + 1, self.bounds.size.width, self.bounds.size.height - 1);
+    self.mainLayerBG.frame = self.bounds;
     
     /*****Selected View*****/
     for (CAGradientLayer *grad in self.selectedBackgroundView.layer.sublayers) {
@@ -208,40 +220,40 @@
         case FriendCellStatusColor_Gray:
             if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
                 // Load resources for iOS 6.1 or earlier
-                [statusImageView setImage:[UIImage imageNamed:@"status-gray"]];
+                [self.statusImageView setImage:[UIImage imageNamed:@"status-gray"]];
             } else {
                 // Load resources for iOS 7 or later
-                [statusImageView setImage:[UIImage imageNamed:@"status-gray-ios7"]];
+                [self.statusImageView setImage:[UIImage imageNamed:@"status-gray-ios7"]];
             }
             break;
             
         case FriendCellStatusColor_Green:
             if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
                 // Load resources for iOS 6.1 or earlier
-                [statusImageView setImage:[UIImage imageNamed:@"status-green"]];
+                [self.statusImageView setImage:[UIImage imageNamed:@"status-green"]];
             } else {
                 // Load resources for iOS 7 or later
-                [statusImageView setImage:[UIImage imageNamed:@"status-green-ios7"]];
+                [self.statusImageView setImage:[UIImage imageNamed:@"status-green-ios7"]];
             }
             break;
             
         case FriendCellStatusColor_Yellow:
             if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
                 // Load resources for iOS 6.1 or earlier
-                [statusImageView setImage:[UIImage imageNamed:@"status-yellow"]];
+                [self.statusImageView setImage:[UIImage imageNamed:@"status-yellow"]];
             } else {
                 // Load resources for iOS 7 or later
-                [statusImageView setImage:[UIImage imageNamed:@"status-yellow-ios7"]];
+                [self.statusImageView setImage:[UIImage imageNamed:@"status-yellow-ios7"]];
             }
             break;
             
         case FriendCellStatusColor_Red:
             if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
                 // Load resources for iOS 6.1 or earlier
-                [statusImageView setImage:[UIImage imageNamed:@"status-red"]];
+                [self.statusImageView setImage:[UIImage imageNamed:@"status-red"]];
             } else {
                 // Load resources for iOS 7 or later
-                [statusImageView setImage:[UIImage imageNamed:@"status-red-ios7"]];
+                [self.statusImageView setImage:[UIImage imageNamed:@"status-red-ios7"]];
             }
             
             break;
@@ -249,30 +261,30 @@
 }
 
 - (void)setMessageLabelText:(NSString *)messageLabelText {
-    [messageLabel setText:messageLabelText];
-    [messageLabel sizeToFit];
-    CGRect newFrame = messageLabel.frame;
+    [self.messageLabel setText:messageLabelText];
+    [self.messageLabel sizeToFit];
+    CGRect newFrame = self.messageLabel.frame;
     
     CGFloat labelWidth;
     if (self.editing) {
         labelWidth = self.contentView.bounds.size.width - 20;
     } else {
-        labelWidth = self.bounds.size.width - 20 - statusImageView.frame.size.width;
+        labelWidth = self.bounds.size.width - 20 - self.statusImageView.frame.size.width;
     }
     
     newFrame.size.width = labelWidth;
 }
 
 - (void)setAvatarImage:(UIImage *)avatarImage {
-    [avatarImageView setImage:avatarImage];
+    [self.avatarImageView setImage:avatarImage];
 }
 
 - (void)setShouldShowFriendStatus:(BOOL)shouldShowFriendStatus {
     if (shouldShowFriendStatus == NO) {
-        [statusImageView removeFromSuperview];
+        [self.statusImageView removeFromSuperview];
     } else {
-        [statusImageView removeFromSuperview];
-        [self addSubview:statusImageView];
+        [self.statusImageView removeFromSuperview];
+        [self addSubview:self.statusImageView];
     }
 }
 

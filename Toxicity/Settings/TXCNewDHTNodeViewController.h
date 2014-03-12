@@ -8,41 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TXCNewDHTNodeViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
-{
-    IBOutlet UITableView        *infoTableView;
-    IBOutlet UIBarButtonItem    *connectButton;
-    
-    NSString                    *dhtIP;
-    NSString                    *dhtPort;
-    NSString                    *dhtPublicKey;
-    
-    UITextField                 *textFieldName;
-    UITextField                 *textFieldIP;
-    UITextField                 *textFieldPort;
-    UITextField                 *textFieldPublicKey;
-    
-    BOOL                        viewDissapearingToAdd;
-    
-    NSArray                     *namesAlreadyPresent;
-    
-    //For editing a current node
-    NSString                    *alreadyName;
-    NSString                    *alreadyIP;
-    NSString                    *alreadyPort;
-    NSString                    *alreadyKey;
-    BOOL                        editingMode;
-    NSIndexPath                 *pathToEdit;
-}
-
-@property (nonatomic) NSArray *namesAlreadyPresent;
-@property (nonatomic) NSString *alreadyName;
-@property (nonatomic) NSString *alreadyIP;
-@property (nonatomic) NSString *alreadyPort;
-@property (nonatomic) NSString *alreadyKey;
-@property (nonatomic) BOOL editingMode;
-@property (nonatomic) NSIndexPath *pathToEdit;
-
-- (IBAction)connectButtonPushed:(id)sender;
-
+@interface TXCNewDHTNodeViewController : UIViewController
+@property (nonatomic, strong) NSArray *namesAlreadyPresent;
+@property (nonatomic, copy) NSString *alreadyName;
+@property (nonatomic, copy) NSString *alreadyIP;
+@property (nonatomic, copy) NSString *alreadyPort;
+@property (nonatomic, copy) NSString *alreadyKey;
+@property (nonatomic, assign, getter = isEditingMode) BOOL editingMode;
+@property (nonatomic, strong) NSIndexPath *pathToEdit;
 @end

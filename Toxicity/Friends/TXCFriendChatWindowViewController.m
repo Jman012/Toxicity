@@ -8,6 +8,10 @@
 
 #import "TXCFriendChatWindowViewController.h"
 #import "UIColor+ToxicityColors.h"
+#import "JSMessage.h"
+#import "JSBubbleImageViewFactory.h"
+#import "TXCSingleton.h"
+#import "TXCAppDelegate.h"
 
 static NSString *const kSenderMe = @"Me";
 static NSString *const kSenderThem = @"Them";
@@ -31,7 +35,6 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 
 @implementation TXCFriendChatWindowViewController
 
-@synthesize friendStatusColor = _friendStatusColor;
 
 #pragma mark - Initialization
 
@@ -109,8 +112,8 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 #pragma mark - Setters
 
 - (void)setFriendStatusColor:(UIColor *)friendStatusColor {
-    if (_friendStatusColor != friendStatusColor) {
-        _friendStatusColor = friendStatusColor;
+    if (self.friendStatusColor != friendStatusColor) {
+        self.friendStatusColor = friendStatusColor;
         [self updateTitleLabelStatusAndText];
     }
 }
@@ -123,10 +126,10 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 #pragma mark - Getters
 
 - (UIColor *)friendStatusColor {
-    if (!_friendStatusColor) {
-        _friendStatusColor = [UIColor toxicityStatusColorGray];
+    if (!self.friendStatusColor) {
+        self.friendStatusColor = [UIColor toxicityStatusColorGray];
     }
-    return _friendStatusColor;
+    return self.friendStatusColor;
 }
 
 #pragma mark - Methods
@@ -224,10 +227,10 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
         //text:"/me h" the action would be "h"
         if ([[text substringToIndex:4] isEqualToString:@"/me "]) {
             tempMessage.message = [[NSString alloc] initWithFormat:@"* %@", [text substringFromIndex:4]];
-            tempMessage.isActionMessage = YES;
+            tempMessage.actionMessage = YES;
         } else {
             tempMessage.message = [text copy];
-            tempMessage.isActionMessage = NO;
+            tempMessage.actionMessage = NO;
         }
     } else {
         tempMessage.message = [text copy];
@@ -238,7 +241,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     
     [JSMessageSoundEffect playMessageSentSound];
     
-    [tempMessage setIsGroupMessage:NO];
+    [tempMessage setGroupMessage:NO];
     
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[UIApplication sharedApplication].delegate;
     BOOL success = [ourDelegate sendMessage:tempMessage];

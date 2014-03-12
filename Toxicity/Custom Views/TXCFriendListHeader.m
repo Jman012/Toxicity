@@ -7,6 +7,7 @@
 //
 
 #import "TXCFriendListHeader.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation TXCFriendListHeader
 
