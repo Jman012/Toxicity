@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface TXCNewDHTNodeViewController : UIViewController
-@property (nonatomic, strong) NSArray *namesAlreadyPresent;
+@property (nonatomic, copy) NSArray *namesAlreadyPresent;
 @property (nonatomic, copy) NSString *alreadyName;
 @property (nonatomic, copy) NSString *alreadyIP;
 @property (nonatomic, copy) NSString *alreadyPort;

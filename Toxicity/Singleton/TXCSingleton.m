@@ -173,9 +173,9 @@
     NSString *ourDocumentLocation = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
     NSArray *documentContents = [fileManager contentsOfDirectoryAtPath:ourDocumentLocation error:&error];
     
-    BOOL imageFoundInFilesystem = NO;
+    __block BOOL imageFoundInFilesystem = NO;
     if (!error) {
-        for (NSString *tempFilename in documentContents) {
+        [documentContents enumerateObjectsUsingBlock:^(NSString *tempFilename, NSUInteger idx, BOOL *stop) {
             if ([tempFilename isEqualToString:[theKey stringByAppendingString:@".png"]]) {
                 //we already have a .png for this firned's public key
                 //load the image from this file
@@ -196,10 +196,8 @@
                 
                 //nothing else to do, break out of the for loop
                 imageFoundInFilesystem = YES;
-                break;
-                
-            }
-        }
+                *stop = YES;            }
+        }];
     }
     
     if (imageFoundInFilesystem == NO) {

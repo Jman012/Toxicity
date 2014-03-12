@@ -411,15 +411,15 @@ NSString *const ToxAppDelegateNotificationDHTDisconnected           = @"DHTDisco
     NSString *messageToSend = theMessage.message;
     BOOL isGroupMessage = theMessage.isGroupMessage;
     BOOL isActionMessage = theMessage.isActionMessage;
-    NSInteger friendNum = -1;
+    __block NSInteger friendNum = -1;
     if (isGroupMessage) {
-        for (int i = 0; i < [[[TXCSingleton sharedSingleton] groupList] count]; i++) {
-            TXCGroupObject *tempGroup = [[[TXCSingleton sharedSingleton] groupList] objectAtIndex:i];
+        [[[TXCSingleton sharedSingleton] groupList] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            TXCGroupObject *tempGroup = [[[TXCSingleton sharedSingleton] groupList] objectAtIndex:idx];
             if ([theirKey isEqualToString:tempGroup.groupPulicKey]) {
-                friendNum = i;
-                break;
+                friendNum = idx;
+                *stop = YES;
             }
-        }
+        }];
     } else {
         friendNum = friendNumForID(theirKey);
     }
@@ -523,11 +523,10 @@ NSString *const ToxAppDelegateNotificationDHTDisconnected           = @"DHTDisco
 - (void)acceptFriendRequests:(NSArray *)theKeysToAccept {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     dispatch_async(self.toxMainThread, ^{
-
-        for (NSString *arrayKey in theKeysToAccept) {
-
+        
+        [theKeysToAccept enumerateObjectsUsingBlock:^(NSString* arrayKey, NSUInteger idx, BOOL *stop) {
             NSData *data = [[[[TXCSingleton sharedSingleton] pendingFriendRequests] objectForKey:arrayKey] copy];
-
+            
             uint8_t *key = (uint8_t *)[data bytes];
             
             int num = tox_add_friend_norequest([[TXCSingleton sharedSingleton] toxCoreInstance], key);
@@ -561,13 +560,15 @@ NSString *const ToxAppDelegateNotificationDHTDisconnected           = @"DHTDisco
                     
                     //remove from the pending requests
                     [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeObjectForKey:arrayKey];
-
+                    
                     [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationFriendAdded object:nil];
                     
                     break;
                 }
             }
-        }
+
+        }];
+        
         dispatch_semaphore_signal(semaphore);
     });
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
@@ -679,6 +680,7 @@ void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *us
         
         //check to see if this person is already on our friends list
         BOOL alreadyAFriend = NO;
+        
         for (TXCFriendObject *tempFriend in [[TXCSingleton sharedSingleton] mainFriendList]) {
             if ([tempFriend.publicKey isEqualToString:[NSString stringWithUTF8String:convertedKey]]) {
                 NSLog(@"The friend request we got is one of a friend we already have: %@ %@", tempFriend.nickname, tempFriend.publicKey);
@@ -1015,28 +1017,28 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
 #pragma mark - Thread methods
 
 - (void)killToxThread {
-    toxMainThreadShouldEnd = YES;
+    self.toxMainThreadShouldEnd = YES;
 }
 
 - (void)startToxThread {
-    dhtNodes = @[
+    self.dhtNodes = @[
                  @{@"ip": @"192.254.75.98", @"port": @"33445", @"key": @"FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"},
                  @{@"ip": @"192.184.81.118", @"port": @"33445", @"key": @"5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"},
                  @{@"ip": @"144.76.60.215", @"port": @"33445", @"key": @"DDCF277B8B45B0D357D78AA4E201766932DF6CDB7179FC7D5C9F3C2E8E705326"},
                  @{@"ip": @"193.107.16.73", @"port": @"33445", @"key": @"AE27E1E72ADA3DC423C60EEBACA241456174048BE76A283B41AD32D953182D49"},
                  @{@"ip": @"66.74.15.98", @"port": @"33445", @"key": @"20C797E098701A848B07D0384222416B0EFB60D08CECB925B860CAEAAB572067"}
                 ];
-    lastAttemptedConnect = time(0);
-    srand(lastAttemptedConnect);
+    self.lastAttemptedConnect = time(0);
+    srand(self.lastAttemptedConnect);
     
-    toxWaitData = NULL;
+    self.toxWaitData = NULL;
     uint16_t rtmp = 0;
     tox_wait_prepare([[TXCSingleton sharedSingleton] toxCoreInstance], NULL, &rtmp);
-    toxWaitBufferSize = rtmp;
-    toxWaitData = malloc(toxWaitBufferSize);
+    self.toxWaitBufferSize = rtmp;
+    self.toxWaitData = malloc(self.toxWaitBufferSize);
 
     
-    toxMainThreadShouldEnd = NO;
+    self.toxMainThreadShouldEnd = NO;
     dispatch_async(self.toxMainThread, ^{
         [self toxCoreLoop];
     });
@@ -1045,37 +1047,37 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
 - (void)toxCoreLoop {
     
     //code to check if node connection has changed, if so notify the app
-    if (on == 0 && tox_isconnected([[TXCSingleton sharedSingleton] toxCoreInstance])) {
+    if (self.on == 0 && tox_isconnected([[TXCSingleton sharedSingleton] toxCoreInstance])) {
         NSLog(@"DHT Connected!");
         dispatch_sync(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationDHTConnected object:nil];
         });
-        on = 1;
+        self.on = 1;
     }
-    if (on == 1 && !tox_isconnected([[TXCSingleton sharedSingleton] toxCoreInstance])) {
+    if (self.on == 1 && !tox_isconnected([[TXCSingleton sharedSingleton] toxCoreInstance])) {
         NSLog(@"DHT Disconnected!");
         dispatch_sync(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationDHTDisconnected object:nil];
         });
-        on = 0;
+        self.on = 0;
     }
     // If we haven't been connected for over two seconds, bootstrap to another node.
-    if (on == 0 && lastAttemptedConnect < time(0)+2) {
-        int num = rand() % [dhtNodes count];
-        unsigned char *binary_string = hex_string_to_bin((char *)[dhtNodes[num][@"key"] UTF8String]);
+    if (self.on == 0 && self.lastAttemptedConnect < time(0)+2) {
+        int num = rand() % [self.dhtNodes count];
+        unsigned char *binary_string = hex_string_to_bin((char *)[self.dhtNodes[num][@"key"] UTF8String]);
         tox_bootstrap_from_address([[TXCSingleton sharedSingleton] toxCoreInstance],
-                                   [dhtNodes[num][@"ip"] UTF8String],
+                                   [self.dhtNodes[num][@"ip"] UTF8String],
                                    TOX_ENABLE_IPV6_DEFAULT,
-                                   htons(atoi([dhtNodes[num][@"port"] UTF8String])),
+                                   htons(atoi([self.dhtNodes[num][@"port"] UTF8String])),
                                    binary_string); //actual connection
         free(binary_string);
     }
     
     
     // Call Wait Execute for up to a second
-    if (toxWaitData && tox_wait_prepare([[TXCSingleton sharedSingleton] toxCoreInstance], toxWaitData, &toxWaitBufferSize) == 1) {
-        tox_wait_execute([[TXCSingleton sharedSingleton] toxCoreInstance], toxWaitData, toxWaitBufferSize, 999);
-        tox_wait_cleanup([[TXCSingleton sharedSingleton] toxCoreInstance], toxWaitData, toxWaitBufferSize);
+    if (self.toxWaitData && tox_wait_prepare([[TXCSingleton sharedSingleton] toxCoreInstance], self.toxWaitData, &_toxWaitBufferSize) == 1) {
+        tox_wait_execute([[TXCSingleton sharedSingleton] toxCoreInstance], self.toxWaitData, self.toxWaitBufferSize, 999);
+        tox_wait_cleanup([[TXCSingleton sharedSingleton] toxCoreInstance], self.toxWaitData, self.toxWaitBufferSize);
     }
     // Run tox_do
     int a = time(0);
@@ -1085,7 +1087,7 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     }
 
     // Keep going
-    if (toxMainThreadShouldEnd == NO) {
+    if (self.toxMainThreadShouldEnd == NO) {
         dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(33333 * NSEC_PER_USEC));
         dispatch_after(waitTime, toxMainThread, ^{
             [self toxCoreLoop];
@@ -1093,7 +1095,7 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     }
     
     
-    if (on) {
+    if (self.on) {
         //print when the number of connected clients changes
         static int lastCount = 0;
         Messenger *m = (Messenger *)[[TXCSingleton sharedSingleton] toxCoreInstance];

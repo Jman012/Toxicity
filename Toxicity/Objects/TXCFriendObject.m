@@ -13,10 +13,10 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.publicKey = [[NSString alloc] init];
-        self.publicKeyWithNoSpam = [[NSString alloc] init];
-        self.nickname = [[NSString alloc] init];
-        self.statusMessage = [[NSString alloc] init];
+        self.publicKey = [NSString copy];
+        self.publicKeyWithNoSpam = [NSString copy];
+        self.nickname = [NSString copy];
+        self.statusMessage = [NSString copy];
         self.statusType = TXCToxFriendUserStatus_None;
         self.connectionType = TXCToxFriendConnectionStatus_None;
     }

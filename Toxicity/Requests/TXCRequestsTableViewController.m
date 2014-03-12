@@ -21,8 +21,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
 @interface TXCRequestsTableViewController ()
 
-@property (nonatomic, strong) NSArray *arrayOfRequests;
-@property (nonatomic, strong) NSArray *arrayOfInvites;
+@property (nonatomic, copy) NSArray *arrayOfRequests;
+@property (nonatomic, copy) NSArray *arrayOfInvites;
 @property (nonatomic, strong) NSMutableArray *selectedRequests;
 @property (nonatomic, strong) NSMutableArray *selectedInvites;
 @property (nonatomic, strong) TXCFriendListHeader *groupInvitesHeader;
@@ -81,7 +81,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                                                    action:@selector(rejectButtonPressed)];
 
     [addButton setStyle:UIBarButtonItemStyleBordered];
-    NSArray *array = [NSArray arrayWithObjects:cameraButton, fixedSpace, addButton, flexibleSpace, self.acceptButton, self.rejectButton, nil];
+    NSArray *array = @[cameraButton, fixedSpace, addButton, flexibleSpace, self.acceptButton, self.rejectButton];
     self.toolbarItems = array;
     [self.navigationController setToolbarHidden:NO animated:YES];
     
@@ -240,22 +240,22 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         if (buttonIndex == 0) {
             [self.tableView beginUpdates];
             
-            NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-            for (NSString *tempString in self.selectedRequests) {
-                for (int i = 0; i < [self.arrayOfRequests count]; i++) {
-                    if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:i]]) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:1]];
+            __block NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
+            [self.selectedRequests enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
+                [self.arrayOfRequests enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:idx]]) {
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:1]];
                     }
-                }
-            }
-            for (NSString *tempString in self.selectedInvites) {
-                for (int i = 0; i < [self.arrayOfInvites count]; i++) {
-                    if ([tempString isEqualToString:[self.arrayOfInvites objectAtIndex:i]]) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
-                    }
-                }
-            }
+                }];
+            }];
             
+            [self.selectedInvites enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
+                [self.arrayOfInvites enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    if ([tempString isEqualToString:[self.arrayOfInvites objectAtIndex:idx]]) {
+                        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:0]];
+                    }
+                }];
+            }];
             
             if ([self.selectedRequests count] > 0) {
                 [ourDelegate acceptFriendRequests:self.selectedRequests];
@@ -420,11 +420,14 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                     cell.avatarImage = theAvatarImage;
                 } else {
                     NSArray *visibleCells = [tableView visibleCells];
-                    for (TXCFriendCell *tempCell in visibleCells) {
+                    [visibleCells enumerateObjectsUsingBlock:^(TXCFriendCell *tempCell, NSUInteger idx, BOOL *stop) {
                         if (tempCell) {
                             if ([tempCell.friendIdentifier isEqualToString:[self.arrayOfInvites objectAtIndex:indexPath.row]]) {
                                 tempCell.avatarImage = theAvatarImage;
-                            }}}}
+                            }
+                        }
+                    }];
+                }
             } else {
                 TXCFriendCell *theCell = (TXCFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
                 if (theCell) {
@@ -433,11 +436,12 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                     }}}}];
         cell.shouldShowFriendStatus = NO;
         cell.accessoryType = UITableViewCellAccessoryNone;
-        for (NSString *tempString in self.selectedInvites) {
+        
+        [self.selectedInvites enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
             if ([tempString isEqualToString:[self.arrayOfInvites objectAtIndex:indexPath.row]]) {
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
             }
-        }
+        }];
         
         return cell;
         
@@ -467,13 +471,13 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                     //this could have taken any amount of time to accomplish (either right from cache had to download a new one
                     //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
                     NSArray *visibleCells = [tableView visibleCells];
-                    for (TXCFriendCell *tempCell in visibleCells) {
+                    [visibleCells enumerateObjectsUsingBlock:^(TXCFriendCell *tempCell, NSUInteger idx, BOOL *stop) {
                         if (tempCell) {
                             if ([tempCell.friendIdentifier isEqualToString:[self.arrayOfRequests objectAtIndex:indexPath.row]]) {
                                 tempCell.avatarImage = theAvatarImage;
                             }
                         }
-                    }
+                    }];
                 }
             } else {
                 TXCFriendCell *theCell = (TXCFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
@@ -489,11 +493,11 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         
         
         cell.accessoryType = UITableViewCellAccessoryNone;
-        for (NSString *tempString in self.selectedRequests) {
+        [self.selectedRequests enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
             if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:indexPath.row]]) {
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
             }
-        }
+        }];
         
         return cell;
     }
@@ -559,12 +563,12 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     
     if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
         //deselect
-        int j = -1;
-        for (int i = 0; i < [selectedPointer count]; i++) {
-            if ([[selectedPointer objectAtIndex:i] isEqualToString:[arrayPointer objectAtIndex:indexPath.row]]) {
-                j = i;
+        __block int j = -1;
+        [selectedPointer enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([[selectedPointer objectAtIndex:idx] isEqualToString:[arrayPointer objectAtIndex:indexPath.row]]) {
+                j = idx;
             }
-        }
+        }];
         if (j != -1) {
             [selectedPointer removeObjectAtIndex:j];
         }

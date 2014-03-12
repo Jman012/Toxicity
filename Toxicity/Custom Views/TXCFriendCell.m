@@ -47,7 +47,8 @@
             self.mainLayerGradient.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y + 1, self.bounds.size.width, self.bounds.size.height - 1);
             UIColor *top = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.4f alpha:1.0f];
             UIColor *bottom = [UIColor colorWithHue:1.0f saturation:0.0f brightness:0.3f alpha:1.0f];
-            self.mainLayerGradient.colors = [NSArray arrayWithObjects:(id)[top CGColor], (id)[bottom CGColor], nil];
+            
+            self.mainLayerGradient.colors = @[(id)[top CGColor], (id)[bottom CGColor]];
             self.mainLayerGradient.name = @"Gradient";
             
             [self.cellBackgroundView.layer insertSublayer:self.mainLayerGradient atIndex:1];
@@ -124,7 +125,7 @@
             selectedGrad.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y + 1, self.bounds.size.width, self.bounds.size.height - 1);
             UIColor *selectedTop = [UIColor colorWithHue:0.5f saturation:0.0f brightness:0.2f alpha:1.0f];
             UIColor *selectedBottom = [UIColor colorWithHue:0.5f saturation:0.0f brightness:0.3f alpha:1.0f];
-            selectedGrad.colors = [NSArray arrayWithObjects:(id)[selectedTop CGColor], (id)[selectedBottom CGColor], nil];
+            selectedGrad.colors = @[(id)[selectedTop CGColor], (id)[selectedBottom CGColor]];
             selectedGrad.name = @"SelectedGradient";
             [selected.layer insertSublayer:selectedGrad atIndex:1];
         } else {
