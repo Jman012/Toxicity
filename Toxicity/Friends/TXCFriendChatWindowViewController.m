@@ -35,6 +35,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 
 @implementation TXCFriendChatWindowViewController
 
+@synthesize friendStatusColor = _friendStatusColor;
 
 #pragma mark - Initialization
 
@@ -112,8 +113,8 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 #pragma mark - Setters
 
 - (void)setFriendStatusColor:(UIColor *)friendStatusColor {
-    if (self.friendStatusColor != friendStatusColor) {
-        self.friendStatusColor = friendStatusColor;
+    if (_friendStatusColor != friendStatusColor) {
+        _friendStatusColor = friendStatusColor;
         [self updateTitleLabelStatusAndText];
     }
 }
@@ -126,10 +127,10 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 #pragma mark - Getters
 
 - (UIColor *)friendStatusColor {
-    if (!self.friendStatusColor) {
-        self.friendStatusColor = [UIColor toxicityStatusColorGray];
+    if (!_friendStatusColor) {
+        _friendStatusColor = [UIColor toxicityStatusColorGray];
     }
-    return self.friendStatusColor;
+    return _friendStatusColor;
 }
 
 #pragma mark - Methods
@@ -241,7 +242,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     
     [JSMessageSoundEffect playMessageSentSound];
     
-    [tempMessage setGroupMessage:NO];
+    [tempMessage setIsGroupMessage:NO];
     
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[UIApplication sharedApplication].delegate;
     BOOL success = [ourDelegate sendMessage:tempMessage];

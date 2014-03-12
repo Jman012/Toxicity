@@ -81,7 +81,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [self.tableView registerClass:[TXCFriendCell class] forCellReuseIdentifier:@"FriendListCell"];
     
     self.headerForFriends = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
-    self.headerForFriends = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+    self.headerForGroups = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
