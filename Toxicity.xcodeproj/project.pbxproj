@@ -289,6 +289,7 @@
 		B9EE597417FB528800D8A388 /* status-yellow-navbar-ios7.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE596417FB528700D8A388 /* status-yellow-navbar-ios7.png */; };
 		B9EE597517FB528800D8A388 /* status-yellow-navbar-ios7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE596517FB528700D8A388 /* status-yellow-navbar-ios7@2x.png */; };
 		B9F9DB2518BEAE7F003BD982 /* JSQSystemSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */; };
+		D10DE310ACEA887931B3EB19 /* TXCStatusLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D10DE8806FF7F74520570681 /* TXCStatusLabel.m */; };
 		D10DEF2046395C939583169B /* UIColor+ToxicityColors.m in Sources */ = {isa = PBXBuildFile; fileRef = D10DEA55B16B77901E909CA9 /* UIColor+ToxicityColors.m */; };
 		E6C97FE118C3327C007368F9 /* InputCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE018C3327C007368F9 /* InputCell.m */; };
 		E6C97FE418C39677007368F9 /* StatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE318C39677007368F9 /* StatusCell.m */; };
@@ -778,7 +779,9 @@
 		B9EE596517FB528700D8A388 /* status-yellow-navbar-ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-navbar-ios7@2x.png"; path = "Images/status-yellow-navbar-ios7@2x.png"; sourceTree = "<group>"; };
 		B9F9DB2318BEAE7F003BD982 /* JSQSystemSoundPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSQSystemSoundPlayer.h; path = JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.h; sourceTree = "<group>"; };
 		B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSQSystemSoundPlayer.m; path = JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.m; sourceTree = "<group>"; };
+		D10DE22E3A1FF7134B362134 /* TXCStatusLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TXCStatusLabel.h; sourceTree = "<group>"; };
 		D10DE558FA5CBC9EB58F8C63 /* UIColor+ToxicityColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ToxicityColors.h"; sourceTree = "<group>"; };
+		D10DE8806FF7F74520570681 /* TXCStatusLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TXCStatusLabel.m; sourceTree = "<group>"; };
 		D10DEA55B16B77901E909CA9 /* UIColor+ToxicityColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ToxicityColors.m"; sourceTree = "<group>"; };
 		E6C97FDF18C3327C007368F9 /* InputCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputCell.h; sourceTree = "<group>"; };
 		E6C97FE018C3327C007368F9 /* InputCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputCell.m; sourceTree = "<group>"; };
@@ -2003,6 +2006,8 @@
 				B9D5C95C17E3E31500B84BEF /* TXCFriendListHeader.m */,
 				B98C9C4117DC16D8008B10E0 /* UIView+Shadow.h */,
 				B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */,
+				D10DE8806FF7F74520570681 /* TXCStatusLabel.m */,
+				D10DE22E3A1FF7134B362134 /* TXCStatusLabel.h */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -2546,6 +2551,7 @@
 				B9789F2618C040A5004F1257 /* ge_p2_dbl.c in Sources */,
 				B9789F0918C040A5004F1257 /* secretbox_xsalsa20poly1305_api.c in Sources */,
 				D10DEF2046395C939583169B /* UIColor+ToxicityColors.m in Sources */,
+				D10DE310ACEA887931B3EB19 /* TXCStatusLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
