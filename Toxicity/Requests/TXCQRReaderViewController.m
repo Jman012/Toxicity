@@ -7,16 +7,24 @@
 //
 
 #import "TXCQRReaderViewController.h"
+#import "TXCSingleton.h"
+#import "ZBarSDK.h"
+#import "TXCAppDelegate.h"
 
 NSString *const QRReaderViewControllerNotificationQRReaderDidAddFriend = @"QRReaderDidAddFriend";
 
-@interface TXCQRReaderViewController ()
+@interface TXCQRReaderViewController ()  <ZBarReaderViewDelegate>
+
+@property (nonatomic, weak) IBOutlet ZBarReaderView *readerView;
+
+- (IBAction)cancelButtonPushed:(id)sender;
 
 @end
 
+
 @implementation TXCQRReaderViewController
 
-@synthesize readerView;
+
 
 - (id)init
 {
@@ -37,18 +45,18 @@ NSString *const QRReaderViewControllerNotificationQRReaderDidAddFriend = @"QRRea
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    readerView.readerDelegate = self;
+    self.readerView.readerDelegate = self;
     
     self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
 
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [readerView start];
+    [self.readerView start];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [readerView stop];
+    [self.readerView stop];
 }
 
 - (void)didReceiveMemoryWarning

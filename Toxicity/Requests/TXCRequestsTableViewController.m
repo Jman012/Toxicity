@@ -7,11 +7,28 @@
 //
 
 #import "TXCRequestsTableViewController.h"
+#import <QuartzCore/QuartzCore.h>
+#import "TXCSingleton.h"
+#import "TXCQRReaderViewController.h"
+#import "TXCAppDelegate.h"
+#import "TXCFriendCell.h"
+#import "TXCFriendListHeader.h"
+
 
 extern NSString *const QRReaderViewControllerNotificationQRReaderDidAddFriend;
 extern NSString *const TXCToxAppDelegateNotificationFriendRequestReceived;
 extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
+
 @interface TXCRequestsTableViewController ()
+
+@property (nonatomic, strong) NSArray *arrayOfRequests;
+@property (nonatomic, strong) NSArray *arrayOfInvites;
+@property (nonatomic, strong) NSMutableArray *selectedRequests;
+@property (nonatomic, strong) NSMutableArray *selectedInvites;
+@property (nonatomic, strong) TXCFriendListHeader *groupInvitesHeader;
+@property (nonatomic, strong) TXCFriendListHeader *friendRequestsHeader;
+@property (nonatomic, strong) UIBarButtonItem *acceptButton;
+@property (nonatomic, strong) UIBarButtonItem *rejectButton;
 
 @end
 
@@ -30,10 +47,10 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 {
     [super viewDidLoad];
     
-    _arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
-    _arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
-    selectedRequests = [[NSMutableArray alloc] init];
-    selectedInvites = [[NSMutableArray alloc] init];
+    self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
+    self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
+    self.selectedRequests = [[NSMutableArray alloc] init];
+    self.selectedInvites = [[NSMutableArray alloc] init];
     
     
     /***** Appearance *****/
@@ -54,17 +71,17 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         [addButton setTintColor:[UIColor whiteColor]];
     }
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    acceptButton = [[UIBarButtonItem alloc] initWithTitle:@"Accept (0)"
+    self.acceptButton = [[UIBarButtonItem alloc] initWithTitle:@"Accept (0)"
                                                     style:UIBarButtonItemStyleBordered
                                                    target:self
                                                    action:@selector(acceptButtonPressed)];
-    rejectButton = [[UIBarButtonItem alloc] initWithTitle:@"Reject (0)"
+    self.rejectButton = [[UIBarButtonItem alloc] initWithTitle:@"Reject (0)"
                                                     style:UIBarButtonItemStyleBordered
                                                    target:self
                                                    action:@selector(rejectButtonPressed)];
 
     [addButton setStyle:UIBarButtonItemStyleBordered];
-    NSArray *array = [NSArray arrayWithObjects:cameraButton, fixedSpace, addButton, flexibleSpace, acceptButton, rejectButton, nil];
+    NSArray *array = [NSArray arrayWithObjects:cameraButton, fixedSpace, addButton, flexibleSpace, self.acceptButton, self.rejectButton, nil];
     self.toolbarItems = array;
     [self.navigationController setToolbarHidden:NO animated:YES];
     
@@ -88,8 +105,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     
     
     [self.tableView registerClass:[TXCFriendCell class] forCellReuseIdentifier:@"RequestFriendCell"];
-    groupInvitesHeader = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
-    friendRequestsHeader = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+    self.groupInvitesHeader = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+    self.friendRequestsHeader = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
 
     
     
@@ -162,9 +179,9 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 }
 
 - (void)acceptButtonPressed {
-    if ([selectedRequests count] > 0 || [selectedInvites count] > 0) {
+    if ([self.selectedRequests count] > 0 || [self.selectedInvites count] > 0) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Accept"
-                                                            message:[NSString stringWithFormat:@"Are you sure you want to accept %d requests/invites?", [selectedRequests count] + [selectedInvites count]]
+                                                            message:[NSString stringWithFormat:@"Are you sure you want to accept %d requests/invites?", [self.selectedRequests count] + [self.selectedInvites count]]
                                                            delegate:self
                                                   cancelButtonTitle:@"Yes"
                                                   otherButtonTitles:@"No", nil];
@@ -173,9 +190,9 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 }
 
 - (void)rejectButtonPressed {
-    if ([selectedRequests count] > 0 || [selectedInvites count] > 0) {
+    if ([self.selectedRequests count] > 0 || [self.selectedInvites count] > 0) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Reject"
-                                                            message:[NSString stringWithFormat:@"Are you sure you want to reject %d requests/invites?", [selectedRequests count] + [selectedInvites count]]
+                                                            message:[NSString stringWithFormat:@"Are you sure you want to reject %d requests/invites?", [self.selectedRequests count] + [self.selectedInvites count]]
                                                            delegate:self
                                                   cancelButtonTitle:@"Yes"
                                                   otherButtonTitles:@"No", nil];
@@ -186,14 +203,14 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 - (void)didGetFriendRequest {
     NSLog(@"got request");
     
-    _arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
+    self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
     [self.tableView reloadData];
 }
 
 - (void)didGetGroupInvite {
     NSLog(@"got invite");
     
-    _arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
+    self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
     [self.tableView reloadData];
 }
 
@@ -224,40 +241,40 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             [self.tableView beginUpdates];
             
             NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-            for (NSString *tempString in selectedRequests) {
-                for (int i = 0; i < [_arrayOfRequests count]; i++) {
-                    if ([tempString isEqualToString:[_arrayOfRequests objectAtIndex:i]]) {
+            for (NSString *tempString in self.selectedRequests) {
+                for (int i = 0; i < [self.arrayOfRequests count]; i++) {
+                    if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:i]]) {
                         [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:1]];
                     }
                 }
             }
-            for (NSString *tempString in selectedInvites) {
-                for (int i = 0; i < [_arrayOfInvites count]; i++) {
-                    if ([tempString isEqualToString:[_arrayOfInvites objectAtIndex:i]]) {
+            for (NSString *tempString in self.selectedInvites) {
+                for (int i = 0; i < [self.arrayOfInvites count]; i++) {
+                    if ([tempString isEqualToString:[self.arrayOfInvites objectAtIndex:i]]) {
                         [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
                     }
                 }
             }
             
             
-            if ([selectedRequests count] > 0) {
-                [ourDelegate acceptFriendRequests:selectedRequests];
-                selectedRequests = nil;
-                selectedRequests = [[NSMutableArray alloc] init];
-                _arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
+            if ([self.selectedRequests count] > 0) {
+                [ourDelegate acceptFriendRequests:self.selectedRequests];
+                self.selectedRequests = nil;
+                self.selectedRequests = [[NSMutableArray alloc] init];
+                self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
             }
-            if ([selectedInvites count] > 0) {
-                [ourDelegate acceptGroupInvites:selectedInvites];
-                selectedInvites = nil;
-                selectedInvites = [[NSMutableArray alloc] init];
-                _arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
+            if ([self.selectedInvites count] > 0) {
+                [ourDelegate acceptGroupInvites:self.selectedInvites];
+                self.selectedInvites = nil;
+                self.selectedInvites = [[NSMutableArray alloc] init];
+                self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
             }
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
             
             
             [self.tableView endUpdates];
             
-            if ([_arrayOfInvites count] == 0) {
+            if ([self.arrayOfInvites count] == 0) {
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
         }
@@ -266,24 +283,24 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             [self.tableView beginUpdates];
             
             NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-            for (NSString *tempString in selectedRequests) {
-                for (int i = 0; i < [_arrayOfRequests count]; i++) {
-                    if ([tempString isEqualToString:[_arrayOfRequests objectAtIndex:i]]) {
+            for (NSString *tempString in self.selectedRequests) {
+                for (int i = 0; i < [self.arrayOfRequests count]; i++) {
+                    if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:i]]) {
                         [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
                     }
                 }
                 [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeObjectForKey:tempString];
             }
             
-            selectedRequests = nil;
-            selectedRequests = [[NSMutableArray alloc] init];
-            _arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
+            self.selectedRequests = nil;
+            self.selectedRequests = [[NSMutableArray alloc] init];
+            self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
             
             
             [self.tableView endUpdates];
             
-            if ([_arrayOfRequests count] == 0) {
+            if ([self.arrayOfRequests count] == 0) {
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
         }
@@ -303,11 +320,11 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     // Return the number of rows in the section.
     switch (section) {
         case 0:
-            return [_arrayOfInvites count];
+            return [self.arrayOfInvites count];
             break;
             
         case 1:
-            return [_arrayOfRequests count];
+            return [self.arrayOfRequests count];
             break;
             
         default:
@@ -320,16 +337,16 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     
     switch (section) {
         case 0:
-            if ([_arrayOfInvites count] > 0) {
-                groupInvitesHeader.textLabel.text = @"Group Invites";
-                return groupInvitesHeader;
+            if ([self.arrayOfInvites count] > 0) {
+                self.groupInvitesHeader.textLabel.text = @"Group Invites";
+                return self.groupInvitesHeader;
             }
             break;
             
         case 1:
-            if ([_arrayOfRequests count] > 0) {
-                friendRequestsHeader.textLabel.text = @"Friend Requests";
-                return friendRequestsHeader;
+            if ([self.arrayOfRequests count] > 0) {
+                self.friendRequestsHeader.textLabel.text = @"Friend Requests";
+                return self.friendRequestsHeader;
             }
             break;
             
@@ -349,7 +366,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     
     switch (section) {
         case 0:
-            if ([_arrayOfInvites count] == 0) {
+            if ([self.arrayOfInvites count] == 0) {
                 return 0;
             } else {
                 return 22;
@@ -357,7 +374,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             break;
             
         case 1:
-            if ([_arrayOfRequests count] == 0) {
+            if ([self.arrayOfRequests count] == 0) {
                 return 0;
             } else {
                 return 22;
@@ -388,16 +405,16 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     
     if (indexPath.section == 0) {
         //group invite
-        cell.friendIdentifier = [_arrayOfInvites objectAtIndex:indexPath.row];
-        NSString *temp = [_arrayOfInvites objectAtIndex:indexPath.row];
+        cell.friendIdentifier = [self.arrayOfInvites objectAtIndex:indexPath.row];
+        NSString *temp = [self.arrayOfInvites objectAtIndex:indexPath.row];
         NSString *front = [temp substringToIndex:6];
         NSString *end = [temp substringFromIndex:[temp length] - 6];
         NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
         cell.nickLabel.text = formattedString;
         cell.messageLabelText = @"Tox me on Group Tox.";
-        NSString *currentRequestString = [_arrayOfInvites objectAtIndex:indexPath.row];
+        NSString *currentRequestString = [self.arrayOfInvites objectAtIndex:indexPath.row];
         cell.avatarImage = [[TXCSingleton sharedSingleton] defaultAvatarImage];
-        [[TXCSingleton sharedSingleton] avatarImageForKey:[_arrayOfInvites objectAtIndex:indexPath.row] type:AvatarType_Group finishBlock:^(UIImage *theAvatarImage) {
+        [[TXCSingleton sharedSingleton] avatarImageForKey:[self.arrayOfInvites objectAtIndex:indexPath.row] type:AvatarType_Group finishBlock:^(UIImage *theAvatarImage) {
             if (cell) {
                 if ([cell.friendIdentifier isEqualToString:currentRequestString]) {
                     cell.avatarImage = theAvatarImage;
@@ -405,7 +422,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                     NSArray *visibleCells = [tableView visibleCells];
                     for (TXCFriendCell *tempCell in visibleCells) {
                         if (tempCell) {
-                            if ([tempCell.friendIdentifier isEqualToString:[_arrayOfInvites objectAtIndex:indexPath.row]]) {
+                            if ([tempCell.friendIdentifier isEqualToString:[self.arrayOfInvites objectAtIndex:indexPath.row]]) {
                                 tempCell.avatarImage = theAvatarImage;
                             }}}}
             } else {
@@ -416,8 +433,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                     }}}}];
         cell.shouldShowFriendStatus = NO;
         cell.accessoryType = UITableViewCellAccessoryNone;
-        for (NSString *tempString in selectedInvites) {
-            if ([tempString isEqualToString:[_arrayOfInvites objectAtIndex:indexPath.row]]) {
+        for (NSString *tempString in self.selectedInvites) {
+            if ([tempString isEqualToString:[self.arrayOfInvites objectAtIndex:indexPath.row]]) {
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
             }
         }
@@ -427,11 +444,11 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     } else {
         //friend request
     
-        cell.friendIdentifier = [_arrayOfRequests objectAtIndex:indexPath.row];
+        cell.friendIdentifier = [self.arrayOfRequests objectAtIndex:indexPath.row];
         
         //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
         //e.g., AF4E32...B6C899
-        NSString *temp = [_arrayOfRequests objectAtIndex:indexPath.row];
+        NSString *temp = [self.arrayOfRequests objectAtIndex:indexPath.row];
         NSString *front = [temp substringToIndex:6];
         NSString *end = [temp substringFromIndex:[temp length] - 6];
         NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
@@ -439,9 +456,9 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         
         cell.messageLabelText = @"Tox me on Tox.";
         
-        NSString *currentRequestString = [_arrayOfRequests objectAtIndex:indexPath.row];
+        NSString *currentRequestString = [self.arrayOfRequests objectAtIndex:indexPath.row];
         cell.avatarImage = [[TXCSingleton sharedSingleton] defaultAvatarImage];
-        [[TXCSingleton sharedSingleton] avatarImageForKey:[_arrayOfRequests objectAtIndex:indexPath.row] type:AvatarType_Friend finishBlock:^(UIImage *theAvatarImage) {
+        [[TXCSingleton sharedSingleton] avatarImageForKey:[self.arrayOfRequests objectAtIndex:indexPath.row] type:AvatarType_Friend finishBlock:^(UIImage *theAvatarImage) {
             
             if (cell) {
                 if ([cell.friendIdentifier isEqualToString:currentRequestString]) {
@@ -452,7 +469,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                     NSArray *visibleCells = [tableView visibleCells];
                     for (TXCFriendCell *tempCell in visibleCells) {
                         if (tempCell) {
-                            if ([tempCell.friendIdentifier isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+                            if ([tempCell.friendIdentifier isEqualToString:[self.arrayOfRequests objectAtIndex:indexPath.row]]) {
                                 tempCell.avatarImage = theAvatarImage;
                             }
                         }
@@ -472,8 +489,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         
         
         cell.accessoryType = UITableViewCellAccessoryNone;
-        for (NSString *tempString in selectedRequests) {
-            if ([tempString isEqualToString:[_arrayOfRequests objectAtIndex:indexPath.row]]) {
+        for (NSString *tempString in self.selectedRequests) {
+            if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:indexPath.row]]) {
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
             }
         }
@@ -533,11 +550,11 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     NSMutableArray *selectedPointer; //this will point to either selectedRequests or selectedGroups, depending on section
     NSArray *arrayPointer; // same. Both for sake of code brevity
     if (indexPath.section == 0) {
-        selectedPointer = selectedInvites;
-        arrayPointer = _arrayOfInvites;
+        selectedPointer = self.selectedInvites;
+        arrayPointer = self.arrayOfInvites;
     } else {
-        selectedPointer = selectedRequests;
-        arrayPointer = _arrayOfRequests;
+        selectedPointer = self.selectedRequests;
+        arrayPointer = self.arrayOfRequests;
     }
     
     if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
@@ -560,8 +577,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
     
-    acceptButton.title = [NSString stringWithFormat:@"Accept (%d)", [selectedRequests count] + [selectedInvites count]];
-    rejectButton.title = [NSString stringWithFormat:@"Reject (%d)", [selectedRequests count] + [selectedInvites count]];
+    self.acceptButton.title = [NSString stringWithFormat:@"Accept (%d)", [self.selectedRequests count] + [self.selectedInvites count]];
+    self.rejectButton.title = [NSString stringWithFormat:@"Reject (%d)", [self.selectedRequests count] + [self.selectedInvites count]];
     
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }

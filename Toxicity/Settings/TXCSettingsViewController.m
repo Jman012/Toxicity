@@ -10,12 +10,18 @@
 #import "InputCell.h"
 #import "StatusCell.h"
 #import "TXCQRCodeViewController.h"
+#import "TXCNewDHTNodeViewController.h"
+#import "TXCSingleton.h"
+#import "TXCAppDelegate.h"
+
+#include "tox.h"
 
 static NSString *const QRCodeViewControllerIdentifier = @"TXCQRCodeViewController";
 extern NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT;
 extern NSString *const ToxAppDelegateNotificationDHTConnected ;
 extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
-@interface TXCSettingsViewController ()
+
+@interface TXCSettingsViewController () <UITabBarControllerDelegate, UITextFieldDelegate>
 
 @end
 
@@ -36,7 +42,7 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    _dhtNodeList = [TXCSingleton sharedSingleton].dhtNodeList;
+    self.dhtNodeList = [TXCSingleton sharedSingleton].dhtNodeList;
 }
 
 #pragma mark - Actions
@@ -161,20 +167,20 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
 
 
 - (IBAction)saveButtonPushed:(id)sender {
-    if (![nameTextField.text isEqualToString:[TXCSingleton sharedSingleton].userNick]) {
+    if (![self.nameTextField.text isEqualToString:[TXCSingleton sharedSingleton].userNick]) {
         //they changed their name
         
-        [TXCSingleton sharedSingleton].userNick = nameTextField.text;
+        [TXCSingleton sharedSingleton].userNick = self.nameTextField.text;
         
         TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[UIApplication sharedApplication].delegate;
         [ourDelegate userNickChanged];
         
     }
     
-    if (![statusTextField.text isEqualToString:[TXCSingleton sharedSingleton].userStatusMessage]) {
+    if (![self.statusTextField.text isEqualToString:[TXCSingleton sharedSingleton].userStatusMessage]) {
         //they changed their name
         
-        [TXCSingleton sharedSingleton].userStatusMessage = statusTextField.text;
+        [TXCSingleton sharedSingleton].userStatusMessage = self.statusTextField.text;
         TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[UIApplication sharedApplication].delegate;
         [ourDelegate userStatusChanged];
     }
@@ -196,7 +202,7 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
             return 2;
         case 2:
             //Add ones for the row to add a new server
-            return _dhtNodeList.count + 1;
+            return self.dhtNodeList.count + 1;
         default:break;
     }
     return 0;
@@ -233,12 +239,12 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
                     case 0:
                         inputCell.titleLabel.text = @"Name:";
                         inputCell.textField.text = [TXCSingleton sharedSingleton].userNick;
-                        nameTextField = inputCell.textField;
+                        self.nameTextField = inputCell.textField;
                         break;
                     case 1:
                         inputCell.titleLabel.text = @"Status:";
                         inputCell.textField.text = [TXCSingleton sharedSingleton].userStatusMessage;
-                        statusTextField = inputCell.textField;
+                        self.statusTextField = inputCell.textField;
                         break;
                 }
 
@@ -297,7 +303,7 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
             cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 
 
-            TXCDHTNodeObject *tempDHT = _dhtNodeList[indexPath.row - 1];
+            TXCDHTNodeObject *tempDHT = self.dhtNodeList[indexPath.row - 1];
             cell.textLabel.text = tempDHT.dhtName;
 
             UIActivityIndicatorView *activityConnecting = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(240, 12, 20, 20)];
@@ -305,7 +311,7 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
             activityConnecting.tag = 101;
 
             TXCDHTNodeObject *currentDHT = [TXCSingleton sharedSingleton].currentConnectDHT;
-            TXCDHTNodeObject *cellDHT = _dhtNodeList[indexPath.row - 1];
+            TXCDHTNodeObject *cellDHT = self.dhtNodeList[indexPath.row - 1];
             if ([currentDHT.dhtIP isEqualToString:cellDHT.dhtIP] &&
                 [currentDHT.dhtPort isEqualToString:cellDHT.dhtPort] &&
                 [currentDHT.dhtKey isEqualToString:cellDHT.dhtKey]) {
@@ -364,11 +370,11 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
     
-    TXCDHTNodeObject *tempDHT = [[_dhtNodeList objectAtIndex:(fromIndexPath.row - 1)] copy];
+    TXCDHTNodeObject *tempDHT = [[self.dhtNodeList objectAtIndex:(fromIndexPath.row - 1)] copy];
     
-    [_dhtNodeList removeObjectAtIndex:(fromIndexPath.row - 1)];
+    [self.dhtNodeList removeObjectAtIndex:(fromIndexPath.row - 1)];
     
-    [_dhtNodeList insertObject:tempDHT atIndex:(toIndexPath.row - 1)];
+    [self.dhtNodeList insertObject:tempDHT atIndex:(toIndexPath.row - 1)];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -378,7 +384,7 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
     [tableView beginUpdates];
 
     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [_dhtNodeList removeObjectAtIndex:(indexPath.row - 1)];
+    [self.dhtNodeList removeObjectAtIndex:(indexPath.row - 1)];
 
     [tableView endUpdates];
 }
@@ -402,7 +408,7 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
 
         //compile an array of the names of nodes already in our list
         NSMutableArray *names = [[NSMutableArray alloc] init];
-        for (TXCDHTNodeObject *tempDHT in _dhtNodeList) {
+        for (TXCDHTNodeObject *tempDHT in self.dhtNodeList) {
             [names addObject:tempDHT.dhtName.copy];
         }
 
@@ -426,7 +432,7 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
 
         //attempt connection
         TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[UIApplication sharedApplication].delegate;
-        [ourDelegate connectToDHTWithIP:[_dhtNodeList[indexPath.row - 1] copy]];
+        [ourDelegate connectToDHTWithIP:[self.dhtNodeList[indexPath.row - 1] copy]];
 
 
 
@@ -448,13 +454,13 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
     TXCNewDHTNodeViewController *newDHTViewCont = [sb instantiateViewControllerWithIdentifier:@"NewDHTView"];
     
     //compile an array of the names of nodes already in our list. remove the name about to be edited
-    NSIndexSet *indexSet = [_dhtNodeList indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+    NSIndexSet *indexSet = [self.dhtNodeList indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
         TXCDHTNodeObject *node = (TXCDHTNodeObject *)obj;
         return ![node.dhtName isEqualToString:[tableView cellForRowAtIndexPath:indexPath].textLabel.text];
     }];
-    NSArray *names = [_dhtNodeList objectsAtIndexes:indexSet];
+    NSArray *names = [self.dhtNodeList objectsAtIndexes:indexSet];
 
-    TXCDHTNodeObject *tempDHT = _dhtNodeList[indexPath.row - 1];
+    TXCDHTNodeObject *tempDHT = self.dhtNodeList[indexPath.row - 1];
     //pass along the lsit of names. prevents multiples
     newDHTViewCont.namesAlreadyPresent = names;
     
@@ -502,18 +508,18 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
     
     [self.view removeGestureRecognizer:sender];
     
-    if (![nameTextField.text isEqualToString:[TXCSingleton sharedSingleton].userNick]) {
+    if (![self.nameTextField.text isEqualToString:[TXCSingleton sharedSingleton].userNick]) {
         //they changed their name
         
-        [TXCSingleton sharedSingleton].userNick = nameTextField.text;
+        [TXCSingleton sharedSingleton].userNick = self.nameTextField.text;
         TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[UIApplication sharedApplication].delegate;
         [ourDelegate userNickChanged];
     }
     
-    if (![statusTextField.text isEqualToString:[TXCSingleton sharedSingleton].userStatusMessage]) {
+    if (![self.statusTextField.text isEqualToString:[TXCSingleton sharedSingleton].userStatusMessage]) {
         //they changed their name
         
-        [TXCSingleton sharedSingleton].userStatusMessage = statusTextField.text;
+        [TXCSingleton sharedSingleton].userStatusMessage = self.statusTextField.text;
         TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[UIApplication sharedApplication].delegate;
         [ourDelegate userStatusChanged];
     }

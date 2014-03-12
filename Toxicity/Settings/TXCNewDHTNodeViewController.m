@@ -10,13 +10,26 @@
 
 NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
 
-@interface TXCNewDHTNodeViewController ()
+@interface TXCNewDHTNodeViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
+
+@property (nonatomic, copy) NSString *dhtIP;
+@property (nonatomic, copy) NSString *dhtPort;
+@property (nonatomic, copy) NSString *dhtPublicKey;
+@property (nonatomic, assign, getter = isViewDissapearingToAdd) BOOL viewDissapearingToAdd;
+@property (nonatomic, strong) UITextField *textFieldName;
+@property (nonatomic, strong) UITextField *textFieldIP;
+@property (nonatomic, strong) UITextField *textFieldPort;
+@property (nonatomic, strong) UITextField *textFieldPublicKey;
+
+
+@property (nonatomic, weak) IBOutlet UITableView *infoTableView;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem  *connectButton;
+
+- (IBAction)connectButtonPushed:(id)sender;
 
 @end
 
 @implementation TXCNewDHTNodeViewController
-
-@synthesize namesAlreadyPresent, alreadyName, alreadyIP, alreadyPort, alreadyKey, editingMode, pathToEdit;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -48,12 +61,12 @@ NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    if (viewDissapearingToAdd) {
+    if (self.viewDissapearingToAdd) {
         //send info to whatever
-        NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:@{@"dht_name": textFieldName.text, @"dht_ip": textFieldIP.text, @"dht_port": textFieldPort.text, @"dht_key": textFieldPublicKey.text}];
-        if (editingMode) {
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:@{@"dht_name": self.textFieldName.text, @"dht_ip": self.textFieldIP.text, @"dht_port": self.textFieldPort.text, @"dht_key": self.textFieldPublicKey.text}];
+        if (self.editingMode) {
             [dict setObject:@"yes" forKey:@"editing"];
-            [dict setObject:[NSIndexPath indexPathForItem:pathToEdit.row inSection:pathToEdit.section] forKey:@"indexpath"];
+            [dict setObject:[NSIndexPath indexPathForItem:self.pathToEdit.row inSection:self.pathToEdit.section] forKey:@"indexpath"];
         } else {
             [dict setObject:@"no" forKey:@"editing"];
             [dict setObject:[NSIndexPath indexPathForItem:0 inSection:0] forKey:@"indexpath"];
@@ -76,14 +89,14 @@ NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
     //todo: make sure information is valid looking
     //xxx.xxx.xxx.xxx, integer, and 64 hex characters
     
-    if ([textFieldName.text isEqualToString:@""]) {
+    if ([self.textFieldName.text isEqualToString:@""]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You need to add a name!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
         [alert show];
         return;
     }
     
-    for (NSString *name in namesAlreadyPresent) {
-        if ([name isEqualToString:[textFieldName text]]) {
+    for (NSString *name in self.namesAlreadyPresent) {
+        if ([name isEqualToString:[self.textFieldName text]]) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"This name is already taken!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
             [alert show];
             return;
@@ -92,29 +105,29 @@ NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
     
     NSError *error = NULL;
     NSRegularExpression *regexIP = [NSRegularExpression regularExpressionWithPattern:@"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" options:NSRegularExpressionCaseInsensitive error:&error];
-    NSUInteger matchIP = [regexIP numberOfMatchesInString:[textFieldIP text] options:0 range:NSMakeRange(0, [textFieldIP.text length])];
+    NSUInteger matchIP = [regexIP numberOfMatchesInString:[self.textFieldIP text] options:0 range:NSMakeRange(0, [self.textFieldIP.text length])];
     if (!matchIP) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Your IP Address isn't valid!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
         [alert show];
         return;
     }
     
-    if ([[textFieldPort text] length] >= 6) {
+    if ([[self.textFieldPort text] length] >= 6) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Your IP Port isn't valid!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
         [alert show];
         return;
     }
     
     NSRegularExpression *regexKey = [NSRegularExpression regularExpressionWithPattern:@"^[0-9A-Fa-f]+$" options:NSRegularExpressionCaseInsensitive error:&error];
-    NSUInteger matchKey = [regexKey numberOfMatchesInString:[textFieldPublicKey text] options:0 range:NSMakeRange(0, [[textFieldPublicKey text] length])];
-    if ([textFieldPublicKey.text length] != 64 || matchKey == 0) {
+    NSUInteger matchKey = [regexKey numberOfMatchesInString:[self.textFieldPublicKey text] options:0 range:NSMakeRange(0, [[self.textFieldPublicKey text] length])];
+    if ([self.textFieldPublicKey.text length] != 64 || matchKey == 0) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The Public Key isn't valid!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
         [alert show];
         return;
     }
     
     
-    viewDissapearingToAdd = YES;
+    self.viewDissapearingToAdd = YES;
     //remove pushed view
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -145,10 +158,10 @@ NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
             [textField setPlaceholder:@"Name"];
             [textField setReturnKeyType:UIReturnKeyNext];
             [textField becomeFirstResponder];
-            if (alreadyName)
-                [textField setText:alreadyName];
+            if (self.alreadyName)
+                [textField setText:self.alreadyName];
             
-            textFieldName = textField;
+            self.textFieldName = textField;
             break; 
         }
             
@@ -156,10 +169,10 @@ NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
         {
             [textField setPlaceholder:@"IP Address"];
             [textField setReturnKeyType:UIReturnKeyNext];
-            if (alreadyIP)
-                [textField setText:alreadyIP];
+            if (self.alreadyIP)
+                [textField setText:self.alreadyIP];
             
-            textFieldIP = textField;
+            self.textFieldIP = textField;
             break;
         }
             
@@ -168,10 +181,10 @@ NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
             [textField setPlaceholder:@"IP Port"];
             [textField setReturnKeyType:UIReturnKeyNext];
             [textField setKeyboardType:UIKeyboardTypeNumberPad];
-            if (alreadyPort)
-                [textField setText:alreadyPort];
+            if (self.alreadyPort)
+                [textField setText:self.alreadyPort];
             
-            textFieldPort = textField;
+            self.textFieldPort = textField;
             break;
         }
             
@@ -179,10 +192,10 @@ NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
         {
             [textField setPlaceholder:@"Public Key"];
             [textField setReturnKeyType:UIReturnKeyDone];
-            if (alreadyKey)
-                [textField setText:alreadyKey];
+            if (self.alreadyKey)
+                [textField setText:self.alreadyKey];
             
-            textFieldPublicKey = textField;
+            self.textFieldPublicKey = textField;
             break;
         }
     }
@@ -200,18 +213,18 @@ NSString *const ToxNewDHTNodeViewControllerNotificatiobNewDHT = @"NewDHT";
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if ([[textField placeholder] isEqualToString:@"Name"]) {
         [textField resignFirstResponder];
-        [textFieldIP becomeFirstResponder];
+        [self.textFieldIP becomeFirstResponder];
     }
     else if ([[textField placeholder] isEqualToString:@"IP Address"]) {
         [textField resignFirstResponder];
-        [textFieldPort becomeFirstResponder];
+        [self.textFieldPort becomeFirstResponder];
     }
     else if ([[textField placeholder] isEqualToString:@"IP Port"]) {
         [textField resignFirstResponder];
-        [textFieldPublicKey becomeFirstResponder];
+        [self.textFieldPublicKey becomeFirstResponder];
     }
     else if ([[textField placeholder] isEqualToString:@"Public Key"]) {
-        [textFieldPublicKey resignFirstResponder];
+        [self.textFieldPublicKey resignFirstResponder];
         
         [self submitInfoAndClose];
     }

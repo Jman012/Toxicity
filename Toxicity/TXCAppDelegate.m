@@ -755,8 +755,8 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
         [theMessage setSenderName:[[TXCSingleton sharedSingleton] userNick]];
         [theMessage setOrigin:MessageLocation_Them];
         [theMessage setDidFailToSend:NO];
-        [theMessage setIsGroupMessage:NO];
-        [theMessage setIsActionMessage:NO];
+        [theMessage setGroupMessage:NO];
+        [theMessage setActionMessage:NO];
         [theMessage setSenderKey:[[[[TXCSingleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber] publicKey]];
         
         
@@ -804,8 +804,8 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
             [theMessage setOrigin:MessageLocation_Them];
         }
         [theMessage setDidFailToSend:NO];
-        [theMessage setIsActionMessage:NO];
-        [theMessage setIsGroupMessage:YES];
+        [theMessage setActionMessage:NO];
+        [theMessage setGroupMessage:YES];
         [theMessage setSenderKey:[[[[TXCSingleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPulicKey]];
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it

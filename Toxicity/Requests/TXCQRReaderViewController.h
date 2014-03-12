@@ -13,13 +13,6 @@
 
 #include "tox.h"
 
-@interface TXCQRReaderViewController : UIViewController <ZBarReaderViewDelegate>
-{
-    IBOutlet ZBarReaderView     *readerView;
-}
-
-@property (nonatomic) IBOutlet ZBarReaderView *readerView;
-
-- (IBAction)cancelButtonPushed:(id)sender;
+@interface TXCQRReaderViewController : UIViewController
 
 @end

@@ -10,6 +10,6 @@
 
 @interface TXCQRCodeViewController : UIViewController
 
-@property (nonatomic, strong) NSString *code;
+@property (nonatomic, copy) NSString *code;
 
 @end

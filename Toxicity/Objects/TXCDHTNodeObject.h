@@ -15,14 +15,11 @@ typedef NS_ENUM(NSUInteger, ToxDHTNodeConnectionStatus) {
 } ;
 
 @interface TXCDHTNodeObject : NSObject
-{
-    
-}
 
-@property (nonatomic, strong) NSString *dhtName;
-@property (nonatomic, strong) NSString *dhtIP;
-@property (nonatomic, strong) NSString *dhtPort;
-@property (nonatomic, strong) NSString *dhtKey;
+@property (nonatomic, copy) NSString *dhtName;
+@property (nonatomic, copy) NSString *dhtIP;
+@property (nonatomic, copy) NSString *dhtPort;
+@property (nonatomic, copy) NSString *dhtKey;
 @property (nonatomic, assign) ToxDHTNodeConnectionStatus connectionStatus;
 
 

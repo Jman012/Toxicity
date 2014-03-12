@@ -14,17 +14,14 @@ typedef NS_ENUM(NSUInteger, MessageOrigin) {
 } ;
 
 @interface TXCMessageObject : NSObject
-{
-    
-}
 
-@property (nonatomic, strong) NSString          *message;
-@property (nonatomic, assign) MessageOrigin     origin;
-@property (nonatomic, assign) BOOL              didFailToSend;
-@property (nonatomic, assign) BOOL              isGroupMessage;
-@property (nonatomic, assign) BOOL              isActionMessage;
-@property (nonatomic, strong) NSString          *recipientKey;
-@property (nonatomic, strong) NSString          *senderKey;
-@property (nonatomic, strong) NSString          *senderName;
+@property (nonatomic, copy) NSString *message;
+@property (nonatomic, assign) MessageOrigin  origin;
+@property (nonatomic, assign, getter = isDidFailToSend) BOOL didFailToSend;
+@property (nonatomic, assign, getter = isGroupMessage) BOOL groupMessage;
+@property (nonatomic, assign, getter = isActionMessage) BOOL actionMessage;
+@property (nonatomic, copy) NSString *recipientKey;
+@property (nonatomic, copy) NSString *senderKey;
+@property (nonatomic, copy) NSString *senderName;
 
 @end

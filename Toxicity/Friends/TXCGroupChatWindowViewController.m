@@ -7,10 +7,22 @@
 //
 
 #import "TXCGroupChatWindowViewController.h"
+#import "JSMessage.h"
+#import "JSBubbleImageViewFactory.h"
+#import "TXCSingleton.h"
+#import "TXCAppDelegate.h"
 
 static NSString *const kSenderMe = @"Me";
 extern NSString *const TXCToxAppDelegateNotificationNewMessage;
+
 @interface TXCGroupChatWindowViewController ()
+
+@property (nonatomic, strong) NSMutableArray *mainGroupList;
+@property (nonatomic, strong) NSMutableArray *mainGroupMessages;
+@property (nonatomic, strong) TXCGroupObject *groupInfo;
+@property (nonatomic, strong) NSMutableArray *messages;
+@property (nonatomic, strong) NSIndexPath *friendIndex;
+@property (nonatomic, strong) UIImageView *statusNavBarImageView;
 
 @end
 
@@ -29,16 +41,16 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
     
     self = [super init];
     if (self) {
-        friendIndex = theIndex;
+        self.friendIndex = theIndex;
         
-        _mainGroupList = [[TXCSingleton sharedSingleton] groupList];
-        _mainGroupMessages = [[TXCSingleton sharedSingleton] groupMessages];
+        self.mainGroupList = [[TXCSingleton sharedSingleton] groupList];
+        self.mainGroupMessages = [[TXCSingleton sharedSingleton] groupMessages];
         
-        messages = [[_mainGroupMessages objectAtIndex:theIndex.row] mutableCopy];
+        self.messages = [[self.mainGroupMessages objectAtIndex:theIndex.row] mutableCopy];
         
-        _groupInfo = [_mainGroupList objectAtIndex:theIndex.row];
+        self.groupInfo = [self.mainGroupList objectAtIndex:theIndex.row];
         
-        [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:friendIndex];
+        [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:self.friendIndex];
     }
     return self;
 }
@@ -54,10 +66,10 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
     self.sender = kSenderMe;
     [self setBackgroundColor:[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f]];
     
-    if (!_groupInfo.groupName.length) {
-        self.title = _groupInfo.groupPulicKey;
+    if (!self.groupInfo.groupName.length) {
+        self.title = self.groupInfo.groupPulicKey;
     } else {
-        self.title = _groupInfo.groupName;
+        self.title = self.groupInfo.groupName;
     }
 }
 
@@ -76,7 +88,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [TXCSingleton sharedSingleton].groupMessages[friendIndex.row] = messages.mutableCopy;
+    [TXCSingleton sharedSingleton].groupMessages[self.friendIndex.row] = self.messages.mutableCopy;
     [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -84,10 +96,10 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 #pragma mark - Notifications Center stuff
 
 - (void)updateUserInfo {
-    if (!_groupInfo.groupName.length)
-        self.title = _groupInfo.groupPulicKey;
+    if (!self.groupInfo.groupName.length)
+        self.title = self.groupInfo.groupPulicKey;
     else
-        self.title = _groupInfo.groupName;
+        self.title = self.groupInfo.groupName;
     
     //todo: status (where to display?) and status type
 }
@@ -95,12 +107,12 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 - (void)newMessage:(NSNotification *)notification {
     TXCMessageObject *receivedMessage = [notification object];
     
-    if ([receivedMessage.senderKey isEqualToString:_groupInfo.groupPulicKey]) {
+    if ([receivedMessage.senderKey isEqualToString:self.groupInfo.groupPulicKey]) {
         [self.tableView beginUpdates];
         
-        [messages addObject:receivedMessage];
+        [self.messages addObject:receivedMessage];
         
-        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:(messages.count - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:(self.messages.count - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
         [self.tableView endUpdates];
         [self scrollToBottomAnimated:YES];
     }
@@ -112,14 +124,14 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return messages.count;
+    return self.messages.count;
 }
 
 #pragma mark - Messages view delegate
 - (void)didSendText:(NSString *)text fromSender:(NSString *)sender onDate:(NSDate *)date
 {
     TXCMessageObject *tempMessage = [[TXCMessageObject alloc] init];
-    tempMessage.recipientKey = _groupInfo.groupPulicKey;
+    tempMessage.recipientKey = self.groupInfo.groupPulicKey;
     
     if ([text length] >= 5) {
         //only check for the "/me " if the message is 5 or more characters in length.
@@ -159,13 +171,13 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 
 - (JSBubbleMessageType)messageTypeForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TXCMessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
+    TXCMessageObject *tempMessage = [self.messages objectAtIndex:indexPath.row];
     return tempMessage.origin == MessageLocation_Me ? JSBubbleMessageTypeOutgoing : JSBubbleMessageTypeIncoming;
 }
 
 - (UIImageView *)bubbleImageViewWithType:(JSBubbleMessageType)type forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TXCMessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
+    TXCMessageObject *tempMessage = [self.messages objectAtIndex:indexPath.row];
     if (tempMessage.origin == MessageLocation_Me) {
         return [JSBubbleImageViewFactory bubbleImageViewForType:type color:[UIColor js_bubbleBlueColor]];
     } else {
@@ -195,7 +207,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 }
 
 - (JSMessage *)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
-    TXCMessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
+    TXCMessageObject *tempMessage = [self.messages objectAtIndex:indexPath.row];
     return [[JSMessage alloc] initWithText:tempMessage.message
                                     sender:tempMessage.origin == MessageLocation_Me ? kSenderMe : tempMessage.senderName
                                       date:nil];
@@ -208,7 +220,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 
 - (void)configureCell:(JSBubbleMessageCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    TXCMessageObject *tempMessage = [messages objectAtIndex:indexPath.row];
+    TXCMessageObject *tempMessage = [self.messages objectAtIndex:indexPath.row];
     if (cell.subtitleLabel && tempMessage.origin == MessageLocation_Them) {
         cell.subtitleLabel.text = [tempMessage senderName];
     }

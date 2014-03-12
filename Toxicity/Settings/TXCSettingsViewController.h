@@ -7,23 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TXCNewDHTNodeViewController.h"
-#import "TXCSingleton.h"
-#import "TXCAppDelegate.h"
 
-#include "tox.h"
 
-@interface TXCSettingsViewController : UITableViewController <UITabBarControllerDelegate, UITableViewDataSource, UITextFieldDelegate>
-{
-    NSMutableArray      *_dhtNodeList;
-    
-//    NSIndexPath         *currentlyConnectedIndex;
-//    NSTimer             *connectTimeoutTimer;
-    
-    UITextField         *nameTextField;
-    UITextField         *statusTextField;
-}
+@interface TXCSettingsViewController : UITableViewController
 
+@property (nonatomic, strong) NSMutableArray *dhtNodeList;
+@property (nonatomic, strong) UITextField *statusTextField;
+@property (nonatomic, strong) UITextField *nameTextField;
 - (IBAction)saveButtonPushed:(id)sender;
 
 @end

@@ -7,6 +7,18 @@
 //
 
 #import "TXCFriendsListTableViewController.h"
+#import <QuartzCore/QuartzCore.h>
+#import "TXCSingleton.h"
+#import "TXCFriendChatWindowViewController.h"
+#import "TXCGroupChatWindowViewController.h"
+#import "TXCRequestsTableViewController.h"
+#import "TXCFriendCell.h"
+#import "TXCAppDelegate.h"
+#import "TXCFriendListHeader.h"
+#import "TXCGroupObject.h"
+#import "TXCSettingsViewController.h"
+
+#include "tox.h"
 
 extern NSString *const TXCToxAppDelegateNotificationFriendAdded;
 extern NSString *const TXCToxAppDelegateNotificationNewMessage;
@@ -16,7 +28,12 @@ extern NSString *const TXCToxAppDelegateNotificationFriendRequestReceived;
 extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
 @interface TXCFriendsListTableViewController ()
-
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *settingsButton;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *requestsButton;
+@property (nonatomic, strong) NSMutableArray *mainFriendList;
+@property (nonatomic, strong) TXCFriendListHeader *headerForFriends;
+@property (nonatomic, strong) TXCFriendListHeader *headerForGroups;
+- (IBAction)requestsButtonPushed:(id)sender;
 @end
 
 @implementation TXCFriendsListTableViewController
@@ -24,7 +41,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    _mainFriendList = [[TXCSingleton sharedSingleton] mainFriendList];
+    self.mainFriendList = [[TXCSingleton sharedSingleton] mainFriendList];
 
     /***** Appearance *****/
     
@@ -32,7 +49,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [ourDelegate configureNavigationControllerDesign:self.navigationController];
     
     //set the font size of our settings button
-    settingsButton.title = @"\u2699";
+    self.settingsButton.title = @"\u2699";
     UIFont *f1 = [UIFont fontWithName:@"Helvetica" size:24.0f];
 
     NSDictionary *attributes = @{
@@ -40,7 +57,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             UITextAttributeTextColor:[UIColor whiteColor]
     };
 
-    [settingsButton setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    [self.settingsButton setTitleTextAttributes:attributes forState:UIControlStateNormal];
     
     //table view separator colors
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
@@ -55,16 +72,16 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     
     /***** End Appearance *****/
     
-    [settingsButton setTarget:self];
-    [settingsButton setAction:@selector(settingsButtonPushed)];
+    [self.settingsButton setTarget:self];
+    [self.settingsButton setAction:@selector(settingsButtonPushed)];
     
     
     [self updateRequestsButton];
     
     [self.tableView registerClass:[TXCFriendCell class] forCellReuseIdentifier:@"FriendListCell"];
     
-    headerForFriends = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
-    headerForGroups = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+    self.headerForFriends = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+    self.headerForFriends = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -147,7 +164,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             return [TXCSingleton sharedSingleton].groupList.count;
 
         case 1:
-            return _mainFriendList.count;
+            return self.mainFriendList.count;
 
         default:
             return 0;
@@ -159,15 +176,15 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     switch (section) {
         case 0:
             if ([TXCSingleton sharedSingleton].groupList.count > 0) {
-                headerForGroups.textLabel.text = @"Groups";
-                return headerForGroups;
+                self.headerForGroups.textLabel.text = @"Groups";
+                return self.headerForGroups;
             }
             break;
             
         case 1:
-            if (_mainFriendList.count > 0) {
-                headerForFriends.textLabel.text = @"Friends";
-                return headerForFriends;
+            if (self.mainFriendList.count > 0) {
+                self.headerForFriends.textLabel.text = @"Friends";
+                return self.headerForFriends;
             }
             break;
             
@@ -196,7 +213,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             }
 
         case 1:
-            if (_mainFriendList.count == 0) {
+            if (self.mainFriendList.count == 0) {
                 return 0;
             } else {
                 return 22;
@@ -253,7 +270,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         
     } else {
         /***** Friends *****/
-        TXCFriendObject *tempFriend = [_mainFriendList objectAtIndex:indexPath.row];
+        TXCFriendObject *tempFriend = [self.mainFriendList objectAtIndex:indexPath.row];
         
         //set the identifier
         cell.friendIdentifier = tempFriend.publicKey; //make this a copy?
@@ -286,7 +303,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                     NSArray *visibleCells = [tableView visibleCells];
                     for (TXCFriendCell *tempCell in visibleCells) {
                         if (tempCell) {
-                            if ([tempCell.friendIdentifier isEqualToString:[_mainFriendList objectAtIndex:indexPath.row]]) {
+                            if ([tempCell.friendIdentifier isEqualToString:[self.mainFriendList objectAtIndex:indexPath.row]]) {
                                 tempCell.avatarImage = theAvatarImage;
                             }
                         }
@@ -378,7 +395,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         } else {
             
             //friend delete
-            TXCFriendObject *tempFriend = _mainFriendList[indexPath.row];
+            TXCFriendObject *tempFriend = self.mainFriendList[indexPath.row];
             int num = [ourDelegate deleteFriend:tempFriend.publicKey];
             
             if (num == 0) {

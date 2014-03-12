@@ -7,10 +7,7 @@
 //
 
 #import "JSMessagesViewController.h"
-#import "JSMessage.h"
-#import "JSBubbleImageViewFactory.h"
-#import "TXCSingleton.h"
-#import "TXCAppDelegate.h"
+
 
 @interface TXCFriendChatWindowViewController : JSMessagesViewController <JSMessagesViewDataSource, JSMessagesViewDelegate>
 

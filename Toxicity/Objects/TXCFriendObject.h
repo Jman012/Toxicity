@@ -20,15 +20,12 @@ typedef NS_ENUM(NSUInteger, TXCToxFriendConnectionStatus) {
 } ;
 
 @interface TXCFriendObject : NSObject <NSCoding>
-{
-    
-}
 
-@property (nonatomic, strong) NSString                  *publicKey;
-@property (nonatomic, strong) NSString                  *publicKeyWithNoSpam;
-@property (nonatomic, strong) NSString                  *nickname;
-@property (nonatomic, strong) NSString                  *statusMessage;
-@property (nonatomic, assign) TXCToxFriendUserStatus statusType;
+@property (nonatomic, copy) NSString *publicKey;
+@property (nonatomic, copy) NSString *publicKeyWithNoSpam;
+@property (nonatomic, copy) NSString *nickname;
+@property (nonatomic, copy) NSString *statusMessage;
+@property (nonatomic, assign) TXCToxFriendUserStatus       statusType;
 @property (nonatomic, assign) TXCToxFriendConnectionStatus connectionType;
 
 @end
