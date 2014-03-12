@@ -254,10 +254,16 @@ NSString *const ToxAppDelegateNotificationDHTDisconnected           = @"DHTDisco
     if ([prefs objectForKey:@"self_nick"] != nil) {
         [[TXCSingleton sharedSingleton] setUserNick:[prefs objectForKey:@"self_nick"]];
         tox_set_name([[TXCSingleton sharedSingleton] toxCoreInstance], (uint8_t *)[[[TXCSingleton sharedSingleton] userNick] UTF8String], strlen([[[TXCSingleton sharedSingleton] userNick] UTF8String]) + 1);
+    } else {
+        [[TXCSingleton sharedSingleton] setUserNick:@"Toxicity User"];
+        tox_set_name([[TXCSingleton sharedSingleton] toxCoreInstance], (uint8_t *)"Toxicity User", strlen("Toxicity User"));
     }
     if ([prefs objectForKey:@"self_status_message"] != nil) {
         [[TXCSingleton sharedSingleton] setUserStatusMessage:[prefs objectForKey:@"self_status_message"]];
         tox_set_status_message([[TXCSingleton sharedSingleton] toxCoreInstance], (uint8_t *)[[[TXCSingleton sharedSingleton] userStatusMessage] UTF8String], strlen([[[TXCSingleton sharedSingleton] userStatusMessage] UTF8String]) + 1);
+    } else {
+        [[TXCSingleton sharedSingleton] setUserStatusMessage:@"Toxing on Toxicity"];
+        tox_set_status_message([[TXCSingleton sharedSingleton] toxCoreInstance], (uint8_t *)"Toxing on Toxicity", strlen("Toxing on Toxicity"));
     }
     
     //loads friend list

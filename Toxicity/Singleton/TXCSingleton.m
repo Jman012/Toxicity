@@ -25,7 +25,7 @@
         self.currentConnectDHT = [[TXCDHTNodeObject alloc] init];
         
         self.userNick = @"";
-        self.userStatusMessage = @"Online";
+        self.userStatusMessage = @"";
         self.userStatusType = TXCToxFriendUserStatus_None;
         
         self.pendingFriendRequests = [[NSMutableDictionary alloc] init];

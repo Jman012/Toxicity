@@ -28,8 +28,8 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 @property(nonatomic, strong) NSMutableArray *messages;
 @property(nonatomic, strong) NSIndexPath *friendIndex;
 
-@property (strong, nonatomic) UIColor *friendStatusColor;
-@property (strong, nonatomic) UILabel *titleLabel;
+@property (nonatomic, strong) UIColor *friendStatusColor;
+@property (nonatomic, strong) UILabel *titleLabel;
 
 @end
 
