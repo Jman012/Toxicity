@@ -9,9 +9,9 @@
 #import "TXCFriendChatWindowViewController.h"
 #import "UIColor+ToxicityColors.h"
 #import "JSMessage.h"
-#import "JSBubbleImageViewFactory.h"
 #import "TXCSingleton.h"
 #import "TXCAppDelegate.h"
+#import "TXCStatusLabel.h"
 
 static NSString *const kSenderMe = @"Me";
 static NSString *const kSenderThem = @"Them";
@@ -28,14 +28,11 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 @property(nonatomic, strong) NSMutableArray *messages;
 @property(nonatomic, strong) NSIndexPath *friendIndex;
 
-@property (nonatomic, strong) UIColor *friendStatusColor;
-@property (nonatomic, strong) UILabel *titleLabel;
+@property (strong, nonatomic) TXCStatusLabel *statusLabel;
 
 @end
 
 @implementation TXCFriendChatWindowViewController
-
-@synthesize friendStatusColor = _friendStatusColor;
 
 #pragma mark - Initialization
 
@@ -69,18 +66,26 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     self.sender = kSenderMe;
     [self setBackgroundColor:[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f]];
 
-    self.titleLabel = [[UILabel alloc] init];
-    self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.navigationItem.titleView = self.titleLabel;
+    self.statusLabel = ({
+        TXCStatusLabel *statusLabel = [[TXCStatusLabel alloc] init];
+
+        statusLabel.textAlignment = NSTextAlignmentCenter;
+        statusLabel.textColor = self.navigationController.navigationBar.tintColor;
+        statusLabel.font = [UIFont boldSystemFontOfSize:17.0];
+        statusLabel.statusColor = [UIColor toxicityStatusColorGray];
+
+        statusLabel;
+    });
+
+    self.navigationItem.titleView = self.statusLabel;
 
     [self updateUserInfo];
-    [self updateColoredStatusIndicator];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self scrollToBottomAnimated:NO];
-
+    [self updateColoredStatusIndicator];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -112,73 +117,31 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 
 #pragma mark - Setters
 
-- (void)setFriendStatusColor:(UIColor *)friendStatusColor {
-    if (_friendStatusColor != friendStatusColor) {
-        _friendStatusColor = friendStatusColor;
-        [self updateTitleLabelStatusAndText];
-    }
-}
-
 - (void)setTitle:(NSString *)title {
-    [super setTitle:title];
-    [self updateTitleLabelStatusAndText];
-}
-
-#pragma mark - Getters
-
-- (UIColor *)friendStatusColor {
-    if (!_friendStatusColor) {
-        _friendStatusColor = [UIColor toxicityStatusColorGray];
-    }
-    return _friendStatusColor;
+    self.statusLabel.text = title;
+    [self.statusLabel sizeToFit];
 }
 
 #pragma mark - Methods
-
-- (void)updateTitleLabelStatusAndText {
-    NSAttributedString *dot = [[NSAttributedString alloc] initWithString:@"● " attributes:@{
-            NSForegroundColorAttributeName: self.friendStatusColor,
-            NSFontAttributeName: [UIFont boldSystemFontOfSize:17.0]
-    }];
-
-    NSAttributedString *title = [[NSAttributedString alloc] initWithString:self.title attributes:@{
-            NSForegroundColorAttributeName: self.navigationController.navigationBar.tintColor,
-            NSFontAttributeName: [UIFont boldSystemFontOfSize:17.0]
-    }];
-
-    self.titleLabel.attributedText = ({
-        NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] init];
-
-        [mutableAttributedString appendAttributedString:dot];
-        [mutableAttributedString appendAttributedString:title];
-
-        mutableAttributedString.copy;
-    });
-
-    [self.titleLabel sizeToFit];
-
-}
 
 - (void)updateColoredStatusIndicator {
 
     if (self.friendInfo.connectionType == TXCToxFriendConnectionStatus_Online) {
         switch (self.friendInfo.statusType) {
             case TXCToxFriendUserStatus_None:
-                self.friendStatusColor = [UIColor toxicityStatusColorGreen];
+                self.statusLabel.statusColor = [UIColor toxicityStatusColorGreen];
                 break;
             case TXCToxFriendUserStatus_Away:
-                self.friendStatusColor = [UIColor toxicityStatusColorYellow];
+                self.statusLabel.statusColor = [UIColor toxicityStatusColorYellow];
                 break;
             case TXCToxFriendUserStatus_Busy:
-                self.friendStatusColor = [UIColor toxicityStatusColorRed];
+                self.statusLabel.statusColor = [UIColor toxicityStatusColorRed];
                 break;
             default:break;
         }
     } else {
-        self.friendStatusColor = [UIColor toxicityStatusColorGray];
+        self.statusLabel.statusColor = [UIColor toxicityStatusColorGray];
     }
-
-    [self updateTitleLabelStatusAndText];
 }
 
 #pragma mark - Notifications Center stuff
