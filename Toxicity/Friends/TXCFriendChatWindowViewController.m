@@ -204,7 +204,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     
     [JSMessageSoundEffect playMessageSentSound];
     
-    [tempMessage setIsGroupMessage:NO];
+    tempMessage.groupMessage = NO;
     
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[UIApplication sharedApplication].delegate;
     BOOL success = [ourDelegate sendMessage:tempMessage];

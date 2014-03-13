@@ -760,12 +760,12 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
         
         
         TXCMessageObject *theMessage = [[TXCMessageObject alloc] init];
-        [theMessage setMessage:[NSString stringWithUTF8String:(char *)string]];
-        [theMessage setSenderName:[[TXCSingleton sharedSingleton] userNick]];
-        [theMessage setOrigin:MessageLocation_Them];
-        [theMessage setDidFailToSend:NO];
-        [theMessage setIsGroupMessage:NO];
-        [theMessage setIsActionMessage:NO];
+        theMessage.message = [NSString stringWithUTF8String:(char *)string];
+        theMessage.senderName = [[TXCSingleton sharedSingleton] userNick];
+        theMessage.origin = MessageLocation_Them;
+        theMessage.didFailToSend = NO;
+        theMessage.groupMessage = NO;
+        theMessage.actionMessage = NO;
         [theMessage setSenderKey:[[[[TXCSingleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber] publicKey]];
         
         
@@ -802,17 +802,17 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
         NSString *theirMessage = [NSString stringWithUTF8String:(const char *)message];
         
         TXCMessageObject *theMessage = [[TXCMessageObject alloc] init];
-        [theMessage setMessage:theirMessage];
-        [theMessage setSenderName:theirName];
+        theMessage.message = theirMessage;
+        theMessage.senderName = theirName;
         if ([theirName isEqualToString:[[TXCSingleton sharedSingleton] userNick]]) {
-            [theMessage setOrigin:MessageLocation_Me];
+            theMessage.origin = MessageLocation_Me;
         } else {
-            [theMessage setOrigin:MessageLocation_Them];
+            theMessage.origin = MessageLocation_Them;
         }
-        [theMessage setDidFailToSend:NO];
-        [theMessage setIsActionMessage:NO];
-        [theMessage setIsGroupMessage:YES];
-        [theMessage setSenderKey:[[[[TXCSingleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPulicKey]];
+        theMessage.didFailToSend = NO;
+        theMessage.actionMessage = NO;
+        theMessage.groupMessage = YES;
+        theMessage.senderKey = [[[[TXCSingleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPulicKey];
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it
         if (groupnumber != [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 0) {

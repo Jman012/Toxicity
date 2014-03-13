@@ -154,8 +154,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
     
     [JSMessageSoundEffect playMessageSentSound];
     
-    
-    [tempMessage setGroupMessage:YES];
+    tempMessage.groupMessage = YES;
     
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
     BOOL success = [ourDelegate sendMessage:tempMessage];

@@ -17,9 +17,9 @@ typedef NS_ENUM(NSUInteger, MessageOrigin) {
 
 @property (nonatomic, copy) NSString *message;
 @property (nonatomic, assign) MessageOrigin  origin;
-@property (nonatomic, assign, getter = isDidFailToSend, setter = setDidFailToSend:) BOOL didFailToSend;
-@property (nonatomic, assign, getter = isGroupMessage, setter = setIsGroupMessage:) BOOL groupMessage;
-@property (nonatomic, assign, getter = isActionMessage, setter = setIsActionMessage:) BOOL actionMessage;
+@property (nonatomic, assign, getter = isDidFailToSend) BOOL didFailToSend;
+@property (nonatomic, assign, getter = isGroupMessage) BOOL groupMessage;
+@property (nonatomic, assign, getter = isActionMessage) BOOL actionMessage;
 @property (nonatomic, copy) NSString *recipientKey;
 @property (nonatomic, copy) NSString *senderKey;
 @property (nonatomic, copy) NSString *senderName;
