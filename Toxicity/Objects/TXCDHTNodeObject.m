@@ -13,10 +13,10 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.dhtName = [NSString copy];
-        self.dhtIP = [NSString copy];;
-        self.dhtPort = [NSString copy];
-        self.dhtKey = [NSString copy];
+        self.dhtName = [[NSString alloc] init];
+        self.dhtIP = [[NSString alloc] init];
+        self.dhtPort = [[NSString alloc] init];
+        self.dhtKey = [[NSString alloc] init];
         self.connectionStatus = ToxDHTNodeConnectionStatus_NotConnected;
     }
     return self;
