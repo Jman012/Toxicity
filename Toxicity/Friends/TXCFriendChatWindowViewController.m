@@ -89,8 +89,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-//    [self viewDidAppear:animated];
-
+    [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUserInfo)
                                                  name:TXCToxAppDelegateNotificationFriendAdded
