@@ -787,16 +787,15 @@
 		B9EE596517FB528700D8A388 /* status-yellow-navbar-ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-navbar-ios7@2x.png"; path = "Images/status-yellow-navbar-ios7@2x.png"; sourceTree = "<group>"; };
 		B9F9DB2318BEAE7F003BD982 /* JSQSystemSoundPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSQSystemSoundPlayer.h; path = JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.h; sourceTree = "<group>"; };
 		B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSQSystemSoundPlayer.m; path = JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.m; sourceTree = "<group>"; };
-		D10DE22E3A1FF7134B362134 /* TXCStatusLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TXCStatusLabel.h; sourceTree = "<group>"; };
-		D10DE558FA5CBC9EB58F8C63 /* UIColor+ToxicityColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ToxicityColors.h"; sourceTree = "<group>"; };
-		D10DE8806FF7F74520570681 /* TXCStatusLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TXCStatusLabel.m; sourceTree = "<group>"; };
 		D10DE0365B5756ADB36AB5BD /* icon-info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-info.png"; sourceTree = "<group>"; };
 		D10DE0373CF51F4309BF29EF /* icon-success@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-success@2x.png"; sourceTree = "<group>"; };
+		D10DE22E3A1FF7134B362134 /* TXCStatusLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TXCStatusLabel.h; sourceTree = "<group>"; };
 		D10DE2A86747153E07EC3F3A /* TWMessageBarManager.podspec */ = {isa = PBXFileReference; lastKnownFileType = file.podspec; path = TWMessageBarManager.podspec; sourceTree = "<group>"; };
 		D10DE3D6DD8A2A52F85C31D3 /* TWMessageBarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWMessageBarManager.h; sourceTree = "<group>"; };
 		D10DE4CBA938DFFEDF9D4FF2 /* TWMessageBarManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWMessageBarManager.m; sourceTree = "<group>"; };
 		D10DE558FA5CBC9EB58F8C63 /* UIColor+ToxicityColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ToxicityColors.h"; sourceTree = "<group>"; };
 		D10DE7C7B16E7F2A64820326 /* icon-success.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-success.png"; sourceTree = "<group>"; };
+		D10DE8806FF7F74520570681 /* TXCStatusLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TXCStatusLabel.m; sourceTree = "<group>"; };
 		D10DEA55B16B77901E909CA9 /* UIColor+ToxicityColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ToxicityColors.m"; sourceTree = "<group>"; };
 		D10DEA55F28C6351A3B921EB /* icon-error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-error.png"; sourceTree = "<group>"; };
 		D10DED16627157F8F515D708 /* icon-info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-info@2x.png"; sourceTree = "<group>"; };
@@ -2171,7 +2170,7 @@
 				D10DE2A86747153E07EC3F3A /* TWMessageBarManager.podspec */,
 			);
 			name = TWMessageBarManager;
-			path = Submodules/TWMessageBarManager/TWMessageBarManager;
+			path = Submodules/TWMessageBarManager/Classes;
 			sourceTree = SOURCE_ROOT;
 		};
 		D10DEA5E2D2F8449B64E6255 /* Icons */ = {
