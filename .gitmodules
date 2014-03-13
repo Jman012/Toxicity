@@ -3,7 +3,7 @@
 	url = https://github.com/irungentoo/ProjectTox-Core.git
 [submodule "Submodules/MessagesTableViewController"]
 	path = Submodules/MessagesTableViewController
-	url = https://github.com/jessesquires/MessagesTableViewController.git
+	url = https://github.com/wiruzx/MessagesTableViewController.git
 [submodule "Submodules/JSQSystemSoundPlayer-submodule"]
 	path = Submodules/JSQSystemSoundPlayer-submodule
 	url = https://github.com/jessesquires/JSQSystemSoundPlayer.git
