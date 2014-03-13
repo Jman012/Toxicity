@@ -21,20 +21,13 @@
 
 
 @interface TXCAppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
-{
-    
-    //used for tox
-    int             on;
-    
-//    NSThread        *toxMainThread;
-//    dispatch_queue_t    toxMainThread;
-    BOOL                toxMainThreadShouldEnd;
-    NSArray             *dhtNodes;
-    int                 lastAttemptedConnect;
-    uint8_t             *toxWaitData;
-    uint16_t            toxWaitBufferSize;
-}
 
+@property (nonatomic, assign) int on;
+@property (nonatomic, assign, getter = isToxMainThreadShouldEnd) BOOL toxMainThreadShouldEnd;
+@property (nonatomic, copy) NSArray *dhtNodes;
+@property (nonatomic, assign) int lastAttemptedConnect;
+@property (nonatomic, assign) uint8_t *toxWaitData;
+@property (nonatomic, assign) uint16_t toxWaitBufferSize;
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) dispatch_queue_t toxMainThread;
 //@property (nonatomic, assign) BOOL toxMainThreadShouldEnd;

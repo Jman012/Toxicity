@@ -80,10 +80,10 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
         NSLog(@"Saving dhts");
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         NSMutableArray *array = [[NSMutableArray alloc] init];
-        for (TXCDHTNodeObject *arrayDHT in [TXCSingleton sharedSingleton].dhtNodeList) {
+        [[TXCSingleton sharedSingleton].dhtNodeList enumerateObjectsUsingBlock:^(TXCDHTNodeObject *arrayDHT, NSUInteger idx, BOOL *stop) {
             NSData *data = [NSKeyedArchiver archivedDataWithRootObject:arrayDHT.copy];
             [array addObject:data];
-        }
+        }];
         [prefs setObject:array forKey:@"dht_node_list"];
         [prefs synchronize];
         
@@ -107,10 +107,10 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
         NSLog(@"Saving dhts");
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         NSMutableArray *array = [[NSMutableArray alloc] init];
-        for (TXCDHTNodeObject *arrayDHT in [TXCSingleton sharedSingleton].dhtNodeList) {
+        [[TXCSingleton sharedSingleton].dhtNodeList enumerateObjectsUsingBlock:^(TXCDHTNodeObject *arrayDHT, NSUInteger idx, BOOL *stop) {
             NSData *data = [NSKeyedArchiver archivedDataWithRootObject:arrayDHT.copy];
             [array addObject:data];
-        }
+        }];
         [prefs setObject:array forKey:@"dht_node_list"];
         [prefs synchronize];
     }
@@ -408,9 +408,9 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
 
         //compile an array of the names of nodes already in our list
         NSMutableArray *names = [[NSMutableArray alloc] init];
-        for (TXCDHTNodeObject *tempDHT in self.dhtNodeList) {
+        [self.dhtNodeList enumerateObjectsUsingBlock:^(TXCDHTNodeObject *tempDHT, NSUInteger idx, BOOL *stop) {
             [names addObject:tempDHT.dhtName.copy];
-        }
+        }];
 
         //pass along the lsit of names. prevents multiples
         [newDHTViewCont setNamesAlreadyPresent:names];

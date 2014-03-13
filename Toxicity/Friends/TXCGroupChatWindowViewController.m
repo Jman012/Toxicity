@@ -140,10 +140,10 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
         //text:"/me h" the action would be "h"
         if ([[text substringToIndex:4] isEqualToString:@"/me "]) {
             tempMessage.message = [[NSString alloc] initWithFormat:@"* %@", [text substringFromIndex:4]];
-            tempMessage.isActionMessage = YES;
+            tempMessage.actionMessage = YES;
         } else {
             tempMessage.message = [text copy];
-            tempMessage.isActionMessage = NO;
+            tempMessage.actionMessage = NO;
         }
     } else {
         tempMessage.message = [text copy];
@@ -155,7 +155,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
     [JSMessageSoundEffect playMessageSentSound];
     
     
-    [tempMessage setIsGroupMessage:YES];
+    [tempMessage setGroupMessage:YES];
     
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
     BOOL success = [ourDelegate sendMessage:tempMessage];
