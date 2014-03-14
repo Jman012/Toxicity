@@ -209,7 +209,7 @@
 
 - (void)fetchRobohashAvatarForKey:(NSString *)theKey type:(AvatarType)type finishBlock:(void (^)(UIImage *))finishBlock {
     //todo: changed the size based on display?
-    NSURL *roboHashURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://robohash.org/%@.png?size=96x96%@", theKey, (type == AvatarType_Group ? @"&set=set3" : @"")]];
+    NSURL *roboHashURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://robohash.org/%@.png?size=96x96%@", theKey, (type == AvatarType_Group ? @"&set=set3" : @"")]];
     NSURLRequest *request = [NSURLRequest requestWithURL:roboHashURL];
     
     [NSURLConnection sendAsynchronousRequest:request
