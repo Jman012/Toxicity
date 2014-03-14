@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 
-@interface TXCRequestsTableViewController : UITableViewController
+@interface TXCRequestsTableViewController : UITableViewController <UIActionSheetDelegate>
 @end

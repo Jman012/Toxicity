@@ -14,12 +14,18 @@
 #import "TXCFriendCell.h"
 #import "TXCFriendListHeader.h"
 
+// For various ActionSheet and AlertView type identification
+static const NSUInteger TXCActionSheetIdentifier = 1;
+static const NSUInteger TXCAlertViewManualInputIdentifier = 2;
+static const NSUInteger TXCAlertViewAcceptRequestsIdentifier = 3;
+static const NSUInteger TXCAlertViewRejectRequestsIdentifier = 4;
 
+// For NSNotifications
 extern NSString *const QRReaderViewControllerNotificationQRReaderDidAddFriend;
 extern NSString *const TXCToxAppDelegateNotificationFriendRequestReceived;
 extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
-@interface TXCRequestsTableViewController ()
+@interface TXCRequestsTableViewController () <UIActionSheetDelegate>
 
 @property (nonatomic, copy) NSArray *arrayOfRequests;
 @property (nonatomic, copy) NSArray *arrayOfInvites;
@@ -34,40 +40,39 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
 @implementation TXCRequestsTableViewController
 
+#pragma mark - Initialization
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+        
+        self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
+        self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
+        self.selectedRequests = [[NSMutableArray alloc] init];
+        self.selectedInvites = [[NSMutableArray alloc] init];
     }
     return self;
 }
+
+#pragma mark - View controller life cycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
-    self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
-    self.selectedRequests = [[NSMutableArray alloc] init];
-    self.selectedInvites = [[NSMutableArray alloc] init];
-    
     
     /***** Appearance *****/
+    [self.navigationItem setTitle:@"Friend Requests"];
     
-    UIBarButtonItem *cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
-                                                                                  target:self
-                                                                                  action:@selector(cameraButtonPressed)];
-    [cameraButton setStyle:UIBarButtonItemStyleBordered];
-    UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    [fixedSpace setWidth:20.0f];
+    // Setup the bottom toolbar
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                target:self
-                                                                               action:@selector(addButtonPressed)];
+                                                                               action:@selector(addFriendButtonPressed)];
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         
     } else {
-        [cameraButton setTintColor:[UIColor whiteColor]];
         [addButton setTintColor:[UIColor whiteColor]];
     }
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -79,17 +84,18 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                                                     style:UIBarButtonItemStyleBordered
                                                    target:self
                                                    action:@selector(rejectButtonPressed)];
-
     [addButton setStyle:UIBarButtonItemStyleBordered];
-    NSArray *array = @[cameraButton, fixedSpace, addButton, flexibleSpace, self.acceptButton, self.rejectButton];
+    // Items made, now add to an array to pass to the toolbar
+    NSArray *array = @[addButton, flexibleSpace, self.acceptButton, self.rejectButton];
     self.toolbarItems = array;
     [self.navigationController setToolbarHidden:NO animated:YES];
     
-    [self.navigationItem setTitle:@"Friend Requests"];
     
-    //color stuff
+    
+    // Colors
     self.tableView.backgroundColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
     
+    // iOS version specific stuff for colors
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         // Load resources for iOS 6.1 or earlier
         self.tableView.separatorColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
@@ -116,13 +122,15 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [self.view addGestureRecognizer:swipeRight];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated
+{
     [self.tableView registerClass:[TXCFriendCell class] forCellReuseIdentifier:@"RequestFriendCell"];
     
     [self.navigationController setToolbarHidden:NO animated:NO];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated
+{
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didGetFriendRequest)
@@ -138,12 +146,14 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                                                object:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated
+{
     [super viewWillDisappear:animated];
     [self.navigationController setToolbarHidden:YES animated:YES];
 }
 
--(void)viewDidDisappear:(BOOL)animated {
+-(void)viewDidDisappear:(BOOL)animated
+{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -153,13 +163,53 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     // Dispose of any resources that can be recreated.
 }
 
-- (void)swipeToPopView {
-    //user swiped from left to right, should pop the view back to friends list
-    [self.navigationController popViewControllerAnimated:YES];
+#pragma mark - Begin Methods
+
+#pragma mark - Toolbar items
+
+- (void)addFriendButtonPressed
+{
+    // Bring up a UIActionSheet asking for either: QR Code, Paste from clipboard, or type manually
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Add a Friend by..."
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"QR Code", @"Paste from Clipboard", @"Manual", nil];
+    actionSheet.tag = TXCActionSheetIdentifier;
+    [actionSheet showInView:[[UIApplication sharedApplication] keyWindow]];
 }
 
-- (void)cameraButtonPressed {
-    //get th view from the storyboard, modal it
+- (void)acceptButtonPressed
+{
+    if ([self.selectedRequests count] > 0 || [self.selectedInvites count] > 0) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Accept"
+                                                            message:[NSString stringWithFormat:@"Are you sure you want to accept %d requests/invites?", [self.selectedRequests count] + [self.selectedInvites count]]
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Yes"
+                                                  otherButtonTitles:@"No", nil];
+        alertView.tag = TXCAlertViewAcceptRequestsIdentifier;
+        [alertView show];
+    }
+}
+
+- (void)rejectButtonPressed
+{
+    if ([self.selectedRequests count] > 0 || [self.selectedInvites count] > 0) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Reject"
+                                                            message:[NSString stringWithFormat:@"Are you sure you want to reject %d requests/invites?", [self.selectedRequests count] + [self.selectedInvites count]]
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Yes"
+                                                  otherButtonTitles:@"No", nil];
+        alertView.tag = TXCAlertViewRejectRequestsIdentifier;
+        [alertView show];
+    }
+}
+
+#pragma mark - UIActionSheet methods
+
+- (void)addFriendFromQRCode
+{
+    // Get the view from the storyboard, and present the QR Code scanner in modal view
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     TXCQRReaderViewController *vc = (TXCQRReaderViewController *)[sb instantiateViewControllerWithIdentifier:@"QRReaderVC"];
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -168,37 +218,118 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [self presentViewController:vc animated:YES completion:nil];
 }
 
-- (void)addButtonPressed {
+- (void)addFriendFromPasteboard
+{
+    TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    NSString *theString = [[[UIPasteboard generalPasteboard] string] copy];
+    NSLog(@"Pasted: %@", theString);
+    
+    //add the friend
+    if ([TXCSingleton friendPublicKeyIsValid:theString]) {
+        [ourDelegate addFriend:theString];
+    }
+}
+
+- (void)addFriendFromInput
+{
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Add Friend"
                                                         message:@"Please input their public key."
                                                        delegate:self
                                               cancelButtonTitle:@"Okay"
-                                              otherButtonTitles:@"Paste & Go", nil];
+                                              otherButtonTitles:@"Cancel", nil];
+    alertView.tag = TXCAlertViewManualInputIdentifier;
     [alertView setAlertViewStyle:UIAlertViewStylePlainTextInput];
     [alertView show];
 }
 
-- (void)acceptButtonPressed {
-    if ([self.selectedRequests count] > 0 || [self.selectedInvites count] > 0) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Accept"
-                                                            message:[NSString stringWithFormat:@"Are you sure you want to accept %d requests/invites?", [self.selectedRequests count] + [self.selectedInvites count]]
-                                                           delegate:self
-                                                  cancelButtonTitle:@"Yes"
-                                                  otherButtonTitles:@"No", nil];
-        [alertView show];
+#pragma mark - UIAlertView methods
+
+- (void)handleAlertViewManualInput:(UIAlertView *)alertView
+{
+    TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    NSString *theString = [[[alertView textFieldAtIndex:0] text] copy];
+    
+    //add the friend
+    if ([TXCSingleton friendPublicKeyIsValid:theString]) {
+        [ourDelegate addFriend:theString];
     }
 }
 
-- (void)rejectButtonPressed {
-    if ([self.selectedRequests count] > 0 || [self.selectedInvites count] > 0) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Reject"
-                                                            message:[NSString stringWithFormat:@"Are you sure you want to reject %d requests/invites?", [self.selectedRequests count] + [self.selectedInvites count]]
-                                                           delegate:self
-                                                  cancelButtonTitle:@"Yes"
-                                                  otherButtonTitles:@"No", nil];
-        [alertView show];
+- (void)handleAlertViewAcceptRequests:(UIAlertView *)alertView
+{
+    TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    [self.tableView beginUpdates];
+    
+    __block NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
+    [self.selectedRequests enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
+        [self.arrayOfRequests enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:idx]]) {
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:1]];
+            }
+        }];
+    }];
+    
+    [self.selectedInvites enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
+        [self.arrayOfInvites enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([tempString isEqualToString:[self.arrayOfInvites objectAtIndex:idx]]) {
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:0]];
+            }
+        }];
+    }];
+    
+    if ([self.selectedRequests count] > 0) {
+        [ourDelegate acceptFriendRequests:self.selectedRequests];
+        self.selectedRequests = nil;
+        self.selectedRequests = [[NSMutableArray alloc] init];
+        self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
+    }
+    if ([self.selectedInvites count] > 0) {
+        [ourDelegate acceptGroupInvites:self.selectedInvites];
+        self.selectedInvites = nil;
+        self.selectedInvites = [[NSMutableArray alloc] init];
+        self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
+    }
+    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+    
+    [self.tableView endUpdates];
+    
+    if ([self.arrayOfInvites count] == 0) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
+
+- (void)handleAlertViewRejectRequests:(UIAlertView *)alertView
+{
+    [self.tableView beginUpdates];
+    
+    NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
+    for (NSString *tempString in self.selectedRequests) {
+        for (int i = 0; i < [self.arrayOfRequests count]; i++) {
+            if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:i]]) {
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+            }
+        }
+        [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeObjectForKey:tempString];
+    }
+    
+    self.selectedRequests = nil;
+    self.selectedRequests = [[NSMutableArray alloc] init];
+    self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
+    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+    
+    [self.tableView endUpdates];
+    
+    if ([self.arrayOfRequests count] == 0) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
+#pragma mark - NSNotificationCenter methods
 
 - (void)didGetFriendRequest {
     NSLog(@"got request");
@@ -218,92 +349,61 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
+#pragma mark - End Methods
+
 #pragma mark - Alert View Delegate
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (alertView.tag) {
+        case TXCAlertViewManualInputIdentifier:
+            if (buttonIndex == 0) {
+                [self handleAlertViewManualInput:alertView];
+            }
+            break;
+            
+        case TXCAlertViewAcceptRequestsIdentifier:
+            if (buttonIndex == 0) {
+                [self handleAlertViewAcceptRequests:alertView];
+            }
+            break;
+            
+        case TXCAlertViewRejectRequestsIdentifier:
+            if (buttonIndex == 0) {
+                [self handleAlertViewRejectRequests:alertView];
+            }
+            break;
+            
+        default:
+            break;
+    }
+}
 
-    if ([alertView.title isEqualToString:@"Add Friend"]) {
-        if (buttonIndex == 0 || buttonIndex == 1) {
-            NSString *theString = [[[alertView textFieldAtIndex:0] text] copy];
-            if (buttonIndex == 1) {
-                theString = [[[UIPasteboard generalPasteboard] string] copy];
-                NSLog(@"Pasted: %@", theString);
-            }
-            //add the friend
+#pragma mark - Action sheet delegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (actionSheet.tag != TXCActionSheetIdentifier) {
+        // Not our action sheet
+        return;
+    }
+    
+    // Perform the required action for adding a friend
+    switch (buttonIndex) {
+        case 0:
+            [self addFriendFromQRCode];
+            break;
             
-            if ([TXCSingleton friendPublicKeyIsValid:theString]) {
-                [ourDelegate addFriend:theString];
-            }
-        }
-    } else if ([alertView.title isEqualToString:@"Accept"]) {
-        if (buttonIndex == 0) {
-            [self.tableView beginUpdates];
+        case 1:
+            [self addFriendFromPasteboard];
+            break;
+        
+        case 2:
+            [self addFriendFromInput];
+            break;
             
-            __block NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-            [self.selectedRequests enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
-                [self.arrayOfRequests enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                    if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:idx]]) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:1]];
-                    }
-                }];
-            }];
-            
-            [self.selectedInvites enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
-                [self.arrayOfInvites enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                    if ([tempString isEqualToString:[self.arrayOfInvites objectAtIndex:idx]]) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:0]];
-                    }
-                }];
-            }];
-            
-            if ([self.selectedRequests count] > 0) {
-                [ourDelegate acceptFriendRequests:self.selectedRequests];
-                self.selectedRequests = nil;
-                self.selectedRequests = [[NSMutableArray alloc] init];
-                self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
-            }
-            if ([self.selectedInvites count] > 0) {
-                [ourDelegate acceptGroupInvites:self.selectedInvites];
-                self.selectedInvites = nil;
-                self.selectedInvites = [[NSMutableArray alloc] init];
-                self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
-            }
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
-            
-            
-            [self.tableView endUpdates];
-            
-            if ([self.arrayOfInvites count] == 0) {
-                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
-            }
-        }
-    } else if ([alertView.title isEqualToString:@"Reject"]) {
-        if (buttonIndex == 0) {
-            [self.tableView beginUpdates];
-            
-            NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-            for (NSString *tempString in self.selectedRequests) {
-                for (int i = 0; i < [self.arrayOfRequests count]; i++) {
-                    if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:i]]) {
-                        [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
-                    }
-                }
-                [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeObjectForKey:tempString];
-            }
-            
-            self.selectedRequests = nil;
-            self.selectedRequests = [[NSMutableArray alloc] init];
-            self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
-            
-            
-            [self.tableView endUpdates];
-            
-            if ([self.arrayOfRequests count] == 0) {
-                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-            }
-        }
+        default:
+            break;
     }
 }
 
@@ -506,45 +606,6 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 64;
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 
