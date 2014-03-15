@@ -14,6 +14,10 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
+				<string>ToxicityIcon_spotlight</string>
+				<string>ToxicityIcon_ios6_spotlight</string>
+				<string>ToxicityIcon</string>
+				<string>ToxicityIcon_ios6</string>
 				<string>tox_logo</string>
 				<string>tox_logo_ios6</string>
 			</array>
