@@ -115,10 +115,10 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
         [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:(self.messages.count - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
         [self.tableView endUpdates];
         [self scrollToBottomAnimated:YES];
+        
+        [self scrollToBottomAnimated:YES];
+        [JSMessageSoundEffect playMessageReceivedSound];
     }
-    
-    [self scrollToBottomAnimated:YES];
-    [JSMessageSoundEffect playMessageReceivedSound];
 }
 
 #pragma mark - Table view data source
@@ -150,10 +150,6 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
     }
     tempMessage.origin = MessageLocation_Me;
     tempMessage.didFailToSend = NO;
-    
-    
-    [JSMessageSoundEffect playMessageSentSound];
-    
     tempMessage.groupMessage = YES;
     
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];

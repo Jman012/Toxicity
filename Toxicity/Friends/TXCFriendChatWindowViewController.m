@@ -164,10 +164,10 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
                               withRowAnimation:UITableViewRowAnimationBottom];
         [self.tableView endUpdates];
         [self scrollToBottomAnimated:YES];
+        
+        [self scrollToBottomAnimated:YES];
+        [JSMessageSoundEffect playMessageReceivedSound];
     }
-    
-    [self scrollToBottomAnimated:YES];
-    [JSMessageSoundEffect playMessageReceivedSound];
 }
 
 #pragma mark - Table view data source
@@ -214,7 +214,6 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     
     //add the message after we know if it failed or not
     [self.messages addObject:tempMessage];
-//    [messages addObject:[[JSMessage alloc] initWithText:tempMessage.message sender:kSenderMe date:nil]];
     [self finishSend];
     [self scrollToBottomAnimated:YES];
 }
