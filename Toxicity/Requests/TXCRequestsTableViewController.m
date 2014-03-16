@@ -264,17 +264,17 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [self.tableView beginUpdates];
     
     __block NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-    [self.selectedRequests enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
+    [self.selectedRequests enumerateObjectsUsingBlock:^(NSString *requestID, NSUInteger idx, BOOL *stop) {
         [self.arrayOfRequests enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:idx]]) {
+            if ([requestID isEqualToString:[self.arrayOfRequests objectAtIndex:idx]]) {
                 [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:1]];
             }
         }];
     }];
     
-    [self.selectedInvites enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
+    [self.selectedInvites enumerateObjectsUsingBlock:^(NSString *inviteID, NSUInteger idx, BOOL *stop) {
         [self.arrayOfInvites enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            if ([tempString isEqualToString:[self.arrayOfInvites objectAtIndex:idx]]) {
+            if ([inviteID isEqualToString:[self.arrayOfInvites objectAtIndex:idx]]) {
                 [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:0]];
             }
         }];
@@ -300,6 +300,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     if ([self.arrayOfInvites count] == 0) {
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
+    
+    [self updateAcceptAndRejectButtons];
 }
 
 - (void)handleAlertViewRejectRequests:(UIAlertView *)alertView
@@ -307,18 +309,34 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [self.tableView beginUpdates];
     
     NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-    for (NSString *tempString in self.selectedRequests) {
+    for (NSString *requestID in self.selectedRequests) {
         for (int i = 0; i < [self.arrayOfRequests count]; i++) {
-            if ([tempString isEqualToString:[self.arrayOfRequests objectAtIndex:i]]) {
+            if ([requestID isEqualToString:[self.arrayOfRequests objectAtIndex:i]]) {
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:1]];
+            }
+        }
+        [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeObjectForKey:requestID];
+    }
+    
+    for (NSString *inviteID in self.selectedInvites) {
+        for (int i = 0; i < [self.arrayOfInvites count]; i++) {
+            if ([inviteID isEqualToString:[self.arrayOfInvites objectAtIndex:i]]) {
                 [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
             }
         }
-        [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeObjectForKey:tempString];
+        [[[TXCSingleton sharedSingleton] pendingGroupInvites] removeObjectForKey:inviteID];
     }
     
-    self.selectedRequests = nil;
-    self.selectedRequests = [[NSMutableArray alloc] init];
-    self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
+    if ([self.selectedRequests count] > 0) {
+        self.selectedRequests = nil;
+        self.selectedRequests = [[NSMutableArray alloc] init];
+        self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
+    }
+    if ([self.selectedInvites count] > 0) {
+        self.selectedInvites = nil;
+        self.selectedInvites = [[NSMutableArray alloc] init];
+        self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
+    }
     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
     
     
@@ -327,6 +345,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     if ([self.arrayOfRequests count] == 0) {
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
+    
+    [self updateAcceptAndRejectButtons];
 }
 
 #pragma mark - NSNotificationCenter methods
@@ -347,6 +367,13 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
 - (void)returnToFriendsList {
     [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+#pragma mark - Misc methods
+
+- (void)updateAcceptAndRejectButtons {
+    self.acceptButton.title = [NSString stringWithFormat:@"Accept (%d)", [self.selectedRequests count] + [self.selectedInvites count]];
+    self.rejectButton.title = [NSString stringWithFormat:@"Reject (%d)", [self.selectedRequests count] + [self.selectedInvites count]];
 }
 
 #pragma mark - End Methods
@@ -642,8 +669,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
     
-    self.acceptButton.title = [NSString stringWithFormat:@"Accept (%d)", [self.selectedRequests count] + [self.selectedInvites count]];
-    self.rejectButton.title = [NSString stringWithFormat:@"Reject (%d)", [self.selectedRequests count] + [self.selectedInvites count]];
+    [self updateAcceptAndRejectButtons];
     
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
