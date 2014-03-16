@@ -18,6 +18,8 @@ NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged = @"FriendU
 NSString *const ToxAppDelegateNotificationDHTConnected              = @"DHTConnected";
 NSString *const ToxAppDelegateNotificationDHTDisconnected           = @"DHTDisconnected";
 
+NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
+
 @implementation TXCAppDelegate
 
 @synthesize toxMainThread;

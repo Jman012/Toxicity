@@ -8,6 +8,8 @@
 
 #import "TXCSingleton.h"
 
+extern NSString *const TXCTXCToxAppDelegateUserDefaultsToxData;
+
 @implementation TXCSingleton
 
 @synthesize dhtNodeList, currentConnectDHT;
@@ -142,7 +144,7 @@
     uint8_t *toxBuffer = malloc(toxLength);
     tox_save([[TXCSingleton sharedSingleton] toxCoreInstance], toxBuffer);
     NSData *toxData = [[NSData alloc] initWithBytes:toxBuffer length:toxLength];
-    [prefs setObject:toxData forKey:@"tox_data"];
+    [prefs setObject:toxData forKey:TXCTXCToxAppDelegateUserDefaultsToxData];
     [prefs synchronize];
 }
 
