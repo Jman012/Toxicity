@@ -8,7 +8,7 @@
 
 #import "TXCSingleton.h"
 
-extern NSString *const TXCTXCToxAppDelegateUserDefaultsToxData;
+extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
 
 @implementation TXCSingleton
 
@@ -144,7 +144,7 @@ extern NSString *const TXCTXCToxAppDelegateUserDefaultsToxData;
     uint8_t *toxBuffer = malloc(toxLength);
     tox_save([[TXCSingleton sharedSingleton] toxCoreInstance], toxBuffer);
     NSData *toxData = [[NSData alloc] initWithBytes:toxBuffer length:toxLength];
-    [prefs setObject:toxData forKey:TXCTXCToxAppDelegateUserDefaultsToxData];
+    [prefs setObject:toxData forKey:TXCToxAppDelegateUserDefaultsToxData];
     [prefs synchronize];
 }
 
