@@ -108,68 +108,83 @@ NSString *const ToxAppDelegateNotificationDHTDisconnected           = @"DHTDisco
         [[TXCSingleton sharedSingleton] setToxCoreInstance:tempTox];
     }
     
+    Tox *toxInstance = [[TXCSingleton sharedSingleton] toxCoreInstance];
+    
     //callbacks
-    tox_callback_friend_request(       [[TXCSingleton sharedSingleton] toxCoreInstance], print_request,                NULL);
-    tox_callback_group_invite(         [[TXCSingleton sharedSingleton] toxCoreInstance], print_groupinvite,            NULL);
-    tox_callback_friend_message(       [[TXCSingleton sharedSingleton] toxCoreInstance], print_message,                NULL);
-    tox_callback_friend_action(        [[TXCSingleton sharedSingleton] toxCoreInstance], print_action,                 NULL);
-    tox_callback_group_message(        [[TXCSingleton sharedSingleton] toxCoreInstance], print_groupmessage,           NULL);
-    tox_callback_name_change(          [[TXCSingleton sharedSingleton] toxCoreInstance], print_nickchange,             NULL);
-    tox_callback_status_message(       [[TXCSingleton sharedSingleton] toxCoreInstance], print_statuschange,           NULL);
-    tox_callback_connection_status(    [[TXCSingleton sharedSingleton] toxCoreInstance], print_connectionstatuschange, NULL);
-    tox_callback_user_status(          [[TXCSingleton sharedSingleton] toxCoreInstance], print_userstatuschange,       NULL);
-    tox_callback_group_namelist_change([[TXCSingleton sharedSingleton] toxCoreInstance], print_groupnamelistchange,    NULL);
+    tox_callback_friend_request(       toxInstance, print_request,                NULL);
+    tox_callback_group_invite(         toxInstance, print_groupinvite,            NULL);
+    tox_callback_friend_message(       toxInstance, print_message,                NULL);
+    tox_callback_friend_action(        toxInstance, print_action,                 NULL);
+    tox_callback_group_message(        toxInstance, print_groupmessage,           NULL);
+    tox_callback_name_change(          toxInstance, print_nickchange,             NULL);
+    tox_callback_status_message(       toxInstance, print_statuschange,           NULL);
+    tox_callback_connection_status(    toxInstance, print_connectionstatuschange, NULL);
+    tox_callback_user_status(          toxInstance, print_userstatuschange,       NULL);
+    tox_callback_group_namelist_change(toxInstance, print_groupnamelistchange,    NULL);
     
     //load public/private key. key is held in NSData bytes in the user defaults
-    if ([prefs objectForKey:@"tox_data"] == nil) {
+    if ([prefs objectForKey:TXCToxAppDelegateUserDefaultsToxData] == nil) {
         NSLog(@"loading new key");
         //load a new key
-        int size = tox_size([[TXCSingleton sharedSingleton] toxCoreInstance]);
+        int size = tox_size(toxInstance);
         uint8_t *data = malloc(size);
-        tox_save([[TXCSingleton sharedSingleton] toxCoreInstance], data);
+        tox_save(toxInstance, data);
         
         //save to userdefaults
         NSData *theKey = [NSData dataWithBytes:data length:size];
-        [prefs setObject:theKey forKey:@"tox_data"];
+        [prefs setObject:theKey forKey:TXCToxAppDelegateUserDefaultsToxData];
         [prefs synchronize];
         
         free(data);
     } else {
         NSLog(@"using already made key");
         //key already made, laod it from memory
-        NSData *theKey = [prefs objectForKey:@"tox_data"];
+        NSData *theKey = [prefs objectForKey:TXCToxAppDelegateUserDefaultsToxData];
         
-        int size = tox_size([[TXCSingleton sharedSingleton] toxCoreInstance]);
         uint8_t *data = (uint8_t *)[theKey bytes];
         
-        tox_load([[TXCSingleton sharedSingleton] toxCoreInstance], data, size);
+        tox_load(toxInstance, data, [theKey length]);
     }
     
     // Name
     uint8_t nameUTF8[TOX_MAX_NAME_LENGTH];
-    tox_get_self_name([[TXCSingleton sharedSingleton] toxCoreInstance], nameUTF8, TOX_MAX_NAME_LENGTH);
-    [[TXCSingleton sharedSingleton] setUserNick:[NSString stringWithUTF8String:(const char *)nameUTF8]];
+    tox_get_self_name(toxInstance, nameUTF8, TOX_MAX_NAME_LENGTH);
+    if (strcmp((const char *)nameUTF8, "") == 0) {
+        NSLog(@"Using default User name");
+        tox_set_name(toxInstance, (uint8_t *)"Toxicity User", strlen("Toxicity User"));
+        [[TXCSingleton sharedSingleton] setUserNick:@"Toxicity User"];
+    } else {
+        [[TXCSingleton sharedSingleton] setUserNick:[NSString stringWithUTF8String:(const char *)nameUTF8]];
+    }
     
     // Status
     uint8_t statusNoteUTF8[TOX_MAX_STATUSMESSAGE_LENGTH];
-    tox_get_self_status_message([[TXCSingleton sharedSingleton] toxCoreInstance], statusNoteUTF8, TOX_MAX_STATUSMESSAGE_LENGTH);
-    [[TXCSingleton sharedSingleton] setUserStatusMessage:[NSString stringWithUTF8String:(const char *)nameUTF8]];
+    tox_get_self_status_message(toxInstance, statusNoteUTF8, TOX_MAX_STATUSMESSAGE_LENGTH);
+    if (strcmp((const char *)statusNoteUTF8, "") == 0) {
+        NSLog(@"Using default status note");
+        tox_set_status_message(toxInstance, (uint8_t *)"Toxing", strlen("Toxing"));
+        [[TXCSingleton sharedSingleton] setUserStatusMessage:@"Toxing"];
+    } else {
+        [[TXCSingleton sharedSingleton] setUserStatusMessage:[NSString stringWithUTF8String:(const char *)statusNoteUTF8]];
+    }
     
     // Friends
-    uint32_t friendCount = tox_count_friendlist([[TXCSingleton sharedSingleton] toxCoreInstance]);
+    uint32_t friendCount = tox_count_friendlist(toxInstance);
+    NSLog(@"Friendlist count: %d", friendCount);
     for (int i = 0; i < friendCount; i++) {
+        NSLog(@"Adding friend [%d]", i);
         TXCFriendObject *tempFriend = [[TXCFriendObject alloc] init];
         
         uint8_t theirID[TOX_CLIENT_ID_SIZE];
-        tox_get_client_id([[TXCSingleton sharedSingleton] toxCoreInstance], i, theirID);
+        tox_get_client_id(toxInstance, i, theirID);
         [tempFriend setPublicKey:[NSString stringWithUTF8String:(const char *)theirID]];
         
         uint8_t theirName[TOX_MAX_NAME_LENGTH];
-        tox_get_name([[TXCSingleton sharedSingleton] toxCoreInstance], i, theirName);
+        tox_get_name(toxInstance, i, theirName);
         [tempFriend setNickname:[NSString stringWithUTF8String:(const char *)theirName]];
         
         uint8_t theirStatus[TOX_MAX_STATUSMESSAGE_LENGTH];
-        tox_get_status_message([[TXCSingleton sharedSingleton] toxCoreInstance], i, theirStatus, TOX_MAX_STATUSMESSAGE_LENGTH);
+        tox_get_status_message(toxInstance, i, theirStatus, TOX_MAX_STATUSMESSAGE_LENGTH);
         [tempFriend setStatusMessage:[NSString stringWithUTF8String:(const char *)theirStatus]];
 
         [tempFriend setStatusType:TXCToxFriendUserStatus_None];
