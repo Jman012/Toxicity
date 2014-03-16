@@ -114,7 +114,6 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
         
         [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:(self.messages.count - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
         [self.tableView endUpdates];
-        [self scrollToBottomAnimated:YES];
         
         [self scrollToBottomAnimated:YES];
         [JSMessageSoundEffect playMessageReceivedSound];
