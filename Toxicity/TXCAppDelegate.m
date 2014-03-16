@@ -153,7 +153,7 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     tox_get_self_name(toxInstance, nameUTF8, TOX_MAX_NAME_LENGTH);
     if (strcmp((const char *)nameUTF8, "") == 0) {
         NSLog(@"Using default User name");
-        tox_set_name(toxInstance, (uint8_t *)"Toxicity User", strlen("Toxicity User"));
+        tox_set_name(toxInstance, (uint8_t *)"Toxicity User", strlen("Toxicity User") + 1);
         [[TXCSingleton sharedSingleton] setUserNick:@"Toxicity User"];
     } else {
         [[TXCSingleton sharedSingleton] setUserNick:[NSString stringWithUTF8String:(const char *)nameUTF8]];
@@ -164,7 +164,7 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     tox_get_self_status_message(toxInstance, statusNoteUTF8, TOX_MAX_STATUSMESSAGE_LENGTH);
     if (strcmp((const char *)statusNoteUTF8, "") == 0) {
         NSLog(@"Using default status note");
-        tox_set_status_message(toxInstance, (uint8_t *)"Toxing", strlen("Toxing"));
+        tox_set_status_message(toxInstance, (uint8_t *)"Toxing", strlen("Toxing") + 1);
         [[TXCSingleton sharedSingleton] setUserStatusMessage:@"Toxing"];
     } else {
         [[TXCSingleton sharedSingleton] setUserStatusMessage:[NSString stringWithUTF8String:(const char *)statusNoteUTF8]];
