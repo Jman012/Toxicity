@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class TXCFriendObject;
+@class TXCGroupObject;
 
 typedef NS_ENUM(NSUInteger, FriendCellStatusColor) {
     FriendCellStatusColor_Gray,
@@ -22,8 +23,13 @@ typedef NS_ENUM(NSUInteger, FriendCellStatusColor) {
 @property (nonatomic, strong) UILabel *nickLabel;
 @property (nonatomic, copy) NSString *messageLabelText;
 @property (nonatomic, strong) UIImage *avatarImage;
+
 @property (nonatomic, assign, getter = isShouldShowFriendStatus) BOOL shouldShowFriendStatus;
 @property (nonatomic, assign) FriendCellStatusColor statusColor;
-
-
+@property (nonatomic, strong) TXCFriendObject* friendObject;
+@property (nonatomic, strong)  UIImageView *avatarImageView;
+@property (nonatomic, copy) NSString *lastMessage;
+-(void) configureCellWithFriendObject:(TXCFriendObject*) friendObject ;
+-(void) configureCellWithGroupObject:(TXCGroupObject*) groupObject;
+-(void) addNewMessagePin;
 @end

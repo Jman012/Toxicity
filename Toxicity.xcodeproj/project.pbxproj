@@ -311,6 +311,7 @@
 		F5148E3318D693B600C1337E /* Default-iOS7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E2E18D693B600C1337E /* Default-iOS7@2x.png */; };
 		F5148E3418D693B600C1337E /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E2F18D693B600C1337E /* Default.png */; };
 		F5148E3518D693B600C1337E /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E3018D693B600C1337E /* Default@2x.png */; };
+		F22F339418D3A85900798D61 /* UIImageView+GradientImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22F339318D3A85900798D61 /* UIImageView+GradientImageView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -823,6 +824,8 @@
 		F5148E2E18D693B600C1337E /* Default-iOS7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-iOS7@2x.png"; path = "Images/Default-iOS7@2x.png"; sourceTree = "<group>"; };
 		F5148E2F18D693B600C1337E /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Images/Default.png; sourceTree = "<group>"; };
 		F5148E3018D693B600C1337E /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Images/Default@2x.png"; sourceTree = "<group>"; };
+		F22F339218D3A85900798D61 /* UIImageView+GradientImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+GradientImageView.h"; sourceTree = "<group>"; };
+		F22F339318D3A85900798D61 /* UIImageView+GradientImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+GradientImageView.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2221,6 +2224,8 @@
 			children = (
 				D10DEA55B16B77901E909CA9 /* UIColor+ToxicityColors.m */,
 				D10DE558FA5CBC9EB58F8C63 /* UIColor+ToxicityColors.h */,
+				F22F339218D3A85900798D61 /* UIImageView+GradientImageView.h */,
+				F22F339318D3A85900798D61 /* UIImageView+GradientImageView.m */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -2572,6 +2577,7 @@
 				B9789F3118C040A5004F1257 /* open.c in Sources */,
 				B9789F4218C040A5004F1257 /* stream_aes128ctr_api.c in Sources */,
 				B9789EF318C040A5004F1257 /* hash_sha256.c in Sources */,
+				F22F339418D3A85900798D61 /* UIImageView+GradientImageView.m in Sources */,
 				B9789EF218C040A5004F1257 /* hash_sha256_api.c in Sources */,
 				B9789EF618C040A5004F1257 /* hashblocks_sha256_api.c in Sources */,
 				B9D85A2317CB0942005FD2D2 /* TXCRequestsTableViewController.m in Sources */,

@@ -10,6 +10,6 @@
 
 
 @interface TXCFriendsListTableViewController : UITableViewController <UIAlertViewDelegate>
-
-
+@property (nonatomic, copy) NSString* lastMessage;
+@property (nonatomic, assign) NSUInteger numberOfLastMessageAuthor;
 @end

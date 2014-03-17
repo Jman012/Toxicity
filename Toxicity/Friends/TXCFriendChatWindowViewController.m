@@ -12,6 +12,9 @@
 #import "TXCSingleton.h"
 #import "TXCAppDelegate.h"
 #import "TXCStatusLabel.h"
+#import "TXCFriendsListTableViewController.h"
+
+
 
 static NSString *const kSenderMe = @"Me";
 static NSString *const kSenderThem = @"Them";
@@ -22,12 +25,12 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 
 @interface TXCFriendChatWindowViewController ()
 
-@property(nonatomic, strong) NSMutableArray *mainFriendList;
-@property(nonatomic, strong) NSMutableArray *mainFriendMessages;
-@property(nonatomic, strong) TXCFriendObject *friendInfo;
-@property(nonatomic, strong) NSMutableArray *messages;
-@property(nonatomic, strong) NSIndexPath *friendIndex;
-
+@property (nonatomic, strong) NSMutableArray *mainFriendList;
+@property (nonatomic, strong) NSMutableArray *mainFriendMessages;
+@property (nonatomic, strong) TXCFriendObject *friendInfo;
+@property (nonatomic, strong) NSMutableArray *messages;
+@property (nonatomic, strong) NSIndexPath *friendIndex;
+@property (nonatomic, strong) TXCFriendsListTableViewController* friendListViewController;
 @property (strong, nonatomic) TXCStatusLabel *statusLabel;
 
 @end
@@ -110,8 +113,18 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     [TXCSingleton sharedSingleton].mainFriendMessages[self.friendIndex.row] = self.messages.mutableCopy;
     [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-
     [super viewDidDisappear:animated];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+    self.friendListViewController = [self.navigationController.viewControllers lastObject];
+    self.friendListViewController.numberOfLastMessageAuthor = self.friendIndex.row;
+    self.friendListViewController.lastMessage = ({
+        TXCMessageObject* messageObject = [self.messages lastObject];
+        messageObject.message;
+    });
+    [self.friendListViewController.tableView reloadData];
+    [super viewWillDisappear:animated];
 }
 
 #pragma mark - Setters

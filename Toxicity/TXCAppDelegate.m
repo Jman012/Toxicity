@@ -458,7 +458,7 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
         return FALSE;
     }
     
-    NSLog(@"Sending Message: %@", theMessage);
+    NSLog(@"Sending Message %@", theMessage);
 
     
     //here we have to check to see if a "/me " exists, but before we do that we have to make sure the length is 5 or more
@@ -775,7 +775,6 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Message from [%d]: %s", friendnumber, string);
         
-        
         TXCMessageObject *theMessage = [[TXCMessageObject alloc] init];
         theMessage.message = [NSString stringWithUTF8String:(char *)string];
         theMessage.senderName = [[TXCSingleton sharedSingleton] userNick];
@@ -798,8 +797,9 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
             [[TWMessageBarManager sharedInstance] showMessageWithTitle:[NSString stringWithFormat:@"Message from: %@", tempFriend.nickname]
                                                            description:@((char *)string)
                                                                   type:TWMessageBarMessageTypeInfo];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage userInfo:@{@"message":@((char *)string),@"friendNumber":@(friendnumber), @"friend":tempFriend} ];
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage userInfo:@{@"message":@((char *)string),@"friendNumber":@(friendnumber)} ];
         }
     });
 }

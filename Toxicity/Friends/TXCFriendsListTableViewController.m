@@ -33,6 +33,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 @property (nonatomic, strong) NSMutableArray *mainFriendList;
 @property (nonatomic, strong) TXCFriendListHeader *headerForFriends;
 @property (nonatomic, strong) TXCFriendListHeader *headerForGroups;
+@property (nonatomic, assign, getter = isNewMessage) BOOL messageIsNew;
+@property (nonatomic, copy) NSString *publicKeyOfLastMessageAithor;
 - (IBAction)requestsButtonPushed:(id)sender;
 @end
 
@@ -40,9 +42,10 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+#warning
+    [self.tableView reloadData];
     self.mainFriendList = [[TXCSingleton sharedSingleton] mainFriendList];
-
+    //
     /***** Appearance *****/
     
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -117,6 +120,10 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                                              selector:@selector(updateRequestsButton)
                                                  name:TXCToxAppDelegateNotificationGroupInviteReceived
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processingNewMessageWithNotificaton:)
+                                                 name:TXCToxAppDelegateNotificationNewMessage
+                                               object:nil];
     [self friendListUpdate];
 }
 
@@ -140,6 +147,14 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 - (void)friendListUpdate {
     [self.tableView reloadData];
 }
+
+-(void) processingNewMessageWithNotificaton:(NSNotification*) notification {
+    self.lastMessage = [NSString stringWithFormat:@"%@", notification.userInfo[@"message"]];
+    self.numberOfLastMessageAuthor = [notification.userInfo[@"friendNumber"] integerValue];
+    [self.tableView reloadData];
+}
+
+
 
 - (void)updateRequestsButton {
     //update the name of the button
@@ -226,136 +241,98 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     UIView *view = [[UIView alloc] init];
+    
     return view;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"FriendListCell";
-    TXCFriendCell *cell = (TXCFriendCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    if (indexPath.section == 0) {
-        /***** Groups *****/
-        //i have this all squashed down to save on visual space
-        TXCGroupObject *tempGroup = [[TXCSingleton sharedSingleton].groupList objectAtIndex:indexPath.row];
-        cell.friendIdentifier = tempGroup.groupPulicKey;
-        NSString *temp = tempGroup.groupPulicKey;
-        NSString *front = [temp substringToIndex:6];
-        NSString *end = [temp substringFromIndex:temp.length - 6];
-        NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
-        cell.nickLabel.text = formattedString;
-        cell.messageLabelText = [[tempGroup groupMembers] componentsJoinedByString:@", "]; //"JmanGuy, stqism, stal" etc
-        cell.avatarImage = [[TXCSingleton sharedSingleton] defaultAvatarImage];
-        [[TXCSingleton sharedSingleton] avatarImageForKey:tempGroup.groupPulicKey type:AvatarType_Group finishBlock:^(UIImage *theAvatarImage) {
-            if (cell) {
-                if ([cell.friendIdentifier isEqualToString:tempGroup.groupPulicKey]) {
-                    cell.avatarImage = theAvatarImage;
-                } else {
-                    NSArray *visibleCells = [tableView visibleCells];
-                    for (TXCFriendCell *tempCell in visibleCells) {
-                        if (tempCell) {
-                            if ([tempCell.friendIdentifier isEqualToString:[[TXCSingleton sharedSingleton].groupList objectAtIndex:indexPath.row]]) {
-                                tempCell.avatarImage = theAvatarImage;
-                            }
-                        }
-                    }
-                }
-            } else {
-                TXCFriendCell *theCell = (TXCFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-                if (theCell) {
-                    if ([theCell.friendIdentifier isEqualToString:tempGroup.groupPulicKey]) {
-                        theCell.avatarImage = theAvatarImage;
-                    }}}}];
-        cell.shouldShowFriendStatus = NO;
-        return cell;
-        
-    } else {
-        /***** Friends *****/
-        TXCFriendObject *tempFriend = [self.mainFriendList objectAtIndex:indexPath.row];
-        
-        //set the identifier
-        cell.friendIdentifier = tempFriend.publicKey; //make this a copy?
-        
-        //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
-        //e.g., AF4E32...B6C899
-        if (!tempFriend.nickname.length){
-            NSString *temp = tempFriend.publicKey;
-            NSString *front = [temp substringToIndex:6];
-            NSString *end = [temp substringFromIndex:[temp length] - 6];
-            NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
-            cell.nickLabel.text = formattedString;
-        } else {
-            cell.nickLabel.text = tempFriend.nickname;
+    static NSString *cellIdentifier = @"FriendListCell";
+   
+    TXCFriendCell *cell = (TXCFriendCell*)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    if (!cell) {
+        cell = [[TXCFriendCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+    }
+    if (indexPath.section) {
+        TXCFriendObject *friendObject = self.mainFriendList[indexPath.row];
+        if (self.numberOfLastMessageAuthor == indexPath.row) {
+            cell.lastMessage = self.lastMessage;
         }
         
-        //the custom cell automatically changes the height of double line messages
-        cell.messageLabelText = tempFriend.statusMessage;
+        [cell configureCellWithFriendObject:friendObject];
         
-        //set the avatar image
-        cell.avatarImage = [TXCSingleton sharedSingleton].defaultAvatarImage;
-        [[TXCSingleton sharedSingleton] avatarImageForKey:tempFriend.publicKey type:AvatarType_Friend finishBlock:^(UIImage *theAvatarImage) {
-            
+        
+        cell.avatarImageView.image = [TXCSingleton sharedSingleton].defaultAvatarImage;
+        [[TXCSingleton sharedSingleton] avatarImageForKey:friendObject.publicKey type:AvatarType_Friend finishBlock:^(UIImage *avatarImage) {
             if (cell) {
-                if ([cell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
-                    cell.avatarImage = theAvatarImage;
+                if ([cell.friendIdentifier isEqualToString:friendObject.publicKey]) {
+                    cell.avatarImageView.image = avatarImage;
                 } else {
                     //this could have taken any amount of time to accomplish (either right from cache had to download a new one
                     //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
                     NSArray *visibleCells = [tableView visibleCells];
-                    for (TXCFriendCell *tempCell in visibleCells) {
+                    [visibleCells enumerateObjectsUsingBlock:^(TXCFriendCell *tempCell, NSUInteger idx, BOOL *stop) {
                         if (tempCell) {
-                            if ([tempCell.friendIdentifier isEqualToString:[self.mainFriendList objectAtIndex:indexPath.row]]) {
-                                tempCell.avatarImage = theAvatarImage;
+                            if ([tempCell.friendIdentifier isEqualToString:self.mainFriendList[indexPath.row]]) {
+                                tempCell.avatarImageView.image = avatarImage;
                             }
                         }
-                    }
+                    }];
                 }
             } else {
                 TXCFriendCell *theCell = (TXCFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
                 if (theCell) {
-                    if ([theCell.friendIdentifier isEqualToString:tempFriend.publicKey]) {
-                        theCell.avatarImage = theAvatarImage;
+                    if ([theCell.friendIdentifier isEqualToString:friendObject.publicKey]) {
+                        theCell.avatarImageView.image = avatarImage;
                     }
                 }
             }
         }];
         
-        //change the color. the custo mcell will actually change the image
-        cell.shouldShowFriendStatus = YES;
-        if (tempFriend.connectionType == TXCToxFriendConnectionStatus_None) {
-            cell.statusColor = FriendCellStatusColor_Gray;
-        } else {
-            switch (tempFriend.statusType) {
-                case TXCToxFriendUserStatus_Away:
-                {
-                    cell.statusColor = FriendCellStatusColor_Yellow;
-                    break;
-                }
-                    
-                case TXCToxFriendUserStatus_Busy:
-                {
-                    cell.statusColor = FriendCellStatusColor_Red;
-                    break;
-                }
-                    
-                case TXCToxFriendUserStatus_None:
-                {
-                    cell.statusColor = FriendCellStatusColor_Green;
-                    break;
-                }
-                    
-                default:
-                    break;
-            }
+    } else {
+        TXCGroupObject *groupObject = [[TXCSingleton sharedSingleton] groupList][indexPath.row];
+        
+        if (self.numberOfLastMessageAuthor == indexPath.row) {
+            cell.lastMessage = self.lastMessage;
         }
         
-        return cell;
+        [cell configureCellWithGroupObject:groupObject];
+        
+        
+        cell.avatarImageView.image = [TXCSingleton sharedSingleton].defaultAvatarImage;
+        [[TXCSingleton sharedSingleton] avatarImageForKey:groupObject.groupPulicKey type:AvatarType_Friend finishBlock:^(UIImage *avatarImage) {
+            if (cell) {
+                if ([cell.friendIdentifier isEqualToString:groupObject.groupPulicKey]) {
+                    cell.avatarImageView.image = avatarImage;
+                } else {
+                    //this could have taken any amount of time to accomplish (either right from cache had to download a new one
+                    //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
+                    NSArray *visibleCells = [tableView visibleCells];
+                    [visibleCells enumerateObjectsUsingBlock:^(TXCFriendCell *tempCell, NSUInteger idx, BOOL *stop) {
+                        if (tempCell) {
+                            if ([tempCell.friendIdentifier isEqualToString:[[TXCSingleton sharedSingleton] groupList][indexPath.row]]) {
+                                tempCell.avatarImageView.image = avatarImage;
+                            }
+                        }
+                    }];
+                }
+            } else {
+                TXCFriendCell *theCell = (TXCFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+                if (theCell) {
+                    if ([theCell.friendIdentifier isEqualToString:groupObject.groupPulicKey]) {
+                        theCell.avatarImageView.image = avatarImage;
+                    }
+                }
+            }
+        }];
+
     }
+    
+    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 64;
 }
-
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
@@ -379,7 +356,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                 
                 [[TXCSingleton sharedSingleton].groupList removeObjectAtIndex:indexPath.row];
                 [[TXCSingleton sharedSingleton].groupMessages removeObjectAtIndex:indexPath.row];
-
+                
                 //todo: save when i start saving these things
                 
                 [self.tableView endUpdates];
@@ -420,7 +397,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             }
         }
         
-    }   
+    }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
