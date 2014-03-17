@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "TXCSingleton.h"
-#import "ZBarReaderView.h"
 
 #include "tox.h"
 #include "Messenger.h"

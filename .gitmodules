@@ -13,3 +13,6 @@
 [submodule "Submodules/TWMessageBarManager"]
 	path = Submodules/TWMessageBarManager
 	url = https://github.com/terryworona/TWMessageBarManager.git
+[submodule "Submodules/ZBarSDK"]
+	path = Submodules/ZBarSDK
+	url = https://github.com/wiruzx/zbarSDK.git
