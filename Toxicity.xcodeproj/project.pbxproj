@@ -14,9 +14,6 @@
 		B94F2C6517AF25C0003EA6E8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C6317AF25C0003EA6E8 /* InfoPlist.strings */; };
 		B94F2C6717AF25C0003EA6E8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B94F2C6617AF25C0003EA6E8 /* main.m */; };
 		B94F2C6B17AF25C0003EA6E8 /* TXCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B94F2C6A17AF25C0003EA6E8 /* TXCAppDelegate.m */; };
-		B94F2C6D17AF25C0003EA6E8 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C6C17AF25C0003EA6E8 /* Default.png */; };
-		B94F2C6F17AF25C0003EA6E8 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C6E17AF25C0003EA6E8 /* Default@2x.png */; };
-		B94F2C7117AF25C0003EA6E8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C7017AF25C0003EA6E8 /* Default-568h@2x.png */; };
 		B94F2C7417AF25C0003EA6E8 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B94F2C7217AF25C0003EA6E8 /* MainStoryboard.storyboard */; };
 		B9748754189AE5EC0064B6FF /* onion_announce.c in Sources */ = {isa = PBXBuildFile; fileRef = B974874E189AE5EC0064B6FF /* onion_announce.c */; };
 		B9748755189AE5EC0064B6FF /* onion_client.c in Sources */ = {isa = PBXBuildFile; fileRef = B9748750189AE5EC0064B6FF /* onion_client.c */; };
@@ -309,6 +306,11 @@
 		E6C97FE418C39677007368F9 /* StatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE318C39677007368F9 /* StatusCell.m */; };
 		E6F9FC9318C9068A00C1D2C1 /* TXCQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6F9FC9218C9068A00C1D2C1 /* TXCQRCodeViewController.m */; };
 		E6F9FC9C18C90CF800C1D2C1 /* libQREncoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6F9FC9918C90CA500C1D2C1 /* libQREncoder.a */; };
+		F5148E3118D693B600C1337E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E2C18D693B600C1337E /* Default-568h@2x.png */; };
+		F5148E3218D693B600C1337E /* Default-iOS7-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E2D18D693B600C1337E /* Default-iOS7-568h@2x.png */; };
+		F5148E3318D693B600C1337E /* Default-iOS7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E2E18D693B600C1337E /* Default-iOS7@2x.png */; };
+		F5148E3418D693B600C1337E /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E2F18D693B600C1337E /* Default.png */; };
+		F5148E3518D693B600C1337E /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E3018D693B600C1337E /* Default@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -816,6 +818,11 @@
 		E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QREncoder.xcodeproj; path = ../Submodules/ObjQREncoder/src/QREncoder.xcodeproj; sourceTree = "<group>"; };
 		E6F9FC9118C9068A00C1D2C1 /* TXCQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TXCQRCodeViewController.h; sourceTree = "<group>"; };
 		E6F9FC9218C9068A00C1D2C1 /* TXCQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TXCQRCodeViewController.m; sourceTree = "<group>"; };
+		F5148E2C18D693B600C1337E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Images/Default-568h@2x.png"; sourceTree = "<group>"; };
+		F5148E2D18D693B600C1337E /* Default-iOS7-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-iOS7-568h@2x.png"; path = "Images/Default-iOS7-568h@2x.png"; sourceTree = "<group>"; };
+		F5148E2E18D693B600C1337E /* Default-iOS7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-iOS7@2x.png"; path = "Images/Default-iOS7@2x.png"; sourceTree = "<group>"; };
+		F5148E2F18D693B600C1337E /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Images/Default.png; sourceTree = "<group>"; };
+		F5148E3018D693B600C1337E /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Images/Default@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1794,6 +1801,11 @@
 			isa = PBXGroup;
 			children = (
 				B9E6245F18D4245600E847E9 /* Icon */,
+				F5148E2C18D693B600C1337E /* Default-568h@2x.png */,
+				F5148E2D18D693B600C1337E /* Default-iOS7-568h@2x.png */,
+				F5148E2E18D693B600C1337E /* Default-iOS7@2x.png */,
+				F5148E2F18D693B600C1337E /* Default.png */,
+				F5148E3018D693B600C1337E /* Default@2x.png */,
 				B97D604617B9EB29001C07B8 /* default-avatar.png */,
 				B98C9C3517DACDFD008B10E0 /* default-avatar@2x.png */,
 				B97D604F17BCBE58001C07B8 /* message-not-sent.png */,
@@ -2329,17 +2341,15 @@
 				B980412518BC886B0069590C /* send-button-pressed@2x.png in Resources */,
 				B980412218BC886B0069590C /* input-field-cover.png in Resources */,
 				B980412918BC886B0069590C /* button-photo@2x.png in Resources */,
-				B94F2C6D17AF25C0003EA6E8 /* Default.png in Resources */,
 				B9E6246918D4245600E847E9 /* ToxicityIcon_ios6_spotlight.png in Resources */,
 				B980411518BC886B0069590C /* bubble-min-tailless@2x.png in Resources */,
 				B980412318BC886B0069590C /* input-field-cover@2x.png in Resources */,
 				B9EE597217FB528800D8A388 /* status-yellow-ios7.png in Resources */,
 				B980410818BC886B0069590C /* bubble-classic-green.png in Resources */,
-				B94F2C6F17AF25C0003EA6E8 /* Default@2x.png in Resources */,
 				B980411118BC886B0069590C /* bubble-classic-square-gray@2x.png in Resources */,
 				B980412118BC886B0069590C /* input-bar-background@2x.png in Resources */,
 				B980411718BC886B0069590C /* bubble-min@2x.png in Resources */,
-				B94F2C7117AF25C0003EA6E8 /* Default-568h@2x.png in Resources */,
+				F5148E3318D693B600C1337E /* Default-iOS7@2x.png in Resources */,
 				B94F2C7417AF25C0003EA6E8 /* MainStoryboard.storyboard in Resources */,
 				B980411C18BC886B0069590C /* bubble-tailless.png in Resources */,
 				B9EE596617FB528700D8A388 /* status-gray-ios7.png in Resources */,
@@ -2400,9 +2410,11 @@
 				B980411B18BC886B0069590C /* bubble-stroked@2x.png in Resources */,
 				B980410C18BC886B0069590C /* bubble-classic-typing.png in Resources */,
 				B9789F5718C040A5004F1257 /* crypto_stream_salsa20.h.in in Resources */,
+				F5148E3218D693B600C1337E /* Default-iOS7-568h@2x.png in Resources */,
 				B9B9C6D917D59E2F006BF8AC /* status-gray-navbar.png in Resources */,
 				B9789F5818C040A5004F1257 /* version.h.in in Resources */,
 				B9B9C6DA17D59E2F006BF8AC /* status-gray-navbar@2x.png in Resources */,
+				F5148E3518D693B600C1337E /* Default@2x.png in Resources */,
 				B9EE596B17FB528800D8A388 /* status-green-ios7@2x.png in Resources */,
 				B9B9C6DB17D59E2F006BF8AC /* status-green-navbar.png in Resources */,
 				B980410518BC886B0069590C /* bubble-classic-blue@2x.png in Resources */,
@@ -2422,6 +2434,8 @@
 				B980412718BC886B0069590C /* send-button@2x.png in Resources */,
 				B98C9C3617DACDFD008B10E0 /* default-avatar@2x.png in Resources */,
 				D10DECF573F0A874063524E1 /* icon-info.png in Resources */,
+				F5148E3418D693B600C1337E /* Default.png in Resources */,
+				F5148E3118D693B600C1337E /* Default-568h@2x.png in Resources */,
 				D10DE4842C671296268A7465 /* icon-error.png in Resources */,
 				D10DEC65DEE009BDDC95B22D /* icon-info@2x.png in Resources */,
 				D10DEA5434F5E009D9DF72AA /* icon-success.png in Resources */,
