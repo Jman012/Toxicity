@@ -8,8 +8,8 @@
 
 #import "TXCQRReaderViewController.h"
 #import "TXCSingleton.h"
-#import "ZBarSDK.h"
 #import "TXCAppDelegate.h"
+#import <ZBarSDK.h>
 
 NSString *const QRReaderViewControllerNotificationQRReaderDidAddFriend = @"QRReaderDidAddFriend";
 
@@ -24,45 +24,26 @@ NSString *const QRReaderViewControllerNotificationQRReaderDidAddFriend = @"QRRea
 
 @implementation TXCQRReaderViewController
 
-
-
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     self.readerView.readerDelegate = self;
-    
-    self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:0.3f green:0.37f blue:0.43f alpha:1];
-
+    self.readerView.allowsPinchZoom = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     [self.readerView start];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [self.readerView stop];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (IBAction)cancelButtonPushed:(id)sender {

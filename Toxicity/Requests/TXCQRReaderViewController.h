@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "TXCSingleton.h"
-#import "ZBarSDK.h"
 #import "TXCAppDelegate.h"
 
 #include "tox.h"

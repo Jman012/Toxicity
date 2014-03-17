@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="tWA-Jv-Pe1">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="tWA-Jv-Pe1">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
         <!--Settings View Controller - Settings-->
@@ -440,18 +440,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aPL-b2-8LY" customClass="ZBarReaderView">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aPL-b2-8LY" customClass="ZBarReaderView">
+                                <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="aPL-b2-8LY" firstAttribute="leading" secondItem="qAe-L6-x33" secondAttribute="leading" id="CJv-Tv-VL4"/>
-                            <constraint firstItem="aPL-b2-8LY" firstAttribute="trailing" secondItem="qAe-L6-x33" secondAttribute="trailing" id="PW8-Fj-Plz"/>
-                            <constraint firstItem="aPL-b2-8LY" firstAttribute="bottom" secondItem="qAe-L6-x33" secondAttribute="bottom" id="ach-dc-Vrm"/>
-                            <constraint firstItem="aPL-b2-8LY" firstAttribute="top" secondItem="qAe-L6-x33" secondAttribute="top" id="vLq-Bt-NqR"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Scan QR Code" id="XGK-g8-Rje">
                         <barButtonItem key="rightBarButtonItem" systemItem="cancel" id="3D3-XA-o2i">

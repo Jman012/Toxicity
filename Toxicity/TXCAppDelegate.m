@@ -8,6 +8,7 @@
 
 #import "TXCAppDelegate.h"
 #import "TWMessageBarManager.h"
+#import <ZBarReaderView.h>
 
 NSString *const TXCToxAppDelegateNotificationFriendAdded = @"FriendAdded";
 NSString *const TXCToxAppDelegateNotificationGroupAdded = @"GroupAdded";
@@ -28,15 +29,9 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
-    
-    
-    [self setupTox];
-    
-    
-    // force view class to load so it may be referenced directly from NIB
     [ZBarReaderView class];
     
+    [self setupTox];
     
     [self configureNavigationControllerDesign:(UINavigationController *)self.window.rootViewController];
     
