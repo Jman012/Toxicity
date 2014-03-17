@@ -7,12 +7,10 @@
 //
 
 #import "TXCRequestsTableViewController.h"
-#import <QuartzCore/QuartzCore.h>
-#import "TXCSingleton.h"
-#import "TXCQRReaderViewController.h"
 #import "TXCAppDelegate.h"
 #import "TXCFriendCell.h"
 #import "TXCFriendListHeader.h"
+#import "ZBarReaderViewController.h"
 
 // For various ActionSheet and AlertView type identification
 static const NSUInteger TXCActionSheetIdentifier = 1;
@@ -21,11 +19,10 @@ static const NSUInteger TXCAlertViewAcceptRequestsIdentifier = 3;
 static const NSUInteger TXCAlertViewRejectRequestsIdentifier = 4;
 
 // For NSNotifications
-extern NSString *const QRReaderViewControllerNotificationQRReaderDidAddFriend;
 extern NSString *const TXCToxAppDelegateNotificationFriendRequestReceived;
 extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
-@interface TXCRequestsTableViewController () <UIActionSheetDelegate>
+@interface TXCRequestsTableViewController () <UIActionSheetDelegate, ZBarReaderDelegate>
 
 @property (nonatomic, copy) NSArray *arrayOfRequests;
 @property (nonatomic, copy) NSArray *arrayOfInvites;
@@ -140,10 +137,6 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                                              selector:@selector(didGetGroupInvite)
                                                  name:TXCToxAppDelegateNotificationGroupInviteReceived
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(returnToFriendsList)
-                                                 name:QRReaderViewControllerNotificationQRReaderDidAddFriend
-                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -210,12 +203,16 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 - (void)addFriendFromQRCode
 {
     // Get the view from the storyboard, and present the QR Code scanner in modal view
-    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-    TXCQRReaderViewController *vc = (TXCQRReaderViewController *)[sb instantiateViewControllerWithIdentifier:@"QRReaderVC"];
-    TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [ourDelegate configureNavigationControllerDesign:(UINavigationController *)vc];
+//    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+//    TXCQRReaderViewController *vc = (TXCQRReaderViewController *)[sb instantiateViewControllerWithIdentifier:@"QRReaderVC"];
+//    TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
+//    [ourDelegate configureNavigationControllerDesign:(UINavigationController *)vc];
+
+    ZBarReaderViewController *barReaderViewController = [[ZBarReaderViewController alloc] init];
+
+    barReaderViewController.readerDelegate = self;
     
-    [self presentViewController:vc animated:YES completion:nil];
+    [self presentViewController:barReaderViewController animated:YES completion:nil];
 }
 
 - (void)addFriendFromPasteboard
@@ -432,6 +429,25 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         default:
             break;
     }
+}
+
+#pragma mark - ZBar Reader delegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+
+    id<NSFastEnumeration> results = [info objectForKey:ZBarReaderControllerResults];
+    for (ZBarSymbol *symbol in results) {
+        if ([TXCSingleton friendPublicKeyIsValid:symbol.data]) {
+            //actually add friend
+            TXCAppDelegate *appDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate addFriend:symbol.data];
+
+            [picker dismissViewControllerAnimated:YES completion:^{
+                [self returnToFriendsList];
+            }];
+        }
+    }
+
 }
 
 #pragma mark - Table view data source

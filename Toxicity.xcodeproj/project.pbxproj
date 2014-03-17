@@ -265,7 +265,6 @@
 		B9D859DE17C3453B005FD2D2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859DD17C3453B005FD2D2 /* CoreMedia.framework */; };
 		B9D859E017C34542005FD2D2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859DF17C34542005FD2D2 /* CoreVideo.framework */; };
 		B9D859E217C34553005FD2D2 /* libiconv.2.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */; };
-		B9D85A2217CB0942005FD2D2 /* TXCQRReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A1F17CB0942005FD2D2 /* TXCQRReaderViewController.m */; };
 		B9D85A2317CB0942005FD2D2 /* TXCRequestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A2117CB0942005FD2D2 /* TXCRequestsTableViewController.m */; };
 		B9E6246618D4245600E847E9 /* ToxicityIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9E6246018D4245600E847E9 /* ToxicityIcon@2x.png */; };
 		B9E6246718D4245600E847E9 /* ToxicityIcon_ios6.png in Resources */ = {isa = PBXBuildFile; fileRef = B9E6246118D4245600E847E9 /* ToxicityIcon_ios6.png */; };
@@ -767,8 +766,6 @@
 		B9D859DD17C3453B005FD2D2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		B9D859DF17C34542005FD2D2 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.4.0.dylib; path = usr/lib/libiconv.2.4.0.dylib; sourceTree = SDKROOT; };
-		B9D85A1E17CB0942005FD2D2 /* TXCQRReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCQRReaderViewController.h; path = Requests/TXCQRReaderViewController.h; sourceTree = "<group>"; };
-		B9D85A1F17CB0942005FD2D2 /* TXCQRReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCQRReaderViewController.m; path = Requests/TXCQRReaderViewController.m; sourceTree = "<group>"; };
 		B9D85A2017CB0942005FD2D2 /* TXCRequestsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCRequestsTableViewController.h; path = Requests/TXCRequestsTableViewController.h; sourceTree = "<group>"; };
 		B9D85A2117CB0942005FD2D2 /* TXCRequestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCRequestsTableViewController.m; path = Requests/TXCRequestsTableViewController.m; sourceTree = "<group>"; };
 		B9E6246018D4245600E847E9 /* ToxicityIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ToxicityIcon@2x.png"; sourceTree = "<group>"; };
@@ -2082,8 +2079,6 @@
 		B9D85A1A17CB079E005FD2D2 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				B9D85A1E17CB0942005FD2D2 /* TXCQRReaderViewController.h */,
-				B9D85A1F17CB0942005FD2D2 /* TXCQRReaderViewController.m */,
 				B9D85A2017CB0942005FD2D2 /* TXCRequestsTableViewController.h */,
 				B9D85A2117CB0942005FD2D2 /* TXCRequestsTableViewController.m */,
 			);
@@ -2506,7 +2501,6 @@
 				B97D604517B95154001C07B8 /* TXCFriendObject.m in Sources */,
 				B97D605517BCBF77001C07B8 /* TXCMessageObject.m in Sources */,
 				B9789F3718C040A5004F1257 /* ge25519_edwards25519sha512batch.c in Sources */,
-				B9D85A2217CB0942005FD2D2 /* TXCQRReaderViewController.m in Sources */,
 				B9789EF018C040A5004F1257 /* crypto_generichash.c in Sources */,
 				B9789F4C18C040A5004F1257 /* stream_salsa208.c in Sources */,
 				B9789F2B18C040A5004F1257 /* ge_p3_tobytes.c in Sources */,
