@@ -1,0 +1,27 @@
+//
+// Created by Виктор Шаманов on 3/19/14.
+// Copyright (c) 2014 JamesTech. All rights reserved.
+//
+
+#import "TXCChatViewController.h"
+#import "UIColor+ToxicityColors.h"
+
+
+@implementation TXCChatViewController
+
+#pragma mark - View controller lifecycle
+
+- (void)viewDidLoad {
+    self.delegate = self;
+    self.dataSource = self;
+    [super viewDidLoad];
+
+    self.backgroundColor = [UIColor toxicityBackgroundDarkColor];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self scrollToBottomAnimated:NO];
+}
+
+@end

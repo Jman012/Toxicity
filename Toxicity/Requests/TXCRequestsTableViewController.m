@@ -11,6 +11,7 @@
 #import "TXCFriendCell.h"
 #import "TXCFriendListHeader.h"
 #import "ZBarReaderViewController.h"
+#import "UIColor+ToxicityColors.h"
 
 // For various ActionSheet and AlertView type identification
 static const NSUInteger TXCActionSheetIdentifier = 1;
@@ -59,7 +60,6 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 {
     [super viewDidLoad];
     
-    
     /***** Appearance *****/
     [self.navigationItem setTitle:@"Friend Requests"];
     
@@ -90,8 +90,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     
     
     // Colors
-    self.tableView.backgroundColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
-    
+
     // iOS version specific stuff for colors
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         // Load resources for iOS 6.1 or earlier
@@ -101,8 +100,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         self.tableView.separatorColor = [UIColor clearColor];
     }
     
-    self.tableView.backgroundColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
-    
+    self.tableView.backgroundColor = [UIColor toxicityBackgroundDarkColor];
+
     /***** End Appearance *****/
     
     
@@ -122,13 +121,13 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.tableView registerClass:[TXCFriendCell class] forCellReuseIdentifier:@"RequestFriendCell"];
-    
+
     [self.navigationController setToolbarHidden:NO animated:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    
+    [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didGetFriendRequest)
                                                  name:TXCToxAppDelegateNotificationFriendRequestReceived

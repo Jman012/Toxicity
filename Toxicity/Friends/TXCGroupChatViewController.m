@@ -6,16 +6,17 @@
 //  Copyright (c) 2013 JamesTech. All rights reserved.
 //
 
-#import "TXCGroupChatWindowViewController.h"
+#import "TXCGroupChatViewController.h"
 #import "JSMessage.h"
 #import "JSBubbleImageViewFactory.h"
 #import "TXCSingleton.h"
 #import "TXCAppDelegate.h"
+#import "UIColor+ToxicityColors.h"
 
 static NSString *const kSenderMe = @"Me";
 extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 
-@interface TXCGroupChatWindowViewController ()
+@interface TXCGroupChatViewController ()
 
 @property (nonatomic, strong) NSMutableArray *mainGroupList;
 @property (nonatomic, strong) NSMutableArray *mainGroupMessages;
@@ -26,7 +27,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 
 @end
 
-@implementation TXCGroupChatWindowViewController
+@implementation TXCGroupChatViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -57,15 +58,11 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 
 - (void)viewDidLoad
 {
-    self.delegate = self;
-    self.dataSource = self;
     [super viewDidLoad];
     
-    [[JSBubbleView appearance] setFont:[UIFont systemFontOfSize:16.0f]];
     self.messageInputView.textView.placeHolder = @"";
     self.sender = kSenderMe;
-    [self setBackgroundColor:[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f]];
-    
+
     if (!self.groupInfo.groupName.length) {
         self.title = self.groupInfo.groupPulicKey;
     } else {
@@ -73,13 +70,8 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self scrollToBottomAnimated:NO];
-}
-
 - (void)viewDidAppear:(BOOL)animated {
-//    [super viewDidAppear:animated];
+    [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(newMessage:)
                                                  name:TXCToxAppDelegateNotificationNewMessage
@@ -217,6 +209,10 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
     TXCMessageObject *tempMessage = [self.messages objectAtIndex:indexPath.row];
     if (cell.subtitleLabel && tempMessage.origin == MessageLocation_Them) {
         cell.subtitleLabel.text = [tempMessage senderName];
+    }
+
+    if (cell.messageType == JSBubbleMessageTypeOutgoing) {
+        cell.bubbleView.textView.textColor = [UIColor whiteColor];
     }
 }
 
