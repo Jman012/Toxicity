@@ -8,20 +8,24 @@
 
 @implementation UIColor (ToxicityColors)
 
-+ (instancetype)toxicityStatusColorGray {
++ (instancetype)toxicityStatusGrayColor {
     return [self colorWithRed:217.0/255.0 green:217.0/255.0 blue:217.0/255.0 alpha:1.0];
 }
 
-+ (instancetype)toxicityStatusColorRed {
++ (instancetype)toxicityStatusRedColor {
     return [self colorWithRed:1.0 green:38.0/255.0 blue:0.0 alpha:1.0];
 }
 
-+ (instancetype)toxicityStatusColorGreen {
++ (instancetype)toxicityStatusGreenColor {
     return [self colorWithRed:0.0 green:1.0 blue:0.0 alpha:1.0];
 }
 
-+ (instancetype)toxicityStatusColorYellow {
++ (instancetype)toxicityStatusYellowColor {
     return [self colorWithRed:1.0 green:251.0/255.0 blue:0.0 alpha:1.0];
+}
+
++ (instancetype)toxicityBackgroundDarkColor {
+    return [self colorWithWhite:0.25 alpha:1.0];
 }
 
 @end

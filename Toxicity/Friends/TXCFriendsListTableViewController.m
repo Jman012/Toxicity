@@ -9,8 +9,8 @@
 #import "TXCFriendsListTableViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "TXCSingleton.h"
-#import "TXCFriendChatWindowViewController.h"
-#import "TXCGroupChatWindowViewController.h"
+#import "TXCFriendChatViewController.h"
+#import "TXCGroupChatViewController.h"
 #import "TXCRequestsTableViewController.h"
 #import "TXCFriendCell.h"
 #import "TXCAppDelegate.h"
@@ -19,6 +19,7 @@
 #import "TXCSettingsViewController.h"
 
 #include "tox.h"
+#import "UIColor+ToxicityColors.h"
 
 extern NSString *const TXCToxAppDelegateNotificationFriendAdded;
 extern NSString *const TXCToxAppDelegateNotificationNewMessage;
@@ -70,9 +71,9 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         // Load resources for iOS 7 or later
         self.tableView.separatorColor = [UIColor clearColor];
     }
-    
-    self.tableView.backgroundColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
-    
+
+    self.tableView.backgroundColor = [UIColor toxicityBackgroundDarkColor];
+
     /***** End Appearance *****/
     
     [self.settingsButton setTarget:self];
@@ -407,11 +408,11 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        TXCGroupChatWindowViewController *chatVC = [[TXCGroupChatWindowViewController alloc] initWithFriendIndex:indexPath];
+        TXCGroupChatViewController *chatVC = [[TXCGroupChatViewController alloc] initWithFriendIndex:indexPath];
         [self.navigationController pushViewController:chatVC animated:YES];
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     } else {
-        TXCFriendChatWindowViewController *chatVC = [[TXCFriendChatWindowViewController alloc] initWithFriendIndex:indexPath];
+        TXCFriendChatViewController *chatVC = [[TXCFriendChatViewController alloc] initWithFriendIndex:indexPath];
         [self.navigationController pushViewController:chatVC animated:YES];
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     }

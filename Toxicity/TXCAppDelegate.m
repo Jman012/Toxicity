@@ -8,6 +8,7 @@
 
 #import "TXCAppDelegate.h"
 #import "TWMessageBarManager.h"
+#import "JSBubbleView.h"
 #import <ZBarReaderView.h>
 
 NSString *const TXCToxAppDelegateNotificationFriendAdded = @"FriendAdded";
@@ -32,9 +33,9 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     [ZBarReaderView class];
     
     [self setupTox];
-    
-    [self configureNavigationControllerDesign:(UINavigationController *)self.window.rootViewController];
-    
+
+    [self customizeAppearence];
+
     // Tox thread
     self.toxMainThread = dispatch_queue_create("com.Jman.Toxicity", DISPATCH_QUEUE_SERIAL);
     
@@ -1240,6 +1241,12 @@ uint32_t resolve_addr(const char *address)
 #pragma mark - End Miscellaneous C Functions
 
 #pragma mark - Toxicity Visual Design Methods
+
+- (void)customizeAppearence {
+    [[JSBubbleView appearance] setFont:[UIFont systemFontOfSize:16.0f]];
+
+    [self configureNavigationControllerDesign:(UINavigationController *)self.window.rootViewController];
+}
 
 - (void)configureNavigationControllerDesign:(UINavigationController *)navController {
     //first, non ios specific stuff:

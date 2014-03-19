@@ -7,9 +7,11 @@
 
 @interface UIColor (ToxicityColors)
 
-+ (instancetype)toxicityStatusColorGray;
-+ (instancetype)toxicityStatusColorRed;
-+ (instancetype)toxicityStatusColorGreen;
-+ (instancetype)toxicityStatusColorYellow;
++ (instancetype)toxicityStatusGrayColor;
++ (instancetype)toxicityStatusRedColor;
++ (instancetype)toxicityStatusGreenColor;
++ (instancetype)toxicityStatusYellowColor;
+
++ (instancetype)toxicityBackgroundDarkColor;
 
 @end

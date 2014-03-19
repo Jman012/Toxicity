@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 JamesTech. All rights reserved.
 //
 
-#import "JSMessagesViewController.h"
+#import "TXCChatViewController.h"
 
 
-@interface TXCGroupChatWindowViewController : JSMessagesViewController <JSMessagesViewDataSource, JSMessagesViewDelegate>
+@interface TXCGroupChatViewController : TXCChatViewController
 
 - (id)initWithFriendIndex:(NSIndexPath *)friendIndex;
 

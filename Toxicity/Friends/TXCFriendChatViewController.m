@@ -1,12 +1,12 @@
 //
-//  TXCFriendChatWindowViewController.m
+//  TXCFriendChatViewController.m
 //  Toxicity
 //
 //  Created by James Linnell on 8/8/13.
 //  Copyright (c) 2013 JamesTech. All rights reserved.
 //
 
-#import "TXCFriendChatWindowViewController.h"
+#import "TXCFriendChatViewController.h"
 #import "UIColor+ToxicityColors.h"
 #import "JSMessage.h"
 #import "TXCSingleton.h"
@@ -23,7 +23,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendAdded;
 extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 
-@interface TXCFriendChatWindowViewController ()
+@interface TXCFriendChatViewController ()
 
 @property (nonatomic, strong) NSMutableArray *mainFriendList;
 @property (nonatomic, strong) NSMutableArray *mainFriendMessages;
@@ -35,7 +35,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 
 @end
 
-@implementation TXCFriendChatWindowViewController
+@implementation TXCFriendChatViewController
 
 #pragma mark - Initialization
 
@@ -60,14 +60,10 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 #pragma mark - View controller life cycle
 
 - (void)viewDidLoad {
-    self.delegate = self;
-    self.dataSource = self;
     [super viewDidLoad];
-    
-    [[JSBubbleView appearance] setFont:[UIFont systemFontOfSize:16.0f]];
+
     self.messageInputView.textView.placeHolder = @"";
     self.sender = kSenderMe;
-    [self setBackgroundColor:[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:1.0f]];
 
     self.statusLabel = ({
         TXCStatusLabel *statusLabel = [[TXCStatusLabel alloc] init];
@@ -75,7 +71,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
         statusLabel.textAlignment = NSTextAlignmentCenter;
         statusLabel.textColor = self.navigationController.navigationBar.tintColor;
         statusLabel.font = [UIFont boldSystemFontOfSize:17.0];
-        statusLabel.statusColor = [UIColor toxicityStatusColorGray];
+        statusLabel.statusColor = [UIColor toxicityStatusGrayColor];
 
         statusLabel;
     });
@@ -87,7 +83,6 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self scrollToBottomAnimated:NO];
     [self updateColoredStatusIndicator];
 }
 
@@ -141,18 +136,18 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     if (self.friendInfo.connectionType == TXCToxFriendConnectionStatus_Online) {
         switch (self.friendInfo.statusType) {
             case TXCToxFriendUserStatus_None:
-                self.statusLabel.statusColor = [UIColor toxicityStatusColorGreen];
+                self.statusLabel.statusColor = [UIColor toxicityStatusGreenColor];
                 break;
             case TXCToxFriendUserStatus_Away:
-                self.statusLabel.statusColor = [UIColor toxicityStatusColorYellow];
+                self.statusLabel.statusColor = [UIColor toxicityStatusYellowColor];
                 break;
             case TXCToxFriendUserStatus_Busy:
-                self.statusLabel.statusColor = [UIColor toxicityStatusColorRed];
+                self.statusLabel.statusColor = [UIColor toxicityStatusRedColor];
                 break;
             default:break;
         }
     } else {
-        self.statusLabel.statusColor = [UIColor toxicityStatusColorGray];
+        self.statusLabel.statusColor = [UIColor toxicityStatusGrayColor];
     }
 }
 
@@ -279,6 +274,11 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     if (cell.subtitleLabel) {
         cell.subtitleLabel.text = nil;
     }
+
+    if (cell.messageType == JSBubbleMessageTypeOutgoing) {
+        cell.bubbleView.textView.textColor = [UIColor whiteColor];
+    }
+
 }
 
 @end
