@@ -547,25 +547,25 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     
     if (indexPath.section == 0) {
         //group invite
-        cell.friendIdentifier = [self.arrayOfInvites objectAtIndex:indexPath.row];
-        NSString *temp = [self.arrayOfInvites objectAtIndex:indexPath.row];
-        NSString *front = [temp substringToIndex:6];
-        NSString *end = [temp substringFromIndex:[temp length] - 6];
-        NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
-        cell.nickLabel.text = formattedString;
-        cell.messageLabelText = @"Tox me on Group Tox.";
-        NSString *currentRequestString = [self.arrayOfInvites objectAtIndex:indexPath.row];
-        cell.avatarImage = [[TXCSingleton sharedSingleton] defaultAvatarImage];
-        [[TXCSingleton sharedSingleton] avatarImageForKey:[self.arrayOfInvites objectAtIndex:indexPath.row] type:AvatarType_Group finishBlock:^(UIImage *theAvatarImage) {
+        TXCGroupObject *groupObject = [[TXCGroupObject alloc] init];
+        groupObject.groupPulicKey = self.arrayOfInvites[indexPath.row];
+        
+        [cell configureCellWithGroupObject:groupObject];
+        
+        
+        cell.avatarImageView.image = [TXCSingleton sharedSingleton].defaultAvatarImage;
+        [[TXCSingleton sharedSingleton] avatarImageForKey:groupObject.groupPulicKey type:AvatarType_Friend finishBlock:^(UIImage *avatarImage) {
             if (cell) {
-                if ([cell.friendIdentifier isEqualToString:currentRequestString]) {
-                    cell.avatarImage = theAvatarImage;
+                if ([cell.friendIdentifier isEqualToString:groupObject.groupPulicKey]) {
+                    cell.avatarImageView.image = avatarImage;
                 } else {
+                    //this could have taken any amount of time to accomplish (either right from cache had to download a new one
+                    //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
                     NSArray *visibleCells = [tableView visibleCells];
                     [visibleCells enumerateObjectsUsingBlock:^(TXCFriendCell *tempCell, NSUInteger idx, BOOL *stop) {
                         if (tempCell) {
-                            if ([tempCell.friendIdentifier isEqualToString:[self.arrayOfInvites objectAtIndex:indexPath.row]]) {
-                                tempCell.avatarImage = theAvatarImage;
+                            if ([tempCell.friendIdentifier isEqualToString:[[TXCSingleton sharedSingleton] groupList][indexPath.row]]) {
+                                tempCell.avatarImageView.image = avatarImage;
                             }
                         }
                     }];
@@ -573,12 +573,15 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             } else {
                 TXCFriendCell *theCell = (TXCFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
                 if (theCell) {
-                    if ([theCell.friendIdentifier isEqualToString:currentRequestString]) {
-                        theCell.avatarImage = theAvatarImage;
-                    }}}}];
-        cell.shouldShowFriendStatus = NO;
-        cell.accessoryType = UITableViewCellAccessoryNone;
+                    if ([theCell.friendIdentifier isEqualToString:groupObject.groupPulicKey]) {
+                        theCell.avatarImageView.image = avatarImage;
+                    }
+                }
+            }
+        }];
+
         
+        cell.accessoryType = UITableViewCellAccessoryNone;
         [self.selectedInvites enumerateObjectsUsingBlock:^(NSString *tempString, NSUInteger idx, BOOL *stop) {
             if ([tempString isEqualToString:[self.arrayOfInvites objectAtIndex:indexPath.row]]) {
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -590,33 +593,25 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     } else {
         //friend request
     
-        cell.friendIdentifier = [self.arrayOfRequests objectAtIndex:indexPath.row];
+        TXCFriendObject *friendObject = [[TXCFriendObject alloc] init];
+        friendObject.publicKey = self.arrayOfRequests[indexPath.row];
         
-        //if we don't yet have a name for this friend (after just adding them, for instance) then use the first/last 6 chars of their key
-        //e.g., AF4E32...B6C899
-        NSString *temp = [self.arrayOfRequests objectAtIndex:indexPath.row];
-        NSString *front = [temp substringToIndex:6];
-        NSString *end = [temp substringFromIndex:[temp length] - 6];
-        NSString *formattedString = [[NSString alloc] initWithFormat:@"%@...%@", front, end];
-        cell.nickLabel.text = formattedString;
+        [cell configureCellWithFriendObject:friendObject];
         
-        cell.messageLabelText = @"Tox me on Tox.";
         
-        NSString *currentRequestString = [self.arrayOfRequests objectAtIndex:indexPath.row];
-        cell.avatarImage = [[TXCSingleton sharedSingleton] defaultAvatarImage];
-        [[TXCSingleton sharedSingleton] avatarImageForKey:[self.arrayOfRequests objectAtIndex:indexPath.row] type:AvatarType_Friend finishBlock:^(UIImage *theAvatarImage) {
-            
+        cell.avatarImageView.image = [TXCSingleton sharedSingleton].defaultAvatarImage;
+        [[TXCSingleton sharedSingleton] avatarImageForKey:friendObject.publicKey type:AvatarType_Friend finishBlock:^(UIImage *avatarImage) {
             if (cell) {
-                if ([cell.friendIdentifier isEqualToString:currentRequestString]) {
-                    cell.avatarImage = theAvatarImage;
+                if ([cell.friendIdentifier isEqualToString:friendObject.publicKey]) {
+                    cell.avatarImageView.image = avatarImage;
                 } else {
                     //this could have taken any amount of time to accomplish (either right from cache had to download a new one
                     //so we have to recheck to see if this cell is still alive and with the right id attached to it and stuff
                     NSArray *visibleCells = [tableView visibleCells];
                     [visibleCells enumerateObjectsUsingBlock:^(TXCFriendCell *tempCell, NSUInteger idx, BOOL *stop) {
                         if (tempCell) {
-                            if ([tempCell.friendIdentifier isEqualToString:[self.arrayOfRequests objectAtIndex:indexPath.row]]) {
-                                tempCell.avatarImage = theAvatarImage;
+                            if ([tempCell.friendIdentifier isEqualToString:self.arrayOfRequests[indexPath.row]]) {
+                                tempCell.avatarImageView.image = avatarImage;
                             }
                         }
                     }];
@@ -624,14 +619,12 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             } else {
                 TXCFriendCell *theCell = (TXCFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
                 if (theCell) {
-                    if ([theCell.friendIdentifier isEqualToString:currentRequestString]) {
-                        theCell.avatarImage = theAvatarImage;
+                    if ([theCell.friendIdentifier isEqualToString:friendObject.publicKey]) {
+                        theCell.avatarImageView.image = avatarImage;
                     }
                 }
             }
         }];
-        
-        cell.shouldShowFriendStatus = NO;
         
         
         cell.accessoryType = UITableViewCellAccessoryNone;
