@@ -2719,12 +2719,10 @@
 					"$(SRCROOT)/Other/libsodium/include",
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
 					"\"$(BUILT_PRODUCTS_DIR)/usr/local/include\"",
+					"$(SRCROOT)/Submodules/ZBarSDK/iphone/include/ZBarSDK",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/Other/ZBarSDK",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
@@ -2752,12 +2750,10 @@
 					"$(SRCROOT)/Other/libsodium/include",
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
 					"\"$(BUILT_PRODUCTS_DIR)/usr/local/include\"",
+					"$(SRCROOT)/Submodules/ZBarSDK/iphone/include/ZBarSDK",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/Other/ZBarSDK",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
