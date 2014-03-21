@@ -32,4 +32,5 @@ typedef NS_ENUM(NSUInteger, FriendCellStatusColor) {
 -(void) configureCellWithFriendObject:(TXCFriendObject*) friendObject ;
 -(void) configureCellWithGroupObject:(TXCGroupObject*) groupObject;
 -(void) addNewMessagePin;
+- (void)removeNewMessagePin;
 @end

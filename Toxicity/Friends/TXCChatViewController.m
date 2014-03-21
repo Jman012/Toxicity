@@ -16,7 +16,7 @@
     self.dataSource = self;
     [super viewDidLoad];
 
-    self.backgroundColor = [UIColor toxicityBackgroundDarkColor];
+    self.backgroundColor = [UIColor toxicityBackgroundLightColor];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
