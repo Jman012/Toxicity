@@ -2713,7 +2713,6 @@
 					"$(SRCROOT)/Other/libsodium/include",
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
 					"\"$(BUILT_PRODUCTS_DIR)/usr/local/include\"",
-					"$(SRCROOT)/Submodules/ZBarSDK/iphone/include/ZBarSDK",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -2744,7 +2743,6 @@
 					"$(SRCROOT)/Other/libsodium/include",
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
 					"\"$(BUILT_PRODUCTS_DIR)/usr/local/include\"",
-					"$(SRCROOT)/Submodules/ZBarSDK/iphone/include/ZBarSDK",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
