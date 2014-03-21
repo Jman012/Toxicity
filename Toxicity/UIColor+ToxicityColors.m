@@ -32,4 +32,8 @@
     return [self colorWithWhite:0.35 alpha:1.0];
 }
 
++ (instancetype)toxicityCellSelectedColor {
+    return [self colorWithWhite:0.2 alpha:1.0];
+}
+
 @end

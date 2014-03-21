@@ -14,5 +14,6 @@
 
 + (instancetype)toxicityBackgroundDarkColor;
 + (instancetype)toxicityCellBackgroundColor;
++ (instancetype)toxicityCellSelectedColor;
 
 @end

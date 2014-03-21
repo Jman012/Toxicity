@@ -250,6 +250,10 @@
 -(void) configureBackroundColor {
     [self.contentView setFrame:CGRectMake(0., 0., 320., 64)];
     [self setBackgroundColor:[UIColor toxicityCellBackgroundColor]];
+    
+    UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
+    selectedBackgroundView.backgroundColor = [UIColor toxicityCellSelectedColor];
+    self.selectedBackgroundView = selectedBackgroundView;
 }
 
 
