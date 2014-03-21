@@ -9,8 +9,8 @@
 #import "TXCFriendCell.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+Shadow.h"
+#import "UIColor+ToxicityColors.h"
 #import "TXCFriendObject.h"
-#import "UIImageView+GradientImageView.h"
 #import "TXCSingleton.h"
 
 @interface TXCFriendCell ()
@@ -249,11 +249,7 @@
 
 -(void) configureBackroundColor {
     [self.contentView setFrame:CGRectMake(0., 0., 320., 64)];
-    [self.contentView addSubview:[UIImageView gradientImageViewFromColor:[UIColor colorWithHue:1.0f saturation:0.0f brightness:0.3f alpha:1.0f]
-                                      toColor:[UIColor colorWithHue:1.0f saturation:0.0f brightness:0.4f alpha:1.0f]
-                                     withSize:self.contentView.frame.size]];
-    
-    
+    [self setBackgroundColor:[UIColor toxicityCellBackgroundColor]];
 }
 
 

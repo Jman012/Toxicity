@@ -13,5 +13,6 @@
 + (instancetype)toxicityStatusYellowColor;
 
 + (instancetype)toxicityBackgroundDarkColor;
++ (instancetype)toxicityCellBackgroundColor;
 
 @end

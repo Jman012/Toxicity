@@ -302,7 +302,6 @@
 		E6C97FE418C39677007368F9 /* StatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE318C39677007368F9 /* StatusCell.m */; };
 		E6F9FC9318C9068A00C1D2C1 /* TXCQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6F9FC9218C9068A00C1D2C1 /* TXCQRCodeViewController.m */; };
 		E6F9FC9C18C90CF800C1D2C1 /* libQREncoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6F9FC9918C90CA500C1D2C1 /* libQREncoder.a */; };
-		F22F339418D3A85900798D61 /* UIImageView+GradientImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22F339318D3A85900798D61 /* UIImageView+GradientImageView.m */; };
 		F5148E3118D693B600C1337E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E2C18D693B600C1337E /* Default-568h@2x.png */; };
 		F5148E3218D693B600C1337E /* Default-iOS7-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E2D18D693B600C1337E /* Default-iOS7-568h@2x.png */; };
 		F5148E3318D693B600C1337E /* Default-iOS7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5148E2E18D693B600C1337E /* Default-iOS7@2x.png */; };
@@ -819,8 +818,6 @@
 		E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QREncoder.xcodeproj; path = ../Submodules/ObjQREncoder/src/QREncoder.xcodeproj; sourceTree = "<group>"; };
 		E6F9FC9118C9068A00C1D2C1 /* TXCQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TXCQRCodeViewController.h; sourceTree = "<group>"; };
 		E6F9FC9218C9068A00C1D2C1 /* TXCQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TXCQRCodeViewController.m; sourceTree = "<group>"; };
-		F22F339218D3A85900798D61 /* UIImageView+GradientImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+GradientImageView.h"; sourceTree = "<group>"; };
-		F22F339318D3A85900798D61 /* UIImageView+GradientImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+GradientImageView.m"; sourceTree = "<group>"; };
 		F5148E2C18D693B600C1337E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Images/Default-568h@2x.png"; sourceTree = "<group>"; };
 		F5148E2D18D693B600C1337E /* Default-iOS7-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-iOS7-568h@2x.png"; path = "Images/Default-iOS7-568h@2x.png"; sourceTree = "<group>"; };
 		F5148E2E18D693B600C1337E /* Default-iOS7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-iOS7@2x.png"; path = "Images/Default-iOS7@2x.png"; sourceTree = "<group>"; };
@@ -2042,8 +2039,8 @@
 				B9D5C95C17E3E31500B84BEF /* TXCFriendListHeader.m */,
 				B98C9C4117DC16D8008B10E0 /* UIView+Shadow.h */,
 				B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */,
-				D10DE8806FF7F74520570681 /* TXCStatusLabel.m */,
 				D10DE22E3A1FF7134B362134 /* TXCStatusLabel.h */,
+				D10DE8806FF7F74520570681 /* TXCStatusLabel.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -2071,8 +2068,8 @@
 				B9BB9A5D17B4B20100A1ACEC /* TXCFriendChatViewController.m */,
 				B9A5342F17EAD17800F2FD94 /* TXCGroupChatViewController.h */,
 				B9A5343017EAD17800F2FD94 /* TXCGroupChatViewController.m */,
-				D10DEF2B151C990D72A68D80 /* TXCChatViewController.m */,
 				D10DE26DC4276843C4A2E6C0 /* TXCChatViewController.h */,
+				D10DEF2B151C990D72A68D80 /* TXCChatViewController.m */,
 			);
 			name = Friends;
 			sourceTree = "<group>";
@@ -2157,10 +2154,8 @@
 		D10DEC9C8B1A8A85CB245B78 /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				D10DEA55B16B77901E909CA9 /* UIColor+ToxicityColors.m */,
 				D10DE558FA5CBC9EB58F8C63 /* UIColor+ToxicityColors.h */,
-				F22F339218D3A85900798D61 /* UIImageView+GradientImageView.h */,
-				F22F339318D3A85900798D61 /* UIImageView+GradientImageView.m */,
+				D10DEA55B16B77901E909CA9 /* UIColor+ToxicityColors.m */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -2536,7 +2531,6 @@
 				B9789F3118C040A5004F1257 /* open.c in Sources */,
 				B9789F4218C040A5004F1257 /* stream_aes128ctr_api.c in Sources */,
 				B9789EF318C040A5004F1257 /* hash_sha256.c in Sources */,
-				F22F339418D3A85900798D61 /* UIImageView+GradientImageView.m in Sources */,
 				B9789EF218C040A5004F1257 /* hash_sha256_api.c in Sources */,
 				B9789EF618C040A5004F1257 /* hashblocks_sha256_api.c in Sources */,
 				B9D85A2317CB0942005FD2D2 /* TXCRequestsTableViewController.m in Sources */,
