@@ -146,7 +146,7 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     
     // Name
     uint8_t nameUTF8[TOX_MAX_NAME_LENGTH];
-    tox_get_self_name(toxInstance, nameUTF8, TOX_MAX_NAME_LENGTH);
+    tox_get_self_name(toxInstance, nameUTF8);
     if (strcmp((const char *)nameUTF8, "") == 0) {
         NSLog(@"Using default User name");
         tox_set_name(toxInstance, (uint8_t *)"Toxicity User", strlen("Toxicity User") + 1);
@@ -681,7 +681,7 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 
 #pragma mark - Tox Core Callback Functions
 
-void print_request(uint8_t *public_key, uint8_t *data, uint16_t length, void *userdata) {
+void print_request(Tox *tox, uint8_t *public_key, uint8_t *data, uint16_t length, void *userdata) {
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Friend Request! From:");
         
@@ -906,7 +906,7 @@ void print_statuschange(Tox *m, int friendnumber,  uint8_t * string, uint16_t le
     });
 }
 
-void print_userstatuschange(Tox *m, int friendnumber, TOX_USERSTATUS kind, void *userdata) {
+void print_userstatuschange(Tox *m, int friendnumber, uint8_t kind, void *userdata) {
     dispatch_sync(dispatch_get_main_queue(), ^{
         uint8_t tempKey[TOX_CLIENT_ID_SIZE];
         tox_get_client_id([[TXCSingleton sharedSingleton] toxCoreInstance], friendnumber, tempKey);
@@ -1046,9 +1046,7 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     srand(self.lastAttemptedConnect);
     
     self.toxWaitData = NULL;
-    uint16_t rtmp = 0;
-    tox_wait_prepare([[TXCSingleton sharedSingleton] toxCoreInstance], NULL, &rtmp);
-    self.toxWaitBufferSize = rtmp;
+    self.toxWaitBufferSize = tox_wait_data_size();
     self.toxWaitData = malloc(self.toxWaitBufferSize);
 
     
@@ -1059,6 +1057,8 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
 }
 
 - (void)toxCoreLoop {
+    
+    Tox *toxInstance = [[TXCSingleton sharedSingleton] toxCoreInstance];
     
     //code to check if node connection has changed, if so notify the app
     if (self.on == 0 && tox_isconnected([[TXCSingleton sharedSingleton] toxCoreInstance])) {
@@ -1089,9 +1089,9 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     
     
     // Call Wait Execute for up to a second
-    if (self.toxWaitData && tox_wait_prepare([[TXCSingleton sharedSingleton] toxCoreInstance], self.toxWaitData, &_toxWaitBufferSize) == 1) {
-        tox_wait_execute([[TXCSingleton sharedSingleton] toxCoreInstance], self.toxWaitData, self.toxWaitBufferSize, 999);
-        tox_wait_cleanup([[TXCSingleton sharedSingleton] toxCoreInstance], self.toxWaitData, self.toxWaitBufferSize);
+    if (tox_wait_prepare(toxInstance, self.toxWaitData) == 1) {
+        tox_wait_execute(self.toxWaitData, 1, 0);
+        tox_wait_cleanup(toxInstance, self.toxWaitData);
     }
     // Run tox_do
     int a = time(0);
