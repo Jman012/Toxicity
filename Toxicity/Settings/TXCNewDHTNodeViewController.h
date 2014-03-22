@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface TXCNewDHTNodeViewController : UIViewController
+
 @property (nonatomic, copy) NSArray *namesAlreadyPresent;
 @property (nonatomic, copy) NSString *alreadyName;
 @property (nonatomic, copy) NSString *alreadyIP;
@@ -16,4 +17,5 @@
 @property (nonatomic, copy) NSString *alreadyKey;
 @property (nonatomic, assign, getter = isEditingMode) BOOL editingMode;
 @property (nonatomic, strong) NSIndexPath *pathToEdit;
+
 @end

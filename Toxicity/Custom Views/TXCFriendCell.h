@@ -27,10 +27,11 @@ typedef NS_ENUM(NSUInteger, FriendCellStatusColor) {
 @property (nonatomic, assign, getter = isShouldShowFriendStatus) BOOL shouldShowFriendStatus;
 @property (nonatomic, assign) FriendCellStatusColor statusColor;
 @property (nonatomic, strong) TXCFriendObject* friendObject;
-@property (nonatomic, strong)  UIImageView *avatarImageView;
+@property (nonatomic, strong) UIImageView *avatarImageView;
 @property (nonatomic, copy) NSString *lastMessage;
--(void) configureCellWithFriendObject:(TXCFriendObject*) friendObject ;
--(void) configureCellWithGroupObject:(TXCGroupObject*) groupObject;
--(void) addNewMessagePin;
+
+- (void)configureCellWithFriendObject:(TXCFriendObject *)friendObject;
+- (void)configureCellWithGroupObject:(TXCGroupObject *)groupObject;
+- (void)addNewMessagePin;
 - (void)removeNewMessagePin;
 @end

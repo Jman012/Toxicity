@@ -22,5 +22,4 @@ typedef NS_ENUM(NSUInteger, ToxDHTNodeConnectionStatus) {
 @property (nonatomic, copy) NSString *dhtKey;
 @property (nonatomic, assign) ToxDHTNodeConnectionStatus connectionStatus;
 
-
 @end

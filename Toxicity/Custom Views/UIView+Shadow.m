@@ -12,7 +12,7 @@
 
 @implementation UIView (Shadow)
 
-- (void) makeInsetShadow
+- (void)makeInsetShadow
 {
     NSArray *shadowDirections = [NSArray arrayWithObjects:@"top", @"bottom", @"left" , @"right" , nil];
     UIColor *color = [UIColor colorWithRed:(0.0) green:(0.0) blue:(0.0) alpha:0.5];
@@ -23,7 +23,7 @@
     [self addSubview:shadowView];
 }
 
-- (void) makeInsetShadowWithRadius:(float)radius Alpha:(float)alpha
+- (void)makeInsetShadowWithRadius:(float)radius Alpha:(float)alpha
 {
     NSArray *shadowDirections = [NSArray arrayWithObjects:@"top", @"bottom", @"left" , @"right" , nil];
     UIColor *color = [UIColor colorWithRed:(0.0) green:(0.0) blue:(0.0) alpha:alpha];
@@ -34,7 +34,7 @@
     [self addSubview:shadowView];
 }
 
-- (void) makeInsetShadowWithRadius:(float)radius Color:(UIColor *)color Directions:(NSArray *)directions
+- (void)makeInsetShadowWithRadius:(float)radius Color:(UIColor *)color Directions:(NSArray *)directions
 {
     UIView *shadowView = [self createShadowViewWithRadius:radius Color:color Directions:directions];
     shadowView.tag = kShadowViewTag;
@@ -42,7 +42,7 @@
     [self addSubview:shadowView];
 }
 
-- (UIView *) createShadowViewWithRadius:(float)radius Color:(UIColor *)color Directions:(NSArray *)directions
+- (UIView *)createShadowViewWithRadius:(float)radius Color:(UIColor *)color Directions:(NSArray *)directions
 {
     UIView *shadowView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
     shadowView.backgroundColor = [UIColor clearColor];
