@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B9044EB518DD606400031DA5 /* InputCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B9044EB218DD606400031DA5 /* InputCell.m */; };
+		B9044EB618DD606400031DA5 /* StatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B9044EB418DD606400031DA5 /* StatusCell.m */; };
+		B9044EBD18DD609300031DA5 /* TXCQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9044EBC18DD609300031DA5 /* TXCQRCodeViewController.m */; };
+		B9044EC018DD60C900031DA5 /* TXCStatusLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = B9044EBF18DD60C900031DA5 /* TXCStatusLabel.m */; };
+		B9044EC318DD60D400031DA5 /* UIColor+ToxicityColors.m in Sources */ = {isa = PBXBuildFile; fileRef = B9044EC218DD60D400031DA5 /* UIColor+ToxicityColors.m */; };
 		B94956731841B50500462145 /* assoc.c in Sources */ = {isa = PBXBuildFile; fileRef = B94956711841B50400462145 /* assoc.c */; };
 		B94F2C5B17AF25C0003EA6E8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B94F2C5A17AF25C0003EA6E8 /* UIKit.framework */; };
 		B94F2C5D17AF25C0003EA6E8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B94F2C5C17AF25C0003EA6E8 /* Foundation.framework */; };
@@ -280,7 +285,6 @@
 		B9EE597417FB528800D8A388 /* status-yellow-navbar-ios7.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE596417FB528700D8A388 /* status-yellow-navbar-ios7.png */; };
 		B9EE597517FB528800D8A388 /* status-yellow-navbar-ios7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE596517FB528700D8A388 /* status-yellow-navbar-ios7@2x.png */; };
 		B9F9DB2518BEAE7F003BD982 /* JSQSystemSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */; };
-		D10DE310ACEA887931B3EB19 /* TXCStatusLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D10DE8806FF7F74520570681 /* TXCStatusLabel.m */; };
 		D10DE4842C671296268A7465 /* icon-error.png in Resources */ = {isa = PBXBuildFile; fileRef = D10DEA55F28C6351A3B921EB /* icon-error.png */; };
 		D10DE9E421F733D9AA69A29A /* icon-error@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D10DEEA19E3E8D8C6EA4564C /* icon-error@2x.png */; };
 		D10DEA5426B219B3EF863F37 /* icon-success@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D10DE0373CF51F4309BF29EF /* icon-success@2x.png */; };
@@ -289,13 +293,9 @@
 		D10DEC65DEE009BDDC95B22D /* icon-info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D10DED16627157F8F515D708 /* icon-info@2x.png */; };
 		D10DECF573F0A874063524E1 /* icon-info.png in Resources */ = {isa = PBXBuildFile; fileRef = D10DE0365B5756ADB36AB5BD /* icon-info.png */; };
 		D10DEDBEA0020FCC53AFB8BE /* TWMessageBarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D10DE4CBA938DFFEDF9D4FF2 /* TWMessageBarManager.m */; };
-		D10DEF2046395C939583169B /* UIColor+ToxicityColors.m in Sources */ = {isa = PBXBuildFile; fileRef = D10DEA55B16B77901E909CA9 /* UIColor+ToxicityColors.m */; };
 		D10DEF75F39010C8A99DBB4A /* TWMessageBarManager.podspec in Resources */ = {isa = PBXBuildFile; fileRef = D10DE2A86747153E07EC3F3A /* TWMessageBarManager.podspec */; };
 		E66FE47518D6530300124555 /* libzbar.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66FE46F18D645E800124555 /* libzbar.a */; };
 		E66FE4B918DCC49200124555 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E66FE4B818DCC49200124555 /* Images.xcassets */; };
-		E6C97FE118C3327C007368F9 /* InputCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE018C3327C007368F9 /* InputCell.m */; };
-		E6C97FE418C39677007368F9 /* StatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C97FE318C39677007368F9 /* StatusCell.m */; };
-		E6F9FC9318C9068A00C1D2C1 /* TXCQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6F9FC9218C9068A00C1D2C1 /* TXCQRCodeViewController.m */; };
 		E6F9FC9C18C90CF800C1D2C1 /* libQREncoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6F9FC9918C90CA500C1D2C1 /* libQREncoder.a */; };
 /* End PBXBuildFile section */
 
@@ -345,6 +345,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B9044EB118DD606400031DA5 /* InputCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputCell.h; path = Settings/Cells/InputCell.h; sourceTree = "<group>"; };
+		B9044EB218DD606400031DA5 /* InputCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InputCell.m; path = Settings/Cells/InputCell.m; sourceTree = "<group>"; };
+		B9044EB318DD606400031DA5 /* StatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusCell.h; path = Settings/Cells/StatusCell.h; sourceTree = "<group>"; };
+		B9044EB418DD606400031DA5 /* StatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StatusCell.m; path = Settings/Cells/StatusCell.m; sourceTree = "<group>"; };
+		B9044EBB18DD609300031DA5 /* TXCQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCQRCodeViewController.h; path = Settings/TXCQRCodeViewController.h; sourceTree = "<group>"; };
+		B9044EBC18DD609300031DA5 /* TXCQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCQRCodeViewController.m; path = Settings/TXCQRCodeViewController.m; sourceTree = "<group>"; };
+		B9044EBE18DD60C900031DA5 /* TXCStatusLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCStatusLabel.h; path = "Custom Views/TXCStatusLabel.h"; sourceTree = "<group>"; };
+		B9044EBF18DD60C900031DA5 /* TXCStatusLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCStatusLabel.m; path = "Custom Views/TXCStatusLabel.m"; sourceTree = "<group>"; };
+		B9044EC118DD60D400031DA5 /* UIColor+ToxicityColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+ToxicityColors.h"; path = "Other/UIColor+ToxicityColors.h"; sourceTree = "<group>"; };
+		B9044EC218DD60D400031DA5 /* UIColor+ToxicityColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+ToxicityColors.m"; path = "Other/UIColor+ToxicityColors.m"; sourceTree = "<group>"; };
 		B94956711841B50400462145 /* assoc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = assoc.c; path = "ProjectTox-Core/toxcore/assoc.c"; sourceTree = "<group>"; };
 		B94956721841B50500462145 /* assoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = assoc.h; path = "ProjectTox-Core/toxcore/assoc.h"; sourceTree = "<group>"; };
 		B94F2C5717AF25C0003EA6E8 /* Toxicity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Toxicity.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -778,28 +788,18 @@
 		B9F9DB2418BEAE7F003BD982 /* JSQSystemSoundPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSQSystemSoundPlayer.m; path = JSQSystemSoundPlayer/Classes/JSQSystemSoundPlayer.m; sourceTree = "<group>"; };
 		D10DE0365B5756ADB36AB5BD /* icon-info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-info.png"; sourceTree = "<group>"; };
 		D10DE0373CF51F4309BF29EF /* icon-success@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-success@2x.png"; sourceTree = "<group>"; };
-		D10DE22E3A1FF7134B362134 /* TXCStatusLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TXCStatusLabel.h; sourceTree = "<group>"; };
 		D10DE26DC4276843C4A2E6C0 /* TXCChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCChatViewController.h; path = Friends/TXCChatViewController.h; sourceTree = "<group>"; };
 		D10DE2A86747153E07EC3F3A /* TWMessageBarManager.podspec */ = {isa = PBXFileReference; lastKnownFileType = file.podspec; path = TWMessageBarManager.podspec; sourceTree = "<group>"; };
 		D10DE3D6DD8A2A52F85C31D3 /* TWMessageBarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWMessageBarManager.h; sourceTree = "<group>"; };
 		D10DE4CBA938DFFEDF9D4FF2 /* TWMessageBarManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWMessageBarManager.m; sourceTree = "<group>"; };
-		D10DE558FA5CBC9EB58F8C63 /* UIColor+ToxicityColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ToxicityColors.h"; sourceTree = "<group>"; };
 		D10DE7C7B16E7F2A64820326 /* icon-success.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-success.png"; sourceTree = "<group>"; };
-		D10DE8806FF7F74520570681 /* TXCStatusLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TXCStatusLabel.m; sourceTree = "<group>"; };
-		D10DEA55B16B77901E909CA9 /* UIColor+ToxicityColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ToxicityColors.m"; sourceTree = "<group>"; };
 		D10DEA55F28C6351A3B921EB /* icon-error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-error.png"; sourceTree = "<group>"; };
 		D10DED16627157F8F515D708 /* icon-info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-info@2x.png"; sourceTree = "<group>"; };
 		D10DEEA19E3E8D8C6EA4564C /* icon-error@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-error@2x.png"; sourceTree = "<group>"; };
 		D10DEF2B151C990D72A68D80 /* TXCChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCChatViewController.m; path = Friends/TXCChatViewController.m; sourceTree = "<group>"; };
 		E66FE45D18D645E400124555 /* zbar.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = zbar.xcodeproj; path = ../Submodules/ZBarSDK/iphone/zbar.xcodeproj; sourceTree = "<group>"; };
 		E66FE4B818DCC49200124555 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		E6C97FDF18C3327C007368F9 /* InputCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputCell.h; sourceTree = "<group>"; };
-		E6C97FE018C3327C007368F9 /* InputCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputCell.m; sourceTree = "<group>"; };
-		E6C97FE218C39677007368F9 /* StatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusCell.h; sourceTree = "<group>"; };
-		E6C97FE318C39677007368F9 /* StatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusCell.m; sourceTree = "<group>"; };
 		E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QREncoder.xcodeproj; path = ../Submodules/ObjQREncoder/src/QREncoder.xcodeproj; sourceTree = "<group>"; };
-		E6F9FC9118C9068A00C1D2C1 /* TXCQRCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TXCQRCodeViewController.h; sourceTree = "<group>"; };
-		E6F9FC9218C9068A00C1D2C1 /* TXCQRCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TXCQRCodeViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2002,14 +2002,14 @@
 		B98C9C3717DC0BA2008B10E0 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				B9044EBE18DD60C900031DA5 /* TXCStatusLabel.h */,
+				B9044EBF18DD60C900031DA5 /* TXCStatusLabel.m */,
 				B98C9C3B17DC0C36008B10E0 /* TXCFriendCell.h */,
 				B98C9C3C17DC0C36008B10E0 /* TXCFriendCell.m */,
 				B9D5C95B17E3E31500B84BEF /* TXCFriendListHeader.h */,
 				B9D5C95C17E3E31500B84BEF /* TXCFriendListHeader.m */,
 				B98C9C4117DC16D8008B10E0 /* UIView+Shadow.h */,
 				B98C9C4217DC16D8008B10E0 /* UIView+Shadow.m */,
-				D10DE22E3A1FF7134B362134 /* TXCStatusLabel.h */,
-				D10DE8806FF7F74520570681 /* TXCStatusLabel.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -2020,10 +2020,10 @@
 				E6C97FDE18C33231007368F9 /* Cells */,
 				B9BB99DF17B0E39200A1ACEC /* TXCNewDHTNodeViewController.h */,
 				B9BB99E017B0E39200A1ACEC /* TXCNewDHTNodeViewController.m */,
+				B9044EBB18DD609300031DA5 /* TXCQRCodeViewController.h */,
+				B9044EBC18DD609300031DA5 /* TXCQRCodeViewController.m */,
 				B9BB99E117B0E39200A1ACEC /* TXCSettingsViewController.h */,
 				B9BB99E217B0E39200A1ACEC /* TXCSettingsViewController.m */,
-				E6F9FC9118C9068A00C1D2C1 /* TXCQRCodeViewController.h */,
-				E6F9FC9218C9068A00C1D2C1 /* TXCQRCodeViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -2109,8 +2109,8 @@
 		D10DEC9C8B1A8A85CB245B78 /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				D10DE558FA5CBC9EB58F8C63 /* UIColor+ToxicityColors.h */,
-				D10DEA55B16B77901E909CA9 /* UIColor+ToxicityColors.m */,
+				B9044EC118DD60D400031DA5 /* UIColor+ToxicityColors.h */,
+				B9044EC218DD60D400031DA5 /* UIColor+ToxicityColors.m */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -2127,10 +2127,10 @@
 		E6C97FDE18C33231007368F9 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				E6C97FDF18C3327C007368F9 /* InputCell.h */,
-				E6C97FE018C3327C007368F9 /* InputCell.m */,
-				E6C97FE218C39677007368F9 /* StatusCell.h */,
-				E6C97FE318C39677007368F9 /* StatusCell.m */,
+				B9044EB118DD606400031DA5 /* InputCell.h */,
+				B9044EB218DD606400031DA5 /* InputCell.m */,
+				B9044EB318DD606400031DA5 /* StatusCell.h */,
+				B9044EB418DD606400031DA5 /* StatusCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -2385,6 +2385,7 @@
 				B9789EDF18C040A5004F1257 /* crypto_box.c in Sources */,
 				B98040FB18BC886B0069590C /* JSDismissiveTextView.m in Sources */,
 				B9789F1F18C040A5004F1257 /* ge_double_scalarmult.c in Sources */,
+				B9044EBD18DD609300031DA5 /* TXCQRCodeViewController.m in Sources */,
 				B9789F5C18C040A5004F1257 /* compat.c in Sources */,
 				B9789F4A18C040A5004F1257 /* xor_salsa2012.c in Sources */,
 				B9789F4E18C040A5004F1257 /* stream_salsa208_api.c in Sources */,
@@ -2395,16 +2396,15 @@
 				B9748755189AE5EC0064B6FF /* onion_client.c in Sources */,
 				B9F9DB2518BEAE7F003BD982 /* JSQSystemSoundPlayer.m in Sources */,
 				B9789EEB18C040A5004F1257 /* core_salsa208_api.c in Sources */,
-				E6C97FE118C3327C007368F9 /* InputCell.m in Sources */,
 				B9789EED18C040A5004F1257 /* generichash_blake2_api.c in Sources */,
 				B98040F618BC886B0069590C /* UIImage+JSMessagesView.m in Sources */,
 				B9789F5F18C040A5004F1257 /* version.c in Sources */,
+				B9044EC018DD60C900031DA5 /* TXCStatusLabel.m in Sources */,
 				B9789F4318C040A5004F1257 /* aes256-ctr.c in Sources */,
 				B9789EFB18C040A5004F1257 /* auth_poly1305_53.c in Sources */,
 				B9789F0518C040A5004F1257 /* base_curve25519_ref.c in Sources */,
 				B9789EDA18C040A5004F1257 /* hmac_hmacsha256.c in Sources */,
 				B9789F2318C040A5004F1257 /* ge_p1p1_to_p2.c in Sources */,
-				E6F9FC9318C9068A00C1D2C1 /* TXCQRCodeViewController.m in Sources */,
 				B9789F0618C040A5004F1257 /* smult_curve25519_ref.c in Sources */,
 				B980410018BC886B0069590C /* JSMessageTableView.m in Sources */,
 				B9789F5018C040A5004F1257 /* xor_xsalsa20.c in Sources */,
@@ -2428,6 +2428,7 @@
 				B9789EF718C040A5004F1257 /* blocks_sha256.c in Sources */,
 				B9789F4718C040A5004F1257 /* stream_salsa20_ref.c in Sources */,
 				B98040FE18BC886B0069590C /* JSMessageSoundEffect.m in Sources */,
+				B9044EB618DD606400031DA5 /* StatusCell.m in Sources */,
 				B94956731841B50500462145 /* assoc.c in Sources */,
 				B9789EFA18C040A5004F1257 /* crypto_onetimeauth.c in Sources */,
 				B9789F2418C040A5004F1257 /* ge_p1p1_to_p3.c in Sources */,
@@ -2441,7 +2442,6 @@
 				B9789EE518C040A5004F1257 /* core_hsalsa20_api.c in Sources */,
 				B9789F4418C040A5004F1257 /* stream_aes256estream_api.c in Sources */,
 				B9789F2518C040A5004F1257 /* ge_p2_0.c in Sources */,
-				E6C97FE418C39677007368F9 /* StatusCell.m in Sources */,
 				B9789EF918C040A5004F1257 /* blocks_sha512.c in Sources */,
 				B9789EE818C040A5004F1257 /* core_salsa20.c in Sources */,
 				B9789F0F18C040A5004F1257 /* fe_1.c in Sources */,
@@ -2533,14 +2533,14 @@
 				B9789F3C18C040A5004F1257 /* beforenm_aes128ctr.c in Sources */,
 				B9789F3918C040A5004F1257 /* sign_edwards25519sha512batch.c in Sources */,
 				B9789F1D18C040A5004F1257 /* fe_tobytes.c in Sources */,
+				B9044EC318DD60D400031DA5 /* UIColor+ToxicityColors.m in Sources */,
 				B9A5343117EAD17800F2FD94 /* TXCGroupChatViewController.m in Sources */,
 				B9789F2818C040A5004F1257 /* ge_p3_dbl.c in Sources */,
 				B9789EF418C040A5004F1257 /* hash_sha512_api.c in Sources */,
 				B9789EDB18C040A5004F1257 /* verify_hmacsha256.c in Sources */,
 				B9789F2618C040A5004F1257 /* ge_p2_dbl.c in Sources */,
 				B9789F0918C040A5004F1257 /* secretbox_xsalsa20poly1305_api.c in Sources */,
-				D10DEF2046395C939583169B /* UIColor+ToxicityColors.m in Sources */,
-				D10DE310ACEA887931B3EB19 /* TXCStatusLabel.m in Sources */,
+				B9044EB518DD606400031DA5 /* InputCell.m in Sources */,
 				D10DEDBEA0020FCC53AFB8BE /* TWMessageBarManager.m in Sources */,
 				D10DEBE28D0D1DDA48DE915D /* TXCChatViewController.m in Sources */,
 			);
