@@ -24,8 +24,6 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 
 @implementation TXCAppDelegate
 
-@synthesize toxMainThread;
-
 #pragma mark - Application Delegation Methods
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -38,6 +36,23 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 
     // Tox thread
     self.toxMainThread = dispatch_queue_create("com.Jman.Toxicity", DISPATCH_QUEUE_SERIAL);
+    self.toxMainThreadState = TXCThreadState_killed;
+    self.toxBackgroundThread = dispatch_queue_create("com.Jman.ToxicityBG", DISPATCH_QUEUE_SERIAL);
+    self.toxBackgroundThreadState = TXCThreadState_killed;
+    
+    self.dhtNodes = @[
+                      @{@"ip": @"192.254.75.98", @"port": @"33445", @"key": @"FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"},
+                      @{@"ip": @"192.184.81.118", @"port": @"33445", @"key": @"5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"},
+                      @{@"ip": @"144.76.60.215", @"port": @"33445", @"key": @"DDCF277B8B45B0D357D78AA4E201766932DF6CDB7179FC7D5C9F3C2E8E705326"},
+                      @{@"ip": @"193.107.16.73", @"port": @"33445", @"key": @"AE27E1E72ADA3DC423C60EEBACA241456174048BE76A283B41AD32D953182D49"},
+                      @{@"ip": @"66.74.15.98", @"port": @"33445", @"key": @"20C797E098701A848B07D0384222416B0EFB60D08CECB925B860CAEAAB572067"}
+                      ];
+    self.lastAttemptedConnect = time(0);
+    srand(self.lastAttemptedConnect);
+    
+    self.toxWaitData = NULL;
+    self.toxWaitBufferSize = tox_wait_data_size();
+    self.toxWaitData = malloc(self.toxWaitBufferSize);
     
     return YES;
 }
@@ -46,17 +61,39 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    
-
-    [self killToxThread];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    // First and foremost kill our main thread. This is a must.
+    [self killToxThreadInBackground:NO];
+    while (self.toxMainThreadState != TXCThreadState_killed) {
+        // Wait for thread to officially end
+    }
+
     
+    if (![[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)]) {
+        if (![[UIDevice currentDevice] isMultitaskingSupported]) {
+            return;
+        }
+        return;
+    }
     
+    // Multitasking supported
+    __block UIBackgroundTaskIdentifier background_tox_task = UIBackgroundTaskInvalid;
+    
+    [application beginBackgroundTaskWithExpirationHandler:^{
+        [application endBackgroundTask:background_tox_task];
+        background_tox_task = UIBackgroundTaskInvalid;
+    }];
+    
+    // Run Tox thread in background
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self startToxThreadInBackground:YES];
+        
+        [application endBackgroundTask:background_tox_task];
+        background_tox_task = UIBackgroundTaskInvalid;
+    });
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -70,7 +107,15 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     if ([[TXCSingleton sharedSingleton] toxCoreInstance] == NULL) {
         [self setupTox];
     }
-    [self startToxThread];
+    // Kill BG thread, if there is any.
+    [self killToxThreadInBackground:YES];
+    
+    while (self.toxBackgroundThreadState != TXCThreadState_killed) {
+        // Wait for thread to officially end
+    }
+    
+    // Start main thread again.
+    [self startToxThreadInBackground:NO];
     
 }
 
@@ -78,8 +123,16 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     
+    // Kill any threads present
+    [self killToxThreadInBackground:YES];
+    [self killToxThreadInBackground:NO];
     
-    [self killToxThread];
+    // Wait for them to end (?)
+    while (self.toxMainThreadState != TXCThreadState_killed && self.toxBackgroundThreadState != TXCThreadState_killed) {
+        // Wait for both threads (only one should be running at a time though) to end
+    }
+    
+    // Properly kill tox.
     tox_kill([[TXCSingleton sharedSingleton] toxCoreInstance]);
     [[TXCSingleton sharedSingleton] setToxCoreInstance:NULL];
 }
@@ -1030,33 +1083,62 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
 
 #pragma mark - Thread methods
 
-- (void)killToxThread {
-    self.toxMainThreadShouldEnd = YES;
+- (void)killToxThreadInBackground:(BOOL)inBackground {
+    switch (inBackground) {
+        case NO:
+            NSLog(@"Killing main thread");
+            if (self.toxMainThreadState != TXCThreadState_killed) {
+                self.toxMainThreadState = TXCThreadState_waitingToKill;
+            }
+            break;
+            
+        case YES:
+            NSLog(@"Killing background thread");
+            if (self.toxBackgroundThreadState != TXCThreadState_killed) {
+                self.toxBackgroundThreadState = TXCThreadState_waitingToKill;
+            }
+            
+        default:
+            break;
+    }
 }
 
-- (void)startToxThread {
-    self.dhtNodes = @[
-                 @{@"ip": @"192.254.75.98", @"port": @"33445", @"key": @"FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"},
-                 @{@"ip": @"192.184.81.118", @"port": @"33445", @"key": @"5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"},
-                 @{@"ip": @"144.76.60.215", @"port": @"33445", @"key": @"DDCF277B8B45B0D357D78AA4E201766932DF6CDB7179FC7D5C9F3C2E8E705326"},
-                 @{@"ip": @"193.107.16.73", @"port": @"33445", @"key": @"AE27E1E72ADA3DC423C60EEBACA241456174048BE76A283B41AD32D953182D49"},
-                 @{@"ip": @"66.74.15.98", @"port": @"33445", @"key": @"20C797E098701A848B07D0384222416B0EFB60D08CECB925B860CAEAAB572067"}
-                ];
-    self.lastAttemptedConnect = time(0);
-    srand(self.lastAttemptedConnect);
+- (void)startToxThreadInBackground:(BOOL)inBackground {
     
-    self.toxWaitData = NULL;
-    self.toxWaitBufferSize = tox_wait_data_size();
-    self.toxWaitData = malloc(self.toxWaitBufferSize);
 
-    
-    self.toxMainThreadShouldEnd = NO;
-    dispatch_async(self.toxMainThread, ^{
-        [self toxCoreLoop];
-    });
+    switch (inBackground) {
+        case NO: {
+            if (self.toxMainThreadState == TXCThreadState_running) {
+                NSLog(@"Trying to start main thread while it's already running.");
+                return;
+            }
+            NSLog(@"Starting main thread");
+            self.toxMainThreadState = TXCThreadState_running;
+            dispatch_async(self.toxMainThread, ^{
+                [self toxCoreLoopInBackground:NO];
+            });
+            break;
+        }
+            
+        case YES: {
+            if (self.toxBackgroundThreadState == TXCThreadState_running) {
+                NSLog(@"Trying to start background thread while it's already running.");
+                return;
+            }
+            NSLog(@"Starting background thread");
+            self.toxBackgroundThreadState = TXCThreadState_running;
+            dispatch_async(self.toxBackgroundThread, ^{
+                [self toxCoreLoopInBackground:YES];
+            });
+            break;
+        }
+            
+        default:
+            break;
+    }
 }
 
-- (void)toxCoreLoop {
+- (void)toxCoreLoopInBackground:(BOOL)inBackground {
     
     Tox *toxInstance = [[TXCSingleton sharedSingleton] toxCoreInstance];
     
@@ -1101,12 +1183,41 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     }
 
     // Keep going
-    if (self.toxMainThreadShouldEnd == NO) {
-        dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(33333 * NSEC_PER_USEC));
-        dispatch_after(waitTime, toxMainThread, ^{
-            [self toxCoreLoop];
-        });
+    switch (inBackground) {
+        case NO: {
+            if (self.toxMainThreadState == TXCThreadState_running || self.toxMainThreadState == TXCThreadState_killed) {
+                dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(33333 * NSEC_PER_USEC));
+                dispatch_after(waitTime, self.toxMainThread, ^{
+                    [self toxCoreLoopInBackground:NO];
+                });
+            } else if (self.toxMainThreadState == TXCThreadState_waitingToKill) {
+                // Kill ourself
+                NSLog(@"Main thread killed");
+                self.toxMainThreadState = TXCThreadState_killed;
+                return;
+            }
+            break;
+        }
+            
+        case YES: {
+            if (self.toxBackgroundThreadState == TXCThreadState_running || self.toxBackgroundThreadState == TXCThreadState_killed) {
+                dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(50000 * NSEC_PER_USEC));
+                dispatch_after(waitTime, self.toxBackgroundThread, ^{
+                    [self toxCoreLoopInBackground:YES];
+                });
+            } else if (self.toxBackgroundThreadState == TXCThreadState_waitingToKill) {
+                // Kill ourself
+                NSLog(@"Background thread killed");
+                self.toxBackgroundThreadState = TXCThreadState_killed;
+                return;
+            }
+            break;
+        }
+            
+        default:
+            break;
     }
+    
     
     
     if (self.on) {
