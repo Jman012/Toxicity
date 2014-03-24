@@ -26,13 +26,16 @@ typedef NS_ENUM(NSUInteger, TXCThreadState) {
 
 @interface TXCAppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
 
+@property (strong, nonatomic) UIWindow *window;
+
+// Tox lopp stuff
 @property (nonatomic, assign) int on;
 @property (nonatomic, copy) NSArray *dhtNodes;
 @property (nonatomic, assign) int lastAttemptedConnect;
 @property (nonatomic, assign) uint8_t *toxWaitData;
 @property (nonatomic, assign) uint16_t toxWaitBufferSize;
-@property (strong, nonatomic) UIWindow *window;
 
+// Tox thread stuff
 @property (nonatomic, strong) dispatch_queue_t toxMainThread;
 @property (nonatomic, assign) TXCThreadState toxMainThreadState;
 @property (nonatomic, strong) dispatch_queue_t toxBackgroundThread;
