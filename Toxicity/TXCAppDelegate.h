@@ -32,6 +32,7 @@ typedef NS_ENUM(NSUInteger, TXCThreadState) {
 @property (nonatomic, assign) uint8_t *toxWaitData;
 @property (nonatomic, assign) uint16_t toxWaitBufferSize;
 @property (strong, nonatomic) UIWindow *window;
+
 @property (nonatomic, strong) dispatch_queue_t toxMainThread;
 @property (nonatomic, assign) TXCThreadState toxMainThreadState;
 @property (nonatomic, strong) dispatch_queue_t toxBackgroundThread;
