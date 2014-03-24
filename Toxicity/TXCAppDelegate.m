@@ -40,6 +40,7 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     self.toxBackgroundThread = dispatch_queue_create("com.Jman.ToxicityBG", DISPATCH_QUEUE_SERIAL);
     self.toxBackgroundThreadState = TXCThreadState_killed;
     
+    // TODO: make this updatable
     self.dhtNodes = @[
                       @{@"ip": @"192.254.75.98", @"port": @"33445", @"key": @"FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"},
                       @{@"ip": @"192.184.81.118", @"port": @"33445", @"key": @"5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"},
