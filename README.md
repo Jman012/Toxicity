@@ -24,7 +24,7 @@ Tox is a FOSS (free and open source) instant messenger application aimed to incr
 
 ### License:
 
-   Copyright 2013 James Linnell
+   Copyright 2014 James Linnell
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
