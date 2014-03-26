@@ -58,8 +58,10 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     
     UILocalNotification *locationNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if (locationNotification) {
-        application.applicationIconBadgeNumber = 0;
+        // Go to most recent chat message
     }
+    application.applicationIconBadgeNumber = 0;
+
     
     return YES;
 }
