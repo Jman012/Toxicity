@@ -55,7 +55,23 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     self.toxWaitBufferSize = tox_wait_data_size();
     self.toxWaitData = malloc(self.toxWaitBufferSize);
     
+    
+    UILocalNotification *locationNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if (locationNotification) {
+        application.applicationIconBadgeNumber = 0;
+    }
+    
     return YES;
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    if ([application applicationState] == UIApplicationStateActive) {
+        [[TWMessageBarManager sharedInstance] showMessageWithTitle:@"New Message"
+                                                       description:notification.alertBody
+                                                              type:TWMessageBarMessageTypeInfo];
+    }
+    application.applicationIconBadgeNumber = 0;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -835,21 +851,30 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
         [theMessage setSenderKey:[[[[TXCSingleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber] publicKey]];
         
         
-        //add to singleton
-        //if the message coming through is not to the currently opened chat window, then uialertview it
-        if (friendnumber != [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 1) {
+        // If the message coming through is not to the currently opened chat window, then fire a notification
+        if ((friendnumber != [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] row] &&
+            [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 1) ||
+            [[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground ||
+            [[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive) {
             NSMutableArray *tempMessages = [[[[TXCSingleton sharedSingleton] mainFriendMessages] objectAtIndex:friendnumber] mutableCopy];
             [tempMessages addObject:theMessage];
             
+            // Add message to singleton
             [[TXCSingleton sharedSingleton] mainFriendMessages][friendnumber] = [tempMessages copy];
             
-            TXCFriendObject *tempFriend = [[[TXCSingleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
-            [[TWMessageBarManager sharedInstance] showMessageWithTitle:[NSString stringWithFormat:@"Message from: %@", tempFriend.nickname]
-                                                           description:@((char *)string)
-                                                                  type:TWMessageBarMessageTypeInfo];
-            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage userInfo:@{@"message":@((char *)string),@"friendNumber":@(friendnumber), @"friend":tempFriend} ];
+            // Fire a local notification for the message
+            UILocalNotification *friendMessageNotification = [[UILocalNotification alloc] init];
+            friendMessageNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
+            friendMessageNotification.alertBody = [NSString stringWithFormat:@"[%@]: %@", theMessage.senderName, theMessage.message];
+            friendMessageNotification.alertAction = @"show the message";
+            friendMessageNotification.timeZone = [NSTimeZone defaultTimeZone];
+            friendMessageNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+            [[UIApplication sharedApplication] scheduleLocalNotification:friendMessageNotification];
+            NSLog(@"Sent UILocalNotification: %@", friendMessageNotification.alertBody);
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage];
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage userInfo:@{@"message":@((char *)string),@"friendNumber":@(friendnumber)} ];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage];
         }
     });
 }
@@ -882,15 +907,25 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
         theMessage.senderKey = [[[[TXCSingleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPulicKey];
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it
-        if (groupnumber != [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 0) {
+        if ((groupnumber != [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] row] &&
+            [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 0) ||
+            [[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground ||
+            [[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive) {
             NSMutableArray *tempMessages = [[[[TXCSingleton sharedSingleton] groupMessages] objectAtIndex:groupnumber] mutableCopy];
             [tempMessages addObject:theMessage];
 
+            // Add message to singleton
             [[TXCSingleton sharedSingleton] groupMessages][groupnumber] = [tempMessages copy];
             
-            [[TWMessageBarManager sharedInstance] showMessageWithTitle:[NSString stringWithFormat:@"Message from Group #%d", groupnumber]
-                                                           description:theirMessage
-                                                                  type:TWMessageBarMessageTypeSuccess];
+            // Fire a local notification for the message
+            UILocalNotification *groupMessageNotification = [[UILocalNotification alloc] init];
+            groupMessageNotification.fireDate = [NSDate date];
+            groupMessageNotification.alertBody = [NSString stringWithFormat:@"[Group %d][%@]: %@", groupnumber, theirName, theirMessage];
+            groupMessageNotification.alertAction = @"show the message";
+            groupMessageNotification.timeZone = [NSTimeZone defaultTimeZone];
+            groupMessageNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+            [[UIApplication sharedApplication] scheduleLocalNotification:groupMessageNotification];
+            
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage];
         }

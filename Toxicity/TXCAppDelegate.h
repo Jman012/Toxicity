@@ -24,6 +24,11 @@ typedef NS_ENUM(NSUInteger, TXCThreadState) {
     TXCThreadState_killed
 };
 
+typedef NS_ENUM(NSUInteger, TXCLocalNotification) {
+    TXCLocalNotification_friendMessage,
+    TXCLocalNotification_groupMessage
+};
+
 @interface TXCAppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
