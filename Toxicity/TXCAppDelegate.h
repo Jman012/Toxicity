@@ -33,7 +33,7 @@ typedef NS_ENUM(NSUInteger, TXCLocalNotification) {
 
 @property (strong, nonatomic) UIWindow *window;
 
-// Tox lopp stuff
+// Tox loop stuff
 @property (nonatomic, assign) int on;
 @property (nonatomic, copy) NSArray *dhtNodes;
 @property (nonatomic, assign) int lastAttemptedConnect;
@@ -47,6 +47,7 @@ typedef NS_ENUM(NSUInteger, TXCLocalNotification) {
 @property (nonatomic, assign) TXCThreadState toxBackgroundThreadState;
 
 unsigned char * hex_string_to_bin(char hex_string[]);
+int friendNumForID(NSString *theKey);
 - (void)toxCoreLoopInBackground:(BOOL)inBackground;
 
 - (void)connectToDHTWithIP:(TXCDHTNodeObject *)theDHTInfo;
