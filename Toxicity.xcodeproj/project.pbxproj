@@ -117,6 +117,7 @@
 		B9D859E017C34542005FD2D2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859DF17C34542005FD2D2 /* CoreVideo.framework */; };
 		B9D859E217C34553005FD2D2 /* libiconv.2.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */; };
 		B9D85A2317CB0942005FD2D2 /* TXCRequestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D85A2117CB0942005FD2D2 /* TXCRequestsTableViewController.m */; };
+		B9DABF4F18E5445400B2A6B2 /* libProjectTox-Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9DABF4C18E5439400B2A6B2 /* libProjectTox-Core.a */; };
 		B9EE596617FB528700D8A388 /* status-gray-ios7.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE595617FB528700D8A388 /* status-gray-ios7.png */; };
 		B9EE596717FB528700D8A388 /* status-gray-ios7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE595717FB528700D8A388 /* status-gray-ios7@2x.png */; };
 		B9EE596817FB528800D8A388 /* status-gray-navbar-ios7.png in Resources */ = {isa = PBXBuildFile; fileRef = B9EE595817FB528700D8A388 /* status-gray-navbar-ios7.png */; };
@@ -149,6 +150,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B9DABF4B18E5439400B2A6B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9DABF4618E5439300B2A6B2 /* ProjectTox-Core.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B9DABB3418E539A100B2A6B2;
+			remoteInfo = "ProjectTox-Core";
+		};
+		B9DABF5218E5446400B2A6B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9DABF4618E5439300B2A6B2 /* ProjectTox-Core.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B9DABB3318E539A100B2A6B2;
+			remoteInfo = "ProjectTox-Core";
+		};
 		E66FE46E18D645E800124555 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E66FE45D18D645E400124555 /* zbar.xcodeproj */;
@@ -342,6 +357,8 @@
 		B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.4.0.dylib; path = usr/lib/libiconv.2.4.0.dylib; sourceTree = SDKROOT; };
 		B9D85A2017CB0942005FD2D2 /* TXCRequestsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCRequestsTableViewController.h; path = Requests/TXCRequestsTableViewController.h; sourceTree = "<group>"; };
 		B9D85A2117CB0942005FD2D2 /* TXCRequestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCRequestsTableViewController.m; path = Requests/TXCRequestsTableViewController.m; sourceTree = "<group>"; };
+		B9DABF4618E5439300B2A6B2 /* ProjectTox-Core.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ProjectTox-Core.xcodeproj"; path = "Submodules/ProjectTox-Core/ProjectTox-Core.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		B9DABF5018E5445900B2A6B2 /* libsodium.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsodium.a; path = "Submodules/ProjectTox-Core/sodium/build/Debug-iphoneos/libsodium.a"; sourceTree = "<group>"; };
 		B9EE595617FB528700D8A388 /* status-gray-ios7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray-ios7.png"; path = "Images/status-gray-ios7.png"; sourceTree = "<group>"; };
 		B9EE595717FB528700D8A388 /* status-gray-ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray-ios7@2x.png"; path = "Images/status-gray-ios7@2x.png"; sourceTree = "<group>"; };
 		B9EE595817FB528700D8A388 /* status-gray-navbar-ios7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-gray-navbar-ios7.png"; path = "Images/status-gray-navbar-ios7.png"; sourceTree = "<group>"; };
@@ -381,6 +398,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9DABF4F18E5445400B2A6B2 /* libProjectTox-Core.a in Frameworks */,
 				E66FE47518D6530300124555 /* libzbar.a in Frameworks */,
 				E6F9FC9C18C90CF800C1D2C1 /* libQREncoder.a in Frameworks */,
 				B9D859E217C34553005FD2D2 /* libiconv.2.4.0.dylib in Frameworks */,
@@ -419,6 +437,7 @@
 		B94F2C5917AF25C0003EA6E8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B9DABF5018E5445900B2A6B2 /* libsodium.a */,
 				B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */,
 				B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */,
 				B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */,
@@ -762,6 +781,14 @@
 			name = Requests;
 			sourceTree = "<group>";
 		};
+		B9DABF4718E5439300B2A6B2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B9DABF4C18E5439400B2A6B2 /* libProjectTox-Core.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		B9F9DAE218BEA755003BD982 /* JSQSystemSoundPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -829,6 +856,7 @@
 		E6F9FC9018C9063C00C1D2C1 /* External */ = {
 			isa = PBXGroup;
 			children = (
+				B9DABF4618E5439300B2A6B2 /* ProjectTox-Core.xcodeproj */,
 				E66FE45D18D645E400124555 /* zbar.xcodeproj */,
 				B9BB99F317B36DE900A1ACEC /* JSMessagesTableViewController */,
 				B9F9DAE218BEA755003BD982 /* JSQSystemSoundPlayer */,
@@ -862,6 +890,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B9DABF5318E5446400B2A6B2 /* PBXTargetDependency */,
 				E66FE47718D6533900124555 /* PBXTargetDependency */,
 				E66FE47318D6517400124555 /* PBXTargetDependency */,
 			);
@@ -892,6 +921,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = B9DABF4718E5439300B2A6B2 /* Products */;
+					ProjectRef = B9DABF4618E5439300B2A6B2 /* ProjectTox-Core.xcodeproj */;
+				},
+				{
 					ProductGroup = E6F9FC9418C90CA500C1D2C1 /* Products */;
 					ProjectRef = E6F9FC8318C9028C00C1D2C1 /* QREncoder.xcodeproj */;
 				},
@@ -908,6 +941,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		B9DABF4C18E5439400B2A6B2 /* libProjectTox-Core.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libProjectTox-Core.a";
+			remoteRef = B9DABF4B18E5439400B2A6B2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		E66FE46F18D645E800124555 /* libzbar.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1087,6 +1127,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		B9DABF5318E5446400B2A6B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ProjectTox-Core";
+			targetProxy = B9DABF5218E5446400B2A6B2 /* PBXContainerItemProxy */;
+		};
 		E66FE47318D6517400124555 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = libzbar;
@@ -1197,10 +1242,14 @@
 					"$(SRCROOT)/Other",
 					"$(SRCROOT)/Other/libsodium/include",
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
-					"\"$(BUILT_PRODUCTS_DIR)/usr/local/include\"",
+					"$(TARGET_BUILD_DIR)/usr/local/include",
+					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Submodules/ProjectTox-Core/sodium/build/Debug-iphoneos",
+				);
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
@@ -1229,10 +1278,14 @@
 					"$(SRCROOT)/Other",
 					"$(SRCROOT)/Other/libsodium/include",
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
-					"\"$(BUILT_PRODUCTS_DIR)/usr/local/include\"",
+					"$(TARGET_BUILD_DIR)/usr/local/include",
+					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Submodules/ProjectTox-Core/sodium/build/Debug-iphoneos",
+				);
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";

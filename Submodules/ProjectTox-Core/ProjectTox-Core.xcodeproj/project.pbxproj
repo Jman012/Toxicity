@@ -25,6 +25,19 @@
 		B9DABC1018E53B3600B2A6B2 /* tox.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBDC18E53B3600B2A6B2 /* tox.c */; };
 		B9DABC1118E53B3600B2A6B2 /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBDE18E53B3600B2A6B2 /* util.c */; };
 		B9DABE9D18E53EDA00B2A6B2 /* libsodium.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9DABE9918E53D1D00B2A6B2 /* libsodium.a */; };
+		B9DABF4E18E543B200B2A6B2 /* tox.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBDD18E53B3600B2A6B2 /* tox.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5418E544CF00B2A6B2 /* Messenger.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBCC18E53B3600B2A6B2 /* Messenger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5518E544D700B2A6B2 /* net_crypto.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBCF18E53B3600B2A6B2 /* net_crypto.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5618E544DD00B2A6B2 /* Lossless_UDP.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBC918E53B3600B2A6B2 /* Lossless_UDP.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5718E544E400B2A6B2 /* network.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBD118E53B3600B2A6B2 /* network.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5818E544EB00B2A6B2 /* misc_tools.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBCD18E53B3600B2A6B2 /* misc_tools.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5918E544F100B2A6B2 /* DHT.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBC118E53B3600B2A6B2 /* DHT.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5A18E544F700B2A6B2 /* friend_requests.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBC318E53B3600B2A6B2 /* friend_requests.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5B18E544FC00B2A6B2 /* onion_client.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBD718E53B3600B2A6B2 /* onion_client.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5C18E5450100B2A6B2 /* onion_announce.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBD518E53B3600B2A6B2 /* onion_announce.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5D18E5450500B2A6B2 /* onion.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBD318E53B3600B2A6B2 /* onion.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5E18E5450A00B2A6B2 /* LAN_discovery.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBC718E53B3600B2A6B2 /* LAN_discovery.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5F18E5451200B2A6B2 /* group_chats.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBC518E53B3600B2A6B2 /* group_chats.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -198,6 +211,29 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		B9DABF4D18E543A900B2A6B2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B9DABF4E18E543B200B2A6B2 /* tox.h in Headers */,
+				B9DABF5418E544CF00B2A6B2 /* Messenger.h in Headers */,
+				B9DABF5618E544DD00B2A6B2 /* Lossless_UDP.h in Headers */,
+				B9DABF5518E544D700B2A6B2 /* net_crypto.h in Headers */,
+				B9DABF5718E544E400B2A6B2 /* network.h in Headers */,
+				B9DABF5A18E544F700B2A6B2 /* friend_requests.h in Headers */,
+				B9DABF5E18E5450A00B2A6B2 /* LAN_discovery.h in Headers */,
+				B9DABF5918E544F100B2A6B2 /* DHT.h in Headers */,
+				B9DABF5B18E544FC00B2A6B2 /* onion_client.h in Headers */,
+				B9DABF5F18E5451200B2A6B2 /* group_chats.h in Headers */,
+				B9DABF5D18E5450500B2A6B2 /* onion.h in Headers */,
+				B9DABF5C18E5450100B2A6B2 /* onion_announce.h in Headers */,
+				B9DABF5818E544EB00B2A6B2 /* misc_tools.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		B9DABB3318E539A100B2A6B2 /* ProjectTox-Core */ = {
 			isa = PBXNativeTarget;
@@ -206,6 +242,7 @@
 				B9DABB3018E539A100B2A6B2 /* Sources */,
 				B9DABB3118E539A100B2A6B2 /* Frameworks */,
 				B9DABB3218E539A100B2A6B2 /* CopyFiles */,
+				B9DABF4D18E543A900B2A6B2 /* Headers */,
 			);
 			buildRules = (
 			);
