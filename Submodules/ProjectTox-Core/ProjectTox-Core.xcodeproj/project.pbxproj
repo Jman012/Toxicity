@@ -411,6 +411,8 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(TARGET_BUILD_DIR)/usr/local/include",
+					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
+					"$(OBJROOT)/UninstalledProducts",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -430,6 +432,8 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(TARGET_BUILD_DIR)/usr/local/include",
+					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
+					"$(OBJROOT)/UninstalledProducts",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

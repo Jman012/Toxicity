@@ -1242,12 +1242,10 @@
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
 					"$(TARGET_BUILD_DIR)/usr/local/include",
 					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
+					"$(OBJROOT)/UninstalledProducts",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Submodules/ProjectTox-Core/sodium/build/Debug-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
@@ -1276,12 +1274,10 @@
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
 					"$(TARGET_BUILD_DIR)/usr/local/include",
 					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
+					"$(OBJROOT)/UninstalledProducts",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Submodules/ProjectTox-Core/sodium/build/Debug-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
