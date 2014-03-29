@@ -563,6 +563,12 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 - (void)addFriend:(NSString *)theirKey {
     //sends a request to the key
     
+    if ([theirKey length] > 5) {
+        if ([[theirKey substringToIndex:6] isEqualToString:@"tox://"]) {
+            theirKey = [theirKey substringFromIndex:6];
+        }
+    }
+    
     uint8_t *binID = hex_string_to_bin((char *)[theirKey UTF8String]);
     __block int num = 0;
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);

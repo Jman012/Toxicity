@@ -1242,7 +1242,6 @@
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
 					"$(TARGET_BUILD_DIR)/usr/local/include",
 					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
-					"$(OBJROOT)/UninstalledProducts",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -1252,7 +1251,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1274,7 +1273,6 @@
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
 					"$(TARGET_BUILD_DIR)/usr/local/include",
 					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
-					"$(OBJROOT)/UninstalledProducts",
 				);
 				INFOPLIST_FILE = "Toxicity/Toxicity-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -1284,7 +1282,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};

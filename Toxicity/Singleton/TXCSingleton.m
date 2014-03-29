@@ -89,6 +89,15 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
     }
     
     @try {
+        if ([[theKey substringToIndex:6] isEqualToString:@"tox://"]) {
+            theKey = [theKey substringFromIndex:6];
+        }
+    }
+    @catch (NSException *e) {
+        return NO;
+    }
+    
+    @try {
         NSError *error = NULL;
         NSRegularExpression *regexKey = [NSRegularExpression regularExpressionWithPattern:@"^[0-9A-Fa-f]+$" options:NSRegularExpressionCaseInsensitive error:&error];
         NSUInteger matchKey = [regexKey numberOfMatchesInString:theKey options:0 range:NSMakeRange(0, [theKey length])];
