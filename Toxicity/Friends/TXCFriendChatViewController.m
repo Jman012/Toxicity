@@ -48,10 +48,10 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
         self.mainFriendList = [TXCSingleton sharedSingleton].mainFriendList;
         self.mainFriendMessages = [TXCSingleton sharedSingleton].mainFriendMessages;
         
-        self.messages = [[self.mainFriendMessages objectAtIndex:theIndex.row] mutableCopy];
+        self.messages = [[self.mainFriendMessages objectAtIndex:self.friendIndex.row] mutableCopy];
         
-        self.friendInfo = [self.mainFriendList objectAtIndex:theIndex.row];
-
+        self.friendInfo = [self.mainFriendList objectAtIndex:self.friendIndex.row];
+        
         [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:self.friendIndex];
     }
     return self;
@@ -79,15 +79,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     self.navigationItem.titleView = self.statusLabel;
 
     [self updateUserInfo];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self updateColoredStatusIndicator];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUserInfo)
                                                  name:TXCToxAppDelegateNotificationFriendAdded
@@ -104,14 +96,16 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
                                                object:nil];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [TXCSingleton sharedSingleton].mainFriendMessages[self.friendIndex.row] = self.messages.mutableCopy;
-    [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [super viewDidDisappear:animated];
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self updateColoredStatusIndicator];
 }
 
--(void) viewWillDisappear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
     self.friendListViewController = [self.navigationController.viewControllers lastObject];
     self.friendListViewController.numberOfLastMessageAuthor = self.friendIndex.row;
     self.friendListViewController.lastMessage = ({
@@ -120,6 +114,13 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     });
     [self.friendListViewController.tableView reloadData];
     [super viewWillDisappear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [TXCSingleton sharedSingleton].mainFriendMessages[self.friendIndex.row] = self.messages.mutableCopy;
+    [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Setters
