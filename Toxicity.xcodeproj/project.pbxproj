@@ -1239,8 +1239,6 @@
 				GCC_UNROLL_LOOPS = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Submodules",
-					"$(SRCROOT)/Other",
-					"$(SRCROOT)/Other/libsodium/include",
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
 					"$(TARGET_BUILD_DIR)/usr/local/include",
 					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
@@ -1275,8 +1273,6 @@
 				GCC_UNROLL_LOOPS = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Submodules",
-					"$(SRCROOT)/Other",
-					"$(SRCROOT)/Other/libsodium/include",
 					"$(SRCROOT)/Submodules/ObjQREncoder/src/Classes",
 					"$(TARGET_BUILD_DIR)/usr/local/include",
 					"$(BUILT_PRODUCTS_DIR)/usr/local/include",

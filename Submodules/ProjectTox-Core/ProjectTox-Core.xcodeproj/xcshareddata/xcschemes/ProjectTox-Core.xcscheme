@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0500"
+   LastUpgradeVersion = "0510"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B94F2C5617AF25C0003EA6E8"
-               BuildableName = "Toxicity.app"
-               BlueprintName = "Toxicity"
-               ReferencedContainer = "container:Toxicity.xcodeproj">
+               BlueprintIdentifier = "B9DABB3318E539A100B2A6B2"
+               BuildableName = "libProjectTox-Core.a"
+               BlueprintName = "ProjectTox-Core"
+               ReferencedContainer = "container:ProjectTox-Core.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,16 +28,17 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B9DABB4318E539A100B2A6B2"
+               BuildableName = "ProjectTox-CoreTests.xctest"
+               BlueprintName = "ProjectTox-CoreTests"
+               ReferencedContainer = "container:ProjectTox-Core.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B94F2C5617AF25C0003EA6E8"
-            BuildableName = "Toxicity.app"
-            BlueprintName = "Toxicity"
-            ReferencedContainer = "container:Toxicity.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -48,15 +49,6 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B94F2C5617AF25C0003EA6E8"
-            BuildableName = "Toxicity.app"
-            BlueprintName = "Toxicity"
-            ReferencedContainer = "container:Toxicity.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -66,15 +58,6 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B94F2C5617AF25C0003EA6E8"
-            BuildableName = "Toxicity.app"
-            BlueprintName = "Toxicity"
-            ReferencedContainer = "container:Toxicity.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
