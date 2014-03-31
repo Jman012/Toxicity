@@ -171,7 +171,9 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
             finishBlock(tempImage);
         
     } else {
-        [self loadAvatarForKey:key type:type finishBlock:finishBlock];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self loadAvatarForKey:key type:type finishBlock:finishBlock];
+        });
     }
     
 }
@@ -196,7 +198,9 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
                 if (loadedAvatarImage) {
                     [self.avatarImageCache setObject:loadedAvatarImage forKey:theKey];
                     if (finishBlock) {
-                        finishBlock(loadedAvatarImage);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            finishBlock(loadedAvatarImage);
+                        });
                     }
                     
                 } else {
@@ -240,8 +244,11 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
                                    NSString *theFilename = [[ourDocumentLocation stringByAppendingPathComponent:theKey] stringByAppendingPathExtension:@"png"];
                                    [UIImagePNGRepresentation(downloadedImage) writeToFile:theFilename atomically:YES];
                                    
-                                   if (finishBlock)
-                                       finishBlock(downloadedImage);
+                                   if (finishBlock) {
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           finishBlock(downloadedImage);
+                                       });
+                                   }
                                    
                                    
                                } else {
