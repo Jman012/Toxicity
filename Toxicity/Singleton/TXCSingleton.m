@@ -254,8 +254,11 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
                                } else {
                                    //downlaod didn't work, use the default
                                    [self.avatarImageCache setObject:self.defaultAvatarImage forKey:theKey];
-                                   if (finishBlock)
-                                       finishBlock(self.defaultAvatarImage);
+                                   if (finishBlock) {
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           finishBlock(self.defaultAvatarImage);
+                                       });
+                                   }
                                    
                                    
                                }
