@@ -12,19 +12,14 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
 
 @implementation TXCSingleton
 
-@synthesize dhtNodeList, currentConnectDHT;
-@synthesize userNick, userStatusMessage, userStatusType;
-@synthesize pendingFriendRequests, mainFriendList, mainFriendMessages;
-@synthesize currentlyOpenedFriendNumber, toxCoreInstance;
-@synthesize defaultAvatarImage, avatarImageCache;
-@synthesize groupList, pendingGroupInvites, pendingGroupInviteFriendNumbers, groupMessages;
-
 - (id)init
 {
     if ( self = [super init] )
     {
         self.dhtNodeList = [[NSMutableArray alloc] init];
-        self.currentConnectDHT = [[TXCDHTNodeObject alloc] init];
+        [self loadNodesFromFile];
+        self.lastAttemptedConnect = time(0);
+        srand(self.lastAttemptedConnect);
         
         self.userNick = @"";
         self.userStatusMessage = @"";
@@ -44,7 +39,7 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
         self.groupMessages = [[NSMutableArray alloc] init];
         
         //if -1, no chat windows open
-        currentlyOpenedFriendNumber = [NSIndexPath indexPathForItem:-1 inSection:-1];
+        self.currentlyOpenedFriendNumber = [NSIndexPath indexPathForItem:-1 inSection:-1];
     }
     return self;
     
@@ -60,6 +55,15 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
     });
     
     return sharedInstance;
+}
+
+#pragma mark - Node list methods
+
+- (void)loadNodesFromFile
+{
+    NSString *nodesFileLocation = [[NSBundle mainBundle] pathForResource:@"ToxDHTNodes" ofType:@"plist"];
+    NSMutableDictionary *nodesPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:nodesFileLocation];
+    self.dhtNodeList = (NSMutableArray *)nodesPlist[@"Nodes"];
 }
 
 #pragma mark - Generic class methods

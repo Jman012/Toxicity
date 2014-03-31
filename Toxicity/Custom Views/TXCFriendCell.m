@@ -122,6 +122,7 @@
     self.friendIdentifier = [groupObject.groupPulicKey copy];
     [self configureBackroundColor];
     [self configureLabelsWithGroupObject:groupObject];
+    self.statusIndicatorImageView.hidden = YES;
 }
 
 - (void)configureCellWithFriendObject:(TXCFriendObject *)friendObject
@@ -129,6 +130,7 @@
     self.friendIdentifier = [friendObject.publicKey copy];
     [self configureBackroundColor];
     [self configureLabelsWithFriendObject:friendObject];
+    self.statusIndicatorImageView.hidden = NO;
     [self setupStatusIndicatorImageViewWithFriendObject:friendObject];
 }
 

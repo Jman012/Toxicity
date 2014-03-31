@@ -40,17 +40,6 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     self.toxBackgroundThread = dispatch_queue_create("com.Jman.ToxicityBG", DISPATCH_QUEUE_SERIAL);
     self.toxBackgroundThreadState = TXCThreadState_killed;
     
-    // TODO: make this updatable
-    self.dhtNodes = @[
-                      @{@"ip": @"192.254.75.98", @"port": @"33445", @"key": @"FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"},
-                      @{@"ip": @"192.184.81.118", @"port": @"33445", @"key": @"5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"},
-                      @{@"ip": @"144.76.60.215", @"port": @"33445", @"key": @"DDCF277B8B45B0D357D78AA4E201766932DF6CDB7179FC7D5C9F3C2E8E705326"},
-                      @{@"ip": @"193.107.16.73", @"port": @"33445", @"key": @"AE27E1E72ADA3DC423C60EEBACA241456174048BE76A283B41AD32D953182D49"},
-                      @{@"ip": @"66.74.15.98", @"port": @"33445", @"key": @"20C797E098701A848B07D0384222416B0EFB60D08CECB925B860CAEAAB572067"}
-                      ];
-    self.lastAttemptedConnect = time(0);
-    srand(self.lastAttemptedConnect);
-    
     self.toxWaitData = NULL;
     self.toxWaitBufferSize = tox_wait_data_size();
     self.toxWaitData = malloc(self.toxWaitBufferSize);
@@ -369,25 +358,6 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
             }
             free(idToAdd);
         }
-    }
-    
-    //loads any save dht nodes
-    if ([prefs objectForKey:@"dht_node_list"] == nil) {
-        //no list exists, make a new array, add a placeholder so I don't have to add one manually
-        TXCDHTNodeObject *tempDHT = [[TXCDHTNodeObject alloc] init];
-        tempDHT.dhtName = @"stal-premade";
-        tempDHT.dhtIP = @"198.46.136.167";
-        tempDHT.dhtPort = @"33445";
-        tempDHT.dhtKey = @"728925473812C7AAC482BE7250BCCAD0B8CB9F737BF3D42ABD34459C1768F854";
-        [[TXCSingleton sharedSingleton] setDhtNodeList:(NSMutableArray *)@[tempDHT]];
-    } else {
-        //theere's a list, loop through them and add to singleton
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        for (NSData *data in [prefs objectForKey:@"dht_node_list"]) {
-            TXCDHTNodeObject *tempDHT = (TXCDHTNodeObject *)[NSKeyedUnarchiver unarchiveObjectWithData:data];
-            [array addObject:tempDHT];
-        }
-        [[TXCSingleton sharedSingleton] setDhtNodeList:array];
     }
     
     //loads any pending friend requests
@@ -1184,6 +1154,7 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
 
 - (void)toxCoreLoopInBackground:(BOOL)inBackground {
     
+    TXCSingleton *singleton = [TXCSingleton sharedSingleton];
     Tox *toxInstance = [[TXCSingleton sharedSingleton] toxCoreInstance];
     
     //code to check if node connection has changed, if so notify the app
@@ -1202,13 +1173,13 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
         self.on = 0;
     }
     // If we haven't been connected for over two seconds, bootstrap to another node.
-    if (self.on == 0 && self.lastAttemptedConnect < time(0)+2) {
-        int num = rand() % [self.dhtNodes count];
-        unsigned char *binary_string = hex_string_to_bin((char *)[self.dhtNodes[num][@"key"] UTF8String]);
+    if (self.on == 0 && singleton.lastAttemptedConnect < time(0)+2) {
+        int num = rand() % [singleton.dhtNodeList count];
+        unsigned char *binary_string = hex_string_to_bin((char *)[singleton.dhtNodeList[num][@"key"] UTF8String]);
         tox_bootstrap_from_address([[TXCSingleton sharedSingleton] toxCoreInstance],
-                                   [self.dhtNodes[num][@"ip"] UTF8String],
+                                   [singleton.dhtNodeList[num][@"ip"] UTF8String],
                                    TOX_ENABLE_IPV6_DEFAULT,
-                                   htons(atoi([self.dhtNodes[num][@"port"] UTF8String])),
+                                   htons(atoi([singleton.dhtNodeList[num][@"port"] UTF8String])),
                                    binary_string); //actual connection
         free(binary_string);
     }

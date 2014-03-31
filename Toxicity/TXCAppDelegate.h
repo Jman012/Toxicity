@@ -35,8 +35,6 @@ typedef NS_ENUM(NSUInteger, TXCLocalNotification) {
 
 // Tox loop stuff
 @property (nonatomic, assign) int on;
-@property (nonatomic, copy) NSArray *dhtNodes;
-@property (nonatomic, assign) int lastAttemptedConnect;
 @property (nonatomic, assign) uint8_t *toxWaitData;
 @property (nonatomic, assign) uint16_t toxWaitBufferSize;
 
