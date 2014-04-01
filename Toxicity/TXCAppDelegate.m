@@ -10,6 +10,7 @@
 #import "TWMessageBarManager.h"
 #import "JSBubbleView.h"
 #import <ZBarReaderView.h>
+#import "TXCFriendAddress.h"
 
 NSString *const TXCToxAppDelegateNotificationFriendAdded = @"FriendAdded";
 NSString *const TXCToxAppDelegateNotificationGroupAdded = @"GroupAdded";
@@ -148,9 +149,14 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     NSLog(@"URL: %@", url);
     
-    if ([TXCSingleton friendPublicKeyIsValid:url.host]) {
-        [self addFriend:url.host];
-    }
+    TXCFriendAddress *friendAddress = [[TXCFriendAddress alloc] initWithToxAddress:url.absoluteString];
+    [friendAddress resolveAddressWithCompletionBlock:^(NSString *resolvedAddress, TXCFriendAddressError error){
+        if (error == TXCFriendAddressError_None) {
+            [self addFriend:resolvedAddress];
+        } else {
+            [friendAddress showError:error];
+        }
+    }];
     
     return YES;
 }
@@ -533,11 +539,7 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 - (void)addFriend:(NSString *)theirKey {
     //sends a request to the key
     
-    if ([theirKey length] > 5) {
-        if ([[theirKey substringToIndex:6] isEqualToString:@"tox://"]) {
-            theirKey = [theirKey substringFromIndex:6];
-        }
-    }
+    NSLog(@"Adding: %@", theirKey);
     
     uint8_t *binID = hex_string_to_bin((char *)[theirKey UTF8String]);
     __block int num = 0;

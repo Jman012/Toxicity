@@ -42,9 +42,10 @@ typedef enum {
 @property (nonatomic, strong) NSMutableDictionary *pendingGroupInviteFriendNumbers;
 @property (nonatomic, strong) NSMutableArray *groupMessages;
 
+
 + (TXCSingleton *)sharedSingleton;
+
 + (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey;
-+ (BOOL)friendPublicKeyIsValid:(NSString *)theKey;
 + (void)saveFriendListInUserDefaults;
 + (void)saveGroupListInUserDefaults;
 

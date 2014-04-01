@@ -111,6 +111,9 @@
 		B9BB9A5B17B377BF00A1ACEC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */; };
 		B9BB9A5E17B4B20100A1ACEC /* TXCFriendChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB9A5D17B4B20100A1ACEC /* TXCFriendChatViewController.m */; };
 		B9BB9A6317B7128300A1ACEC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */; };
+		B9D2FF3518EA8454000D8F30 /* TXCFriendAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D2FF3418EA8454000D8F30 /* TXCFriendAddress.m */; };
+		B9D2FF3C18EA93DF000D8F30 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D2FF3B18EA93DF000D8F30 /* RegexKitLite.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		B9D2FF3E18EA9553000D8F30 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D2FF3D18EA9553000D8F30 /* libicucore.dylib */; };
 		B9D5C95D17E3E31500B84BEF /* TXCFriendListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C95C17E3E31500B84BEF /* TXCFriendListHeader.m */; };
 		B9D5C96017E54F5100B84BEF /* TXCGroupObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D5C95F17E54F5100B84BEF /* TXCGroupObject.m */; };
 		B9D859DC17C34535005FD2D2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D859DB17C34535005FD2D2 /* AVFoundation.framework */; };
@@ -349,6 +352,11 @@
 		B9BB9A5C17B4B20100A1ACEC /* TXCFriendChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCFriendChatViewController.h; path = Friends/TXCFriendChatViewController.h; sourceTree = "<group>"; };
 		B9BB9A5D17B4B20100A1ACEC /* TXCFriendChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCFriendChatViewController.m; path = Friends/TXCFriendChatViewController.m; sourceTree = "<group>"; };
 		B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B9D2FF3318EA8453000D8F30 /* TXCFriendAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCFriendAddress.h; path = Singleton/TXCFriendAddress.h; sourceTree = "<group>"; };
+		B9D2FF3418EA8454000D8F30 /* TXCFriendAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCFriendAddress.m; path = Singleton/TXCFriendAddress.m; sourceTree = "<group>"; };
+		B9D2FF3A18EA93DF000D8F30 /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegexKitLite.h; path = Other/RegexKitLite.h; sourceTree = "<group>"; };
+		B9D2FF3B18EA93DF000D8F30 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegexKitLite.m; path = Other/RegexKitLite.m; sourceTree = "<group>"; };
+		B9D2FF3D18EA9553000D8F30 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		B9D5C95B17E3E31500B84BEF /* TXCFriendListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCFriendListHeader.h; path = "Custom Views/TXCFriendListHeader.h"; sourceTree = "<group>"; };
 		B9D5C95C17E3E31500B84BEF /* TXCFriendListHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCFriendListHeader.m; path = "Custom Views/TXCFriendListHeader.m"; sourceTree = "<group>"; };
 		B9D5C95E17E54F5100B84BEF /* TXCGroupObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCGroupObject.h; path = Objects/TXCGroupObject.h; sourceTree = "<group>"; };
@@ -400,6 +408,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9D2FF3E18EA9553000D8F30 /* libicucore.dylib in Frameworks */,
 				B9DABF4F18E5445400B2A6B2 /* libProjectTox-Core.a in Frameworks */,
 				E66FE47518D6530300124555 /* libzbar.a in Frameworks */,
 				E6F9FC9C18C90CF800C1D2C1 /* libQREncoder.a in Frameworks */,
@@ -439,6 +448,7 @@
 		B94F2C5917AF25C0003EA6E8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B9D2FF3D18EA9553000D8F30 /* libicucore.dylib */,
 				B9DABF5018E5445900B2A6B2 /* libsodium.a */,
 				B9D859E117C34553005FD2D2 /* libiconv.2.4.0.dylib */,
 				B9BB9A6217B7128200A1ACEC /* QuartzCore.framework */,
@@ -761,6 +771,8 @@
 			children = (
 				B9BB99E617B0E41F00A1ACEC /* TXCSingleton.h */,
 				B9BB99E717B0E41F00A1ACEC /* TXCSingleton.m */,
+				B9D2FF3318EA8453000D8F30 /* TXCFriendAddress.h */,
+				B9D2FF3418EA8454000D8F30 /* TXCFriendAddress.m */,
 			);
 			name = Singleton;
 			sourceTree = "<group>";
@@ -830,6 +842,8 @@
 		D10DEC9C8B1A8A85CB245B78 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				B9D2FF3A18EA93DF000D8F30 /* RegexKitLite.h */,
+				B9D2FF3B18EA93DF000D8F30 /* RegexKitLite.m */,
 				B9044EC118DD60D400031DA5 /* UIColor+ToxicityColors.h */,
 				B9044EC218DD60D400031DA5 /* UIColor+ToxicityColors.m */,
 			);
@@ -1105,6 +1119,7 @@
 				B98040F718BC886B0069590C /* JSAvatarImageFactory.m in Sources */,
 				B98040FA18BC886B0069590C /* JSBubbleView.m in Sources */,
 				B98040FE18BC886B0069590C /* JSMessageSoundEffect.m in Sources */,
+				B9D2FF3C18EA93DF000D8F30 /* RegexKitLite.m in Sources */,
 				B9044EB618DD606400031DA5 /* StatusCell.m in Sources */,
 				B9BB99DE17B0E38900A1ACEC /* TXCFriendsListTableViewController.m in Sources */,
 				B9BB99E317B0E39200A1ACEC /* TXCNewDHTNodeViewController.m in Sources */,
@@ -1119,6 +1134,7 @@
 				B98C9C4317DC16D8008B10E0 /* UIView+Shadow.m in Sources */,
 				B9D5C95D17E3E31500B84BEF /* TXCFriendListHeader.m in Sources */,
 				B9D5C96017E54F5100B84BEF /* TXCGroupObject.m in Sources */,
+				B9D2FF3518EA8454000D8F30 /* TXCFriendAddress.m in Sources */,
 				B98040F918BC886B0069590C /* JSBubbleMessageCell.m in Sources */,
 				B9044EC318DD60D400031DA5 /* UIColor+ToxicityColors.m in Sources */,
 				B9A5343117EAD17800F2FD94 /* TXCGroupChatViewController.m in Sources */,

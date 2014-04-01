@@ -7,6 +7,7 @@
 //
 
 #import "TXCSingleton.h"
+#import <dns_sd.h>
 
 extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
 
@@ -80,64 +81,6 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
     }
     
     return NO;
-}
-
-+ (BOOL)friendPublicKeyIsValid:(NSString *)theKey {
-    //validate
-    if (!theKey) {
-        return NO;
-    }
-    
-    if ([theKey isEqualToString:@""]) {
-        return NO;
-    }
-    
-    @try {
-        if ([[theKey substringToIndex:6] isEqualToString:@"tox://"]) {
-            theKey = [theKey substringFromIndex:6];
-        }
-    }
-    @catch (NSException *e) {
-        return NO;
-    }
-    
-    @try {
-        NSError *error = NULL;
-        NSRegularExpression *regexKey = [NSRegularExpression regularExpressionWithPattern:@"^[0-9A-Fa-f]+$" options:NSRegularExpressionCaseInsensitive error:&error];
-        NSUInteger matchKey = [regexKey numberOfMatchesInString:theKey options:0 range:NSMakeRange(0, [theKey length])];
-        if ([theKey length] != (TOX_FRIEND_ADDRESS_SIZE * 2) || matchKey == 0) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The Public Key isn't valid!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
-            [alert show];
-            return NO;
-        }
-    }
-    @catch (NSException *e) {
-        return NO;
-    }
-    
-    char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
-    int pos = 0;
-    uint8_t ourAddress[TOX_FRIEND_ADDRESS_SIZE];
-    tox_get_address([[TXCSingleton sharedSingleton] toxCoreInstance], ourAddress);
-    for (int i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
-        sprintf(&convertedKey[pos] ,"%02X", ourAddress[i] & 0xff);
-    }
-    if ([[NSString stringWithUTF8String:convertedKey] isEqualToString:theKey]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You can't add your own key, silly!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
-        [alert show];
-        return NO;
-    }
-    
-    //todo: check to make sure it's not that of a friend already added
-    for (TXCFriendObject *tempFriend in [[TXCSingleton sharedSingleton] mainFriendList]) {
-        if ([[tempFriend.publicKeyWithNoSpam uppercaseString] isEqualToString:[theKey uppercaseString]]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You've already added that friend!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
-            [alert show];
-            return NO;
-        }
-    }
-    
-    return YES;
 }
 
 + (void)saveFriendListInUserDefaults {
