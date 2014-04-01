@@ -59,10 +59,8 @@
     // tox:// address (for plain address)
     if ([self.originalInput isMatchedByRegex:@"tox:\\/\\/[0-9A-Fa-f]+$"]) {
         NSString *addressToCheck = [self.originalInput substringFromIndex:6];
-        NSLog(@"Checking original: %@, resolved: %@", self.originalInput, addressToCheck);
         TXCFriendAddressError error = [TXCFriendAddress friendAddressIsValid:addressToCheck];
         if (error == TXCFriendAddressError_None) {
-            NSLog(@"Valid");
             self.resolvedAddress = addressToCheck;
             self.completionBlock(self.resolvedAddress, TXCFriendAddressError_None);
             return;
