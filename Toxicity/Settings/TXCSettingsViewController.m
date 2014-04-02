@@ -3,7 +3,7 @@
 //  Toxicity
 //
 //  Created by James Linnell on 8/5/13.
-//  Copyright (c) 2013 JamesTech. All rights reserved.
+//  Copyright (c) 2014 James Linnell. All rights reserved.
 //
 
 #import "TXCSettingsViewController.h"
@@ -200,9 +200,6 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
             return 3;
         case 1:
             return 2;
-        case 2:
-            //Add ones for the row to add a new server
-            return self.dhtNodeList.count + 1;
         default:break;
     }
     return 0;
@@ -292,53 +289,6 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
 
             break;
         }
-
-        case 2: {
-            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-
-            //Do nothing for first row in thi section (new dht node button)
-            if (indexPath.row == 0)
-                break;
-
-            cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-
-
-            TXCDHTNodeObject *tempDHT = self.dhtNodeList[indexPath.row - 1];
-            cell.textLabel.text = tempDHT.dhtName;
-
-            UIActivityIndicatorView *activityConnecting = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(240, 12, 20, 20)];
-            activityConnecting.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-            activityConnecting.tag = 101;
-
-            TXCDHTNodeObject *currentDHT = [TXCSingleton sharedSingleton].currentConnectDHT;
-            TXCDHTNodeObject *cellDHT = self.dhtNodeList[indexPath.row - 1];
-            if ([currentDHT.dhtIP isEqualToString:cellDHT.dhtIP] &&
-                [currentDHT.dhtPort isEqualToString:cellDHT.dhtPort] &&
-                [currentDHT.dhtKey isEqualToString:cellDHT.dhtKey]) {
-                //this cell has the ip, port, and key of the node currently connected/ing to
-
-                if (currentDHT.connectionStatus == ToxDHTNodeConnectionStatus_Connected){
-                    //do "Connected!"
-                    [activityConnecting stopAnimating];
-                    activityConnecting.hidden = YES;
-                    cell.detailTextLabel.text = @"Connected!";
-                } else if (currentDHT.connectionStatus == ToxDHTNodeConnectionStatus_Connecting) {
-                    //do the uiactivityview
-                    [activityConnecting startAnimating];
-                    activityConnecting.hidden = NO;
-                    cell.detailTextLabel.text = @"";
-                }
-            } else {
-                //just a regular node in the list
-                [activityConnecting stopAnimating];
-                activityConnecting.hidden = YES;
-                cell.detailTextLabel.text = @"";
-            }
-
-            [cell.contentView addSubview:activityConnecting];
-
-            break;
-        }
             
         default:break;
     }
@@ -416,27 +366,6 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
         [newDHTViewCont setNamesAlreadyPresent:names];
 
         [self.navigationController pushViewController:newDHTViewCont animated:YES];
-    }
-    else if (indexPath.section == 2 && indexPath.row != 0) {
-        TXCDHTNodeObject *currentDHT = [[TXCSingleton sharedSingleton] currentConnectDHT];
-        if (currentDHT.dhtIP.length &&
-            currentDHT.dhtPort.length &&
-            currentDHT.dhtKey.length) {
-            NSLog(@"return");
-            //stop here because the current dht is either connecting or connected, so dont do anything
-            [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
-            return;
-        }
-        //connect to a node
-        //gets called if the cell is actually that of a node, and we are not triyng to connect to a node, and if we're not connect
-
-        //attempt connection
-        TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[UIApplication sharedApplication].delegate;
-        [ourDelegate connectToDHTWithIP:[self.dhtNodeList[indexPath.row - 1] copy]];
-
-
-
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

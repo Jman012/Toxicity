@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>3E2D9B9B-7EBD-475F-B2C6-5A5278D5A10C</string>
+	<key>IDESourceControlProjectName</key>
+	<string>sodium</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>565F25C1-2877-497D-B7EA-476805E47D7A</key>
+		<string>https://github.com/mochtu/libsodium-ios.git</string>
+		<key>CC38DE8B-9A12-40CC-B449-BE5596EC46BB</key>
+		<string>https://github.com/irungentoo/ProjectTox-Core.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>sodium/sodium.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>565F25C1-2877-497D-B7EA-476805E47D7A</key>
+		<string>../../libsodium-ios</string>
+		<key>CC38DE8B-9A12-40CC-B449-BE5596EC46BB</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/irungentoo/ProjectTox-Core.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>CC38DE8B-9A12-40CC-B449-BE5596EC46BB</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>565F25C1-2877-497D-B7EA-476805E47D7A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>libsodium-ios</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CC38DE8B-9A12-40CC-B449-BE5596EC46BB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ProjectTox-Core</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -3,28 +3,24 @@
 //  Toxicity
 //
 //  Created by James Linnell on 8/6/13.
-//  Copyright (c) 2013 JamesTech. All rights reserved.
+//  Copyright (c) 2014 James Linnell. All rights reserved.
 //
 
 #import "TXCSingleton.h"
+#import <dns_sd.h>
 
 extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
 
 @implementation TXCSingleton
-
-@synthesize dhtNodeList, currentConnectDHT;
-@synthesize userNick, userStatusMessage, userStatusType;
-@synthesize pendingFriendRequests, mainFriendList, mainFriendMessages;
-@synthesize currentlyOpenedFriendNumber, toxCoreInstance;
-@synthesize defaultAvatarImage, avatarImageCache;
-@synthesize groupList, pendingGroupInvites, pendingGroupInviteFriendNumbers, groupMessages;
 
 - (id)init
 {
     if ( self = [super init] )
     {
         self.dhtNodeList = [[NSMutableArray alloc] init];
-        self.currentConnectDHT = [[TXCDHTNodeObject alloc] init];
+        [self loadNodesFromFile];
+        self.lastAttemptedConnect = time(0);
+        srand(self.lastAttemptedConnect);
         
         self.userNick = @"";
         self.userStatusMessage = @"";
@@ -44,7 +40,7 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
         self.groupMessages = [[NSMutableArray alloc] init];
         
         //if -1, no chat windows open
-        currentlyOpenedFriendNumber = [NSIndexPath indexPathForItem:-1 inSection:-1];
+        self.currentlyOpenedFriendNumber = [NSIndexPath indexPathForItem:-1 inSection:-1];
     }
     return self;
     
@@ -62,6 +58,15 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
     return sharedInstance;
 }
 
+#pragma mark - Node list methods
+
+- (void)loadNodesFromFile
+{
+    NSString *nodesFileLocation = [[NSBundle mainBundle] pathForResource:@"ToxDHTNodes" ofType:@"plist"];
+    NSMutableDictionary *nodesPlist = [[NSMutableDictionary alloc] initWithContentsOfFile:nodesFileLocation];
+    self.dhtNodeList = (NSMutableArray *)nodesPlist[@"Nodes"];
+}
+
 #pragma mark - Generic class methods
 
 + (BOOL)friendNumber:(int)theNumber matchesKey:(NSString *)theKey {
@@ -76,55 +81,6 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
     }
     
     return NO;
-}
-
-+ (BOOL)friendPublicKeyIsValid:(NSString *)theKey {
-    //validate
-    if (!theKey) {
-        return NO;
-    }
-    
-    if ([theKey isEqualToString:@""]) {
-        return NO;
-    }
-    
-    @try {
-        NSError *error = NULL;
-        NSRegularExpression *regexKey = [NSRegularExpression regularExpressionWithPattern:@"^[0-9A-Fa-f]+$" options:NSRegularExpressionCaseInsensitive error:&error];
-        NSUInteger matchKey = [regexKey numberOfMatchesInString:theKey options:0 range:NSMakeRange(0, [theKey length])];
-        if ([theKey length] != (TOX_FRIEND_ADDRESS_SIZE * 2) || matchKey == 0) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The Public Key isn't valid!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
-            [alert show];
-            return NO;
-        }
-    }
-    @catch (NSException *e) {
-        return NO;
-    }
-    
-    char convertedKey[(TOX_FRIEND_ADDRESS_SIZE * 2) + 1];
-    int pos = 0;
-    uint8_t ourAddress[TOX_FRIEND_ADDRESS_SIZE];
-    tox_get_address([[TXCSingleton sharedSingleton] toxCoreInstance], ourAddress);
-    for (int i = 0; i < TOX_FRIEND_ADDRESS_SIZE; ++i, pos += 2) {
-        sprintf(&convertedKey[pos] ,"%02X", ourAddress[i] & 0xff);
-    }
-    if ([[NSString stringWithUTF8String:convertedKey] isEqualToString:theKey]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You can't add your own key, silly!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
-        [alert show];
-        return NO;
-    }
-    
-    //todo: check to make sure it's not that of a friend already added
-    for (TXCFriendObject *tempFriend in [[TXCSingleton sharedSingleton] mainFriendList]) {
-        if ([[tempFriend.publicKeyWithNoSpam uppercaseString] isEqualToString:[theKey uppercaseString]]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You've already added that friend!" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
-            [alert show];
-            return NO;
-        }
-    }
-    
-    return YES;
 }
 
 + (void)saveFriendListInUserDefaults {
@@ -162,7 +118,9 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
             finishBlock(tempImage);
         
     } else {
-        [self loadAvatarForKey:key type:type finishBlock:finishBlock];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self loadAvatarForKey:key type:type finishBlock:finishBlock];
+        });
     }
     
 }
@@ -187,7 +145,9 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
                 if (loadedAvatarImage) {
                     [self.avatarImageCache setObject:loadedAvatarImage forKey:theKey];
                     if (finishBlock) {
-                        finishBlock(loadedAvatarImage);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            finishBlock(loadedAvatarImage);
+                        });
                     }
                     
                 } else {
@@ -231,15 +191,21 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
                                    NSString *theFilename = [[ourDocumentLocation stringByAppendingPathComponent:theKey] stringByAppendingPathExtension:@"png"];
                                    [UIImagePNGRepresentation(downloadedImage) writeToFile:theFilename atomically:YES];
                                    
-                                   if (finishBlock)
-                                       finishBlock(downloadedImage);
+                                   if (finishBlock) {
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           finishBlock(downloadedImage);
+                                       });
+                                   }
                                    
                                    
                                } else {
                                    //downlaod didn't work, use the default
                                    [self.avatarImageCache setObject:self.defaultAvatarImage forKey:theKey];
-                                   if (finishBlock)
-                                       finishBlock(self.defaultAvatarImage);
+                                   if (finishBlock) {
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           finishBlock(self.defaultAvatarImage);
+                                       });
+                                   }
                                    
                                    
                                }

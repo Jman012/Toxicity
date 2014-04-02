@@ -3,7 +3,7 @@
 //  Toxicity
 //
 //  Created by James Linnell on 8/4/13.
-//  Copyright (c) 2013 JamesTech. All rights reserved.
+//  Copyright (c) 2014 James Linnell. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -24,14 +24,17 @@ typedef NS_ENUM(NSUInteger, TXCThreadState) {
     TXCThreadState_killed
 };
 
+typedef NS_ENUM(NSUInteger, TXCLocalNotification) {
+    TXCLocalNotification_friendMessage,
+    TXCLocalNotification_groupMessage
+};
+
 @interface TXCAppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
-// Tox lopp stuff
+// Tox loop stuff
 @property (nonatomic, assign) int on;
-@property (nonatomic, copy) NSArray *dhtNodes;
-@property (nonatomic, assign) int lastAttemptedConnect;
 @property (nonatomic, assign) uint8_t *toxWaitData;
 @property (nonatomic, assign) uint16_t toxWaitBufferSize;
 
@@ -42,6 +45,7 @@ typedef NS_ENUM(NSUInteger, TXCThreadState) {
 @property (nonatomic, assign) TXCThreadState toxBackgroundThreadState;
 
 unsigned char * hex_string_to_bin(char hex_string[]);
+int friendNumForID(NSString *theKey);
 - (void)toxCoreLoopInBackground:(BOOL)inBackground;
 
 - (void)connectToDHTWithIP:(TXCDHTNodeObject *)theDHTInfo;

@@ -3,7 +3,7 @@
 //  Toxicity
 //
 //  Created by James Linnell on 8/16/13.
-//  Copyright (c) 2013 JamesTech. All rights reserved.
+//  Copyright (c) 2014 James Linnell. All rights reserved.
 //
 
 #import "TXCRequestsTableViewController.h"
@@ -12,6 +12,7 @@
 #import "TXCFriendListHeader.h"
 #import "ZBarReaderViewController.h"
 #import "UIColor+ToxicityColors.h"
+#import "TXCFriendAddress.h"
 
 // For various ActionSheet and AlertView type identification
 static const NSUInteger TXCActionSheetIdentifier = 1;
@@ -222,9 +223,14 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     NSLog(@"Pasted: %@", theString);
     
     //add the friend
-    if ([TXCSingleton friendPublicKeyIsValid:theString]) {
-        [ourDelegate addFriend:theString];
-    }
+    TXCFriendAddress *friendAddress = [[TXCFriendAddress alloc] initWithToxAddress:theString];
+    [friendAddress resolveAddressWithCompletionBlock:^(NSString *resolvedAddress, TXCFriendAddressError error){
+        if (error == TXCFriendAddressError_None) {
+            [ourDelegate addFriend:resolvedAddress];
+        } else {
+            [friendAddress showError:error];
+        }
+    }];
 }
 
 - (void)addFriendFromInput
@@ -248,9 +254,14 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     NSString *theString = [[[alertView textFieldAtIndex:0] text] copy];
     
     //add the friend
-    if ([TXCSingleton friendPublicKeyIsValid:theString]) {
-        [ourDelegate addFriend:theString];
-    }
+    TXCFriendAddress *friendAddress = [[TXCFriendAddress alloc] initWithToxAddress:theString];
+    [friendAddress resolveAddressWithCompletionBlock:^(NSString *resolvedAddress, TXCFriendAddressError error){
+        if (error == TXCFriendAddressError_None) {
+            [ourDelegate addFriend:resolvedAddress];
+        } else {
+            [friendAddress showError:error];
+        }
+    }];
 }
 
 - (void)handleAlertViewAcceptRequests:(UIAlertView *)alertView
@@ -436,15 +447,19 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
     id<NSFastEnumeration> results = [info objectForKey:ZBarReaderControllerResults];
     for (ZBarSymbol *symbol in results) {
-        if ([TXCSingleton friendPublicKeyIsValid:symbol.data]) {
-            //actually add friend
-            TXCAppDelegate *appDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate addFriend:symbol.data];
-
-            [picker dismissViewControllerAnimated:YES completion:^{
-                [self returnToFriendsList];
-            }];
-        }
+        TXCFriendAddress *friendAddress = [[TXCFriendAddress alloc] initWithToxAddress:symbol.data];
+        [friendAddress resolveAddressWithCompletionBlock:^(NSString *resolvedAddress, TXCFriendAddressError error){
+            if (error == TXCFriendAddressError_None) {
+                TXCAppDelegate *appDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate addFriend:resolvedAddress];
+                
+                [picker dismissViewControllerAnimated:YES completion:^{
+                    [self returnToFriendsList];
+                }];
+            } else {
+                [friendAddress showError:error];
+            }
+        }];
     }
 
 }

@@ -1,0 +1,468 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B9DABB3818E539A100B2A6B2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9DABB3718E539A100B2A6B2 /* Foundation.framework */; };
+		B9DABC0118E53B3600B2A6B2 /* assoc.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBBE18E53B3600B2A6B2 /* assoc.c */; };
+		B9DABC0218E53B3600B2A6B2 /* DHT.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBC018E53B3600B2A6B2 /* DHT.c */; };
+		B9DABC0318E53B3600B2A6B2 /* friend_requests.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBC218E53B3600B2A6B2 /* friend_requests.c */; };
+		B9DABC0418E53B3600B2A6B2 /* group_chats.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBC418E53B3600B2A6B2 /* group_chats.c */; };
+		B9DABC0518E53B3600B2A6B2 /* LAN_discovery.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBC618E53B3600B2A6B2 /* LAN_discovery.c */; };
+		B9DABC0618E53B3600B2A6B2 /* Lossless_UDP.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBC818E53B3600B2A6B2 /* Lossless_UDP.c */; };
+		B9DABC0818E53B3600B2A6B2 /* Messenger.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBCB18E53B3600B2A6B2 /* Messenger.c */; };
+		B9DABC0918E53B3600B2A6B2 /* net_crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBCE18E53B3600B2A6B2 /* net_crypto.c */; };
+		B9DABC0A18E53B3600B2A6B2 /* network.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBD018E53B3600B2A6B2 /* network.c */; };
+		B9DABC0B18E53B3600B2A6B2 /* onion.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBD218E53B3600B2A6B2 /* onion.c */; };
+		B9DABC0C18E53B3600B2A6B2 /* onion_announce.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBD418E53B3600B2A6B2 /* onion_announce.c */; };
+		B9DABC0D18E53B3600B2A6B2 /* onion_client.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBD618E53B3600B2A6B2 /* onion_client.c */; };
+		B9DABC0E18E53B3600B2A6B2 /* ping.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBD818E53B3600B2A6B2 /* ping.c */; };
+		B9DABC0F18E53B3600B2A6B2 /* TCP_server.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBDA18E53B3600B2A6B2 /* TCP_server.c */; };
+		B9DABC1018E53B3600B2A6B2 /* tox.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBDC18E53B3600B2A6B2 /* tox.c */; };
+		B9DABC1118E53B3600B2A6B2 /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBDE18E53B3600B2A6B2 /* util.c */; };
+		B9DABE9D18E53EDA00B2A6B2 /* libsodium.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9DABE9918E53D1D00B2A6B2 /* libsodium.a */; };
+		B9DABF4E18E543B200B2A6B2 /* tox.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBDD18E53B3600B2A6B2 /* tox.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5418E544CF00B2A6B2 /* Messenger.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBCC18E53B3600B2A6B2 /* Messenger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5518E544D700B2A6B2 /* net_crypto.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBCF18E53B3600B2A6B2 /* net_crypto.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5618E544DD00B2A6B2 /* Lossless_UDP.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBC918E53B3600B2A6B2 /* Lossless_UDP.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5718E544E400B2A6B2 /* network.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBD118E53B3600B2A6B2 /* network.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5818E544EB00B2A6B2 /* misc_tools.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBCD18E53B3600B2A6B2 /* misc_tools.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5918E544F100B2A6B2 /* DHT.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBC118E53B3600B2A6B2 /* DHT.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5A18E544F700B2A6B2 /* friend_requests.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBC318E53B3600B2A6B2 /* friend_requests.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5B18E544FC00B2A6B2 /* onion_client.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBD718E53B3600B2A6B2 /* onion_client.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5C18E5450100B2A6B2 /* onion_announce.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBD518E53B3600B2A6B2 /* onion_announce.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5D18E5450500B2A6B2 /* onion.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBD318E53B3600B2A6B2 /* onion.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5E18E5450A00B2A6B2 /* LAN_discovery.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBC718E53B3600B2A6B2 /* LAN_discovery.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B9DABF5F18E5451200B2A6B2 /* group_chats.h in Headers */ = {isa = PBXBuildFile; fileRef = B9DABBC518E53B3600B2A6B2 /* group_chats.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B9DABE9818E53D1D00B2A6B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9DABE9418E53D1D00B2A6B2 /* sodium.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B9DABC1B18E53B7300B2A6B2;
+			remoteInfo = sodium;
+		};
+		B9DABE9A18E53E0700B2A6B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9DABE9418E53D1D00B2A6B2 /* sodium.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B9DABC1A18E53B7300B2A6B2;
+			remoteInfo = sodium;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B9DABB3218E539A100B2A6B2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		B9DABB3418E539A100B2A6B2 /* libProjectTox-Core.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libProjectTox-Core.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9DABB3718E539A100B2A6B2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		B9DABB4518E539A100B2A6B2 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		B9DABB4818E539A100B2A6B2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		B9DABB5D18E53A0B00B2A6B2 /* ProjectTox-Core-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ProjectTox-Core-Prefix.pch"; sourceTree = "<group>"; };
+		B9DABBBE18E53B3600B2A6B2 /* assoc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = assoc.c; sourceTree = "<group>"; };
+		B9DABBBF18E53B3600B2A6B2 /* assoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = assoc.h; sourceTree = "<group>"; };
+		B9DABBC018E53B3600B2A6B2 /* DHT.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DHT.c; sourceTree = "<group>"; };
+		B9DABBC118E53B3600B2A6B2 /* DHT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHT.h; sourceTree = "<group>"; };
+		B9DABBC218E53B3600B2A6B2 /* friend_requests.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = friend_requests.c; sourceTree = "<group>"; };
+		B9DABBC318E53B3600B2A6B2 /* friend_requests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = friend_requests.h; sourceTree = "<group>"; };
+		B9DABBC418E53B3600B2A6B2 /* group_chats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = group_chats.c; sourceTree = "<group>"; };
+		B9DABBC518E53B3600B2A6B2 /* group_chats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = group_chats.h; sourceTree = "<group>"; };
+		B9DABBC618E53B3600B2A6B2 /* LAN_discovery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LAN_discovery.c; sourceTree = "<group>"; };
+		B9DABBC718E53B3600B2A6B2 /* LAN_discovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LAN_discovery.h; sourceTree = "<group>"; };
+		B9DABBC818E53B3600B2A6B2 /* Lossless_UDP.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Lossless_UDP.c; sourceTree = "<group>"; };
+		B9DABBC918E53B3600B2A6B2 /* Lossless_UDP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lossless_UDP.h; sourceTree = "<group>"; };
+		B9DABBCB18E53B3600B2A6B2 /* Messenger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Messenger.c; sourceTree = "<group>"; };
+		B9DABBCC18E53B3600B2A6B2 /* Messenger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Messenger.h; sourceTree = "<group>"; };
+		B9DABBCD18E53B3600B2A6B2 /* misc_tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = misc_tools.h; sourceTree = "<group>"; };
+		B9DABBCE18E53B3600B2A6B2 /* net_crypto.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = net_crypto.c; sourceTree = "<group>"; };
+		B9DABBCF18E53B3600B2A6B2 /* net_crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net_crypto.h; sourceTree = "<group>"; };
+		B9DABBD018E53B3600B2A6B2 /* network.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = network.c; sourceTree = "<group>"; };
+		B9DABBD118E53B3600B2A6B2 /* network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = network.h; sourceTree = "<group>"; };
+		B9DABBD218E53B3600B2A6B2 /* onion.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = onion.c; sourceTree = "<group>"; };
+		B9DABBD318E53B3600B2A6B2 /* onion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = onion.h; sourceTree = "<group>"; };
+		B9DABBD418E53B3600B2A6B2 /* onion_announce.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = onion_announce.c; sourceTree = "<group>"; };
+		B9DABBD518E53B3600B2A6B2 /* onion_announce.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = onion_announce.h; sourceTree = "<group>"; };
+		B9DABBD618E53B3600B2A6B2 /* onion_client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = onion_client.c; sourceTree = "<group>"; };
+		B9DABBD718E53B3600B2A6B2 /* onion_client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = onion_client.h; sourceTree = "<group>"; };
+		B9DABBD818E53B3600B2A6B2 /* ping.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ping.c; sourceTree = "<group>"; };
+		B9DABBD918E53B3600B2A6B2 /* ping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ping.h; sourceTree = "<group>"; };
+		B9DABBDA18E53B3600B2A6B2 /* TCP_server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TCP_server.c; sourceTree = "<group>"; };
+		B9DABBDB18E53B3600B2A6B2 /* TCP_server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCP_server.h; sourceTree = "<group>"; };
+		B9DABBDC18E53B3600B2A6B2 /* tox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tox.c; sourceTree = "<group>"; };
+		B9DABBDD18E53B3600B2A6B2 /* tox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tox.h; sourceTree = "<group>"; };
+		B9DABBDE18E53B3600B2A6B2 /* util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = util.c; sourceTree = "<group>"; };
+		B9DABBDF18E53B3600B2A6B2 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
+		B9DABE9418E53D1D00B2A6B2 /* sodium.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = sodium.xcodeproj; path = sodium/sodium.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B9DABB3118E539A100B2A6B2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B9DABE9D18E53EDA00B2A6B2 /* libsodium.a in Frameworks */,
+				B9DABB3818E539A100B2A6B2 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B9DABB2B18E539A100B2A6B2 = {
+			isa = PBXGroup;
+			children = (
+				B9DABE9418E53D1D00B2A6B2 /* sodium.xcodeproj */,
+				B9DABB5E18E53B3600B2A6B2 /* ProjectTox-Core */,
+				B9DABB5D18E53A0B00B2A6B2 /* ProjectTox-Core-Prefix.pch */,
+				B9DABB3618E539A100B2A6B2 /* Frameworks */,
+				B9DABB3518E539A100B2A6B2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B9DABB3518E539A100B2A6B2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B9DABB3418E539A100B2A6B2 /* libProjectTox-Core.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B9DABB3618E539A100B2A6B2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B9DABB3718E539A100B2A6B2 /* Foundation.framework */,
+				B9DABB4518E539A100B2A6B2 /* XCTest.framework */,
+				B9DABB4818E539A100B2A6B2 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B9DABB5E18E53B3600B2A6B2 /* ProjectTox-Core */ = {
+			isa = PBXGroup;
+			children = (
+				B9DABBBD18E53B3600B2A6B2 /* toxcore */,
+			);
+			path = "ProjectTox-Core";
+			sourceTree = "<group>";
+		};
+		B9DABBBD18E53B3600B2A6B2 /* toxcore */ = {
+			isa = PBXGroup;
+			children = (
+				B9DABBBE18E53B3600B2A6B2 /* assoc.c */,
+				B9DABBBF18E53B3600B2A6B2 /* assoc.h */,
+				B9DABBC018E53B3600B2A6B2 /* DHT.c */,
+				B9DABBC118E53B3600B2A6B2 /* DHT.h */,
+				B9DABBC218E53B3600B2A6B2 /* friend_requests.c */,
+				B9DABBC318E53B3600B2A6B2 /* friend_requests.h */,
+				B9DABBC418E53B3600B2A6B2 /* group_chats.c */,
+				B9DABBC518E53B3600B2A6B2 /* group_chats.h */,
+				B9DABBC618E53B3600B2A6B2 /* LAN_discovery.c */,
+				B9DABBC718E53B3600B2A6B2 /* LAN_discovery.h */,
+				B9DABBC818E53B3600B2A6B2 /* Lossless_UDP.c */,
+				B9DABBC918E53B3600B2A6B2 /* Lossless_UDP.h */,
+				B9DABBCB18E53B3600B2A6B2 /* Messenger.c */,
+				B9DABBCC18E53B3600B2A6B2 /* Messenger.h */,
+				B9DABBCD18E53B3600B2A6B2 /* misc_tools.h */,
+				B9DABBCE18E53B3600B2A6B2 /* net_crypto.c */,
+				B9DABBCF18E53B3600B2A6B2 /* net_crypto.h */,
+				B9DABBD018E53B3600B2A6B2 /* network.c */,
+				B9DABBD118E53B3600B2A6B2 /* network.h */,
+				B9DABBD218E53B3600B2A6B2 /* onion.c */,
+				B9DABBD318E53B3600B2A6B2 /* onion.h */,
+				B9DABBD418E53B3600B2A6B2 /* onion_announce.c */,
+				B9DABBD518E53B3600B2A6B2 /* onion_announce.h */,
+				B9DABBD618E53B3600B2A6B2 /* onion_client.c */,
+				B9DABBD718E53B3600B2A6B2 /* onion_client.h */,
+				B9DABBD818E53B3600B2A6B2 /* ping.c */,
+				B9DABBD918E53B3600B2A6B2 /* ping.h */,
+				B9DABBDA18E53B3600B2A6B2 /* TCP_server.c */,
+				B9DABBDB18E53B3600B2A6B2 /* TCP_server.h */,
+				B9DABBDC18E53B3600B2A6B2 /* tox.c */,
+				B9DABBDD18E53B3600B2A6B2 /* tox.h */,
+				B9DABBDE18E53B3600B2A6B2 /* util.c */,
+				B9DABBDF18E53B3600B2A6B2 /* util.h */,
+			);
+			path = toxcore;
+			sourceTree = "<group>";
+		};
+		B9DABE9518E53D1D00B2A6B2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B9DABE9918E53D1D00B2A6B2 /* libsodium.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		B9DABF4D18E543A900B2A6B2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B9DABF4E18E543B200B2A6B2 /* tox.h in Headers */,
+				B9DABF5418E544CF00B2A6B2 /* Messenger.h in Headers */,
+				B9DABF5618E544DD00B2A6B2 /* Lossless_UDP.h in Headers */,
+				B9DABF5518E544D700B2A6B2 /* net_crypto.h in Headers */,
+				B9DABF5718E544E400B2A6B2 /* network.h in Headers */,
+				B9DABF5A18E544F700B2A6B2 /* friend_requests.h in Headers */,
+				B9DABF5E18E5450A00B2A6B2 /* LAN_discovery.h in Headers */,
+				B9DABF5918E544F100B2A6B2 /* DHT.h in Headers */,
+				B9DABF5B18E544FC00B2A6B2 /* onion_client.h in Headers */,
+				B9DABF5F18E5451200B2A6B2 /* group_chats.h in Headers */,
+				B9DABF5D18E5450500B2A6B2 /* onion.h in Headers */,
+				B9DABF5C18E5450100B2A6B2 /* onion_announce.h in Headers */,
+				B9DABF5818E544EB00B2A6B2 /* misc_tools.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		B9DABB3318E539A100B2A6B2 /* ProjectTox-Core */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B9DABB5718E539A100B2A6B2 /* Build configuration list for PBXNativeTarget "ProjectTox-Core" */;
+			buildPhases = (
+				B9DABB3018E539A100B2A6B2 /* Sources */,
+				B9DABB3118E539A100B2A6B2 /* Frameworks */,
+				B9DABB3218E539A100B2A6B2 /* CopyFiles */,
+				B9DABF4D18E543A900B2A6B2 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B9DABE9B18E53E0700B2A6B2 /* PBXTargetDependency */,
+			);
+			name = "ProjectTox-Core";
+			productName = "ProjectTox-Core";
+			productReference = B9DABB3418E539A100B2A6B2 /* libProjectTox-Core.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B9DABB2C18E539A100B2A6B2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = james;
+			};
+			buildConfigurationList = B9DABB2F18E539A100B2A6B2 /* Build configuration list for PBXProject "ProjectTox-Core" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B9DABB2B18E539A100B2A6B2;
+			productRefGroup = B9DABB3518E539A100B2A6B2 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = B9DABE9518E53D1D00B2A6B2 /* Products */;
+					ProjectRef = B9DABE9418E53D1D00B2A6B2 /* sodium.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				B9DABB3318E539A100B2A6B2 /* ProjectTox-Core */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		B9DABE9918E53D1D00B2A6B2 /* libsodium.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libsodium.a;
+			remoteRef = B9DABE9818E53D1D00B2A6B2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B9DABB3018E539A100B2A6B2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B9DABC0C18E53B3600B2A6B2 /* onion_announce.c in Sources */,
+				B9DABC0318E53B3600B2A6B2 /* friend_requests.c in Sources */,
+				B9DABC0518E53B3600B2A6B2 /* LAN_discovery.c in Sources */,
+				B9DABC0F18E53B3600B2A6B2 /* TCP_server.c in Sources */,
+				B9DABC0E18E53B3600B2A6B2 /* ping.c in Sources */,
+				B9DABC0A18E53B3600B2A6B2 /* network.c in Sources */,
+				B9DABC0D18E53B3600B2A6B2 /* onion_client.c in Sources */,
+				B9DABC0418E53B3600B2A6B2 /* group_chats.c in Sources */,
+				B9DABC1018E53B3600B2A6B2 /* tox.c in Sources */,
+				B9DABC0118E53B3600B2A6B2 /* assoc.c in Sources */,
+				B9DABC0918E53B3600B2A6B2 /* net_crypto.c in Sources */,
+				B9DABC0818E53B3600B2A6B2 /* Messenger.c in Sources */,
+				B9DABC0218E53B3600B2A6B2 /* DHT.c in Sources */,
+				B9DABC0618E53B3600B2A6B2 /* Lossless_UDP.c in Sources */,
+				B9DABC0B18E53B3600B2A6B2 /* onion.c in Sources */,
+				B9DABC1118E53B3600B2A6B2 /* util.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B9DABE9B18E53E0700B2A6B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = sodium;
+			targetProxy = B9DABE9A18E53E0700B2A6B2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		B9DABB5518E539A100B2A6B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		B9DABB5618E539A100B2A6B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B9DABB5818E539A100B2A6B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/ProjectTox_Core.dst;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ProjectTox-Core-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(TARGET_BUILD_DIR)/usr/local/include",
+					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
+			};
+			name = Debug;
+		};
+		B9DABB5918E539A100B2A6B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/ProjectTox_Core.dst;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ProjectTox-Core-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(TARGET_BUILD_DIR)/usr/local/include",
+					"$(BUILT_PRODUCTS_DIR)/usr/local/include",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B9DABB2F18E539A100B2A6B2 /* Build configuration list for PBXProject "ProjectTox-Core" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9DABB5518E539A100B2A6B2 /* Debug */,
+				B9DABB5618E539A100B2A6B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B9DABB5718E539A100B2A6B2 /* Build configuration list for PBXNativeTarget "ProjectTox-Core" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9DABB5818E539A100B2A6B2 /* Debug */,
+				B9DABB5918E539A100B2A6B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B9DABB2C18E539A100B2A6B2 /* Project object */;
+}

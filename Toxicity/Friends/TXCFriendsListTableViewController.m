@@ -3,7 +3,7 @@
 //  Toxicity
 //
 //  Created by James Linnell on 8/5/13.
-//  Copyright (c) 2013 JamesTech. All rights reserved.
+//  Copyright (c) 2014 James Linnell. All rights reserved.
 //
 
 #import "TXCFriendsListTableViewController.h"
@@ -149,9 +149,10 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [self.tableView reloadData];
 }
 
--(void) processingNewMessageWithNotificaton:(NSNotification*) notification {
-    self.lastMessage = [NSString stringWithFormat:@"%@", notification.userInfo[@"message"]];
-    self.numberOfLastMessageAuthor = [notification.userInfo[@"friendNumber"] integerValue];
+- (void)processingNewMessageWithNotificaton:(NSNotification *)notification {
+    TXCMessageObject *tempMessage = (TXCMessageObject *)notification.object;
+    self.lastMessage = tempMessage.message;
+    self.numberOfLastMessageAuthor = friendNumForID(tempMessage.senderKey);
     [self.tableView reloadData];
 }
 

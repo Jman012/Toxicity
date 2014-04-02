@@ -3,7 +3,7 @@
 //  Toxicity
 //
 //  Created by James Linnell on 8/8/13.
-//  Copyright (c) 2013 JamesTech. All rights reserved.
+//  Copyright (c) 2014 James Linnell. All rights reserved.
 //
 
 #import "TXCGroupChatViewController.h"
@@ -47,9 +47,9 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
         self.mainGroupList = [[TXCSingleton sharedSingleton] groupList];
         self.mainGroupMessages = [[TXCSingleton sharedSingleton] groupMessages];
         
-        self.messages = [[self.mainGroupMessages objectAtIndex:theIndex.row] mutableCopy];
+        self.messages = [[self.mainGroupMessages objectAtIndex:self.friendIndex.row] mutableCopy];
         
-        self.groupInfo = [self.mainGroupList objectAtIndex:theIndex.row];
+        self.groupInfo = [self.mainGroupList objectAtIndex:self.friendIndex.row];
         
         [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:self.friendIndex];
     }
@@ -68,17 +68,20 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
     } else {
         self.title = self.groupInfo.groupName;
     }
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(newMessage:)
                                                  name:TXCToxAppDelegateNotificationNewMessage
                                                object:nil];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    NSLog(@"view Did Appear");
+    [super viewDidAppear:animated];
+}
+
 - (void)viewDidDisappear:(BOOL)animated {
+    NSLog(@"view did disappear");
     [super viewDidDisappear:animated];
     [TXCSingleton sharedSingleton].groupMessages[self.friendIndex.row] = self.messages.mutableCopy;
     [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];

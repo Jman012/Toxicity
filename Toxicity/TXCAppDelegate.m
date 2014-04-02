@@ -3,13 +3,14 @@
 //  Toxicity
 //
 //  Created by James Linnell on 8/4/13.
-//  Copyright (c) 2013 JamesTech. All rights reserved.
+//  Copyright (c) 2014 James Linnell. All rights reserved.
 //
 
 #import "TXCAppDelegate.h"
 #import "TWMessageBarManager.h"
 #import "JSBubbleView.h"
 #import <ZBarReaderView.h>
+#import "TXCFriendAddress.h"
 
 NSString *const TXCToxAppDelegateNotificationFriendAdded = @"FriendAdded";
 NSString *const TXCToxAppDelegateNotificationGroupAdded = @"GroupAdded";
@@ -40,22 +41,29 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     self.toxBackgroundThread = dispatch_queue_create("com.Jman.ToxicityBG", DISPATCH_QUEUE_SERIAL);
     self.toxBackgroundThreadState = TXCThreadState_killed;
     
-    // TODO: make this updatable
-    self.dhtNodes = @[
-                      @{@"ip": @"192.254.75.98", @"port": @"33445", @"key": @"FE3914F4616E227F29B2103450D6B55A836AD4BD23F97144E2C4ABE8D504FE1B"},
-                      @{@"ip": @"192.184.81.118", @"port": @"33445", @"key": @"5CD7EB176C19A2FD840406CD56177BB8E75587BB366F7BB3004B19E3EDC04143"},
-                      @{@"ip": @"144.76.60.215", @"port": @"33445", @"key": @"DDCF277B8B45B0D357D78AA4E201766932DF6CDB7179FC7D5C9F3C2E8E705326"},
-                      @{@"ip": @"193.107.16.73", @"port": @"33445", @"key": @"AE27E1E72ADA3DC423C60EEBACA241456174048BE76A283B41AD32D953182D49"},
-                      @{@"ip": @"66.74.15.98", @"port": @"33445", @"key": @"20C797E098701A848B07D0384222416B0EFB60D08CECB925B860CAEAAB572067"}
-                      ];
-    self.lastAttemptedConnect = time(0);
-    srand(self.lastAttemptedConnect);
-    
     self.toxWaitData = NULL;
     self.toxWaitBufferSize = tox_wait_data_size();
     self.toxWaitData = malloc(self.toxWaitBufferSize);
     
+    
+    UILocalNotification *locationNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if (locationNotification) {
+        // Go to most recent chat message
+    }
+    application.applicationIconBadgeNumber = 0;
+
+    
     return YES;
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    if ([application applicationState] == UIApplicationStateActive) {
+        [[TWMessageBarManager sharedInstance] showMessageWithTitle:@"New Message"
+                                                       description:notification.alertBody
+                                                              type:TWMessageBarMessageTypeInfo];
+    }
+    application.applicationIconBadgeNumber = 0;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -141,9 +149,14 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     NSLog(@"URL: %@", url);
     
-    if ([TXCSingleton friendPublicKeyIsValid:url.host]) {
-        [self addFriend:url.host];
-    }
+    TXCFriendAddress *friendAddress = [[TXCFriendAddress alloc] initWithToxAddress:url.absoluteString];
+    [friendAddress resolveAddressWithCompletionBlock:^(NSString *resolvedAddress, TXCFriendAddressError error){
+        if (error == TXCFriendAddressError_None) {
+            [self addFriend:resolvedAddress];
+        } else {
+            [friendAddress showError:error];
+        }
+    }];
     
     return YES;
 }
@@ -353,25 +366,6 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
         }
     }
     
-    //loads any save dht nodes
-    if ([prefs objectForKey:@"dht_node_list"] == nil) {
-        //no list exists, make a new array, add a placeholder so I don't have to add one manually
-        TXCDHTNodeObject *tempDHT = [[TXCDHTNodeObject alloc] init];
-        tempDHT.dhtName = @"stal-premade";
-        tempDHT.dhtIP = @"198.46.136.167";
-        tempDHT.dhtPort = @"33445";
-        tempDHT.dhtKey = @"728925473812C7AAC482BE7250BCCAD0B8CB9F737BF3D42ABD34459C1768F854";
-        [[TXCSingleton sharedSingleton] setDhtNodeList:(NSMutableArray *)@[tempDHT]];
-    } else {
-        //theere's a list, loop through them and add to singleton
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        for (NSData *data in [prefs objectForKey:@"dht_node_list"]) {
-            TXCDHTNodeObject *tempDHT = (TXCDHTNodeObject *)[NSKeyedUnarchiver unarchiveObjectWithData:data];
-            [array addObject:tempDHT];
-        }
-        [[TXCSingleton sharedSingleton] setDhtNodeList:array];
-    }
-    
     //loads any pending friend requests
     if ([prefs objectForKey:@"pending_requests_list"] == nil) {
         
@@ -544,6 +538,8 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 
 - (void)addFriend:(NSString *)theirKey {
     //sends a request to the key
+    
+    NSLog(@"Adding: %@", theirKey);
     
     uint8_t *binID = hex_string_to_bin((char *)[theirKey UTF8String]);
     __block int num = 0;
@@ -835,21 +831,30 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
         [theMessage setSenderKey:[[[[TXCSingleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber] publicKey]];
         
         
-        //add to singleton
-        //if the message coming through is not to the currently opened chat window, then uialertview it
-        if (friendnumber != [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 1) {
+        // If the message coming through is not to the currently opened chat window, then fire a notification
+        if ((friendnumber != [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] row] &&
+            [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 1) ||
+            [[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground ||
+            [[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive) {
             NSMutableArray *tempMessages = [[[[TXCSingleton sharedSingleton] mainFriendMessages] objectAtIndex:friendnumber] mutableCopy];
             [tempMessages addObject:theMessage];
             
+            // Add message to singleton
             [[TXCSingleton sharedSingleton] mainFriendMessages][friendnumber] = [tempMessages copy];
             
-            TXCFriendObject *tempFriend = [[[TXCSingleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber];
-            [[TWMessageBarManager sharedInstance] showMessageWithTitle:[NSString stringWithFormat:@"Message from: %@", tempFriend.nickname]
-                                                           description:@((char *)string)
-                                                                  type:TWMessageBarMessageTypeInfo];
-            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage userInfo:@{@"message":@((char *)string),@"friendNumber":@(friendnumber), @"friend":tempFriend} ];
+            // Fire a local notification for the message
+            UILocalNotification *friendMessageNotification = [[UILocalNotification alloc] init];
+            friendMessageNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
+            friendMessageNotification.alertBody = [NSString stringWithFormat:@"[%@]: %@", theMessage.senderName, theMessage.message];
+            friendMessageNotification.alertAction = @"show the message";
+            friendMessageNotification.timeZone = [NSTimeZone defaultTimeZone];
+            friendMessageNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+            [[UIApplication sharedApplication] scheduleLocalNotification:friendMessageNotification];
+            NSLog(@"Sent UILocalNotification: %@", friendMessageNotification.alertBody);
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage];
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage userInfo:@{@"message":@((char *)string),@"friendNumber":@(friendnumber)} ];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage];
         }
     });
 }
@@ -882,15 +887,25 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
         theMessage.senderKey = [[[[TXCSingleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPulicKey];
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it
-        if (groupnumber != [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] row] && [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 0) {
+        if ((groupnumber != [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] row] &&
+            [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 0) ||
+            [[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground ||
+            [[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive) {
             NSMutableArray *tempMessages = [[[[TXCSingleton sharedSingleton] groupMessages] objectAtIndex:groupnumber] mutableCopy];
             [tempMessages addObject:theMessage];
 
+            // Add message to singleton
             [[TXCSingleton sharedSingleton] groupMessages][groupnumber] = [tempMessages copy];
             
-            [[TWMessageBarManager sharedInstance] showMessageWithTitle:[NSString stringWithFormat:@"Message from Group #%d", groupnumber]
-                                                           description:theirMessage
-                                                                  type:TWMessageBarMessageTypeSuccess];
+            // Fire a local notification for the message
+            UILocalNotification *groupMessageNotification = [[UILocalNotification alloc] init];
+            groupMessageNotification.fireDate = [NSDate date];
+            groupMessageNotification.alertBody = [NSString stringWithFormat:@"[Group %d][%@]: %@", groupnumber, theirName, theirMessage];
+            groupMessageNotification.alertAction = @"show the message";
+            groupMessageNotification.timeZone = [NSTimeZone defaultTimeZone];
+            groupMessageNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+            [[UIApplication sharedApplication] scheduleLocalNotification:groupMessageNotification];
+            
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationNewMessage object:theMessage];
         }
@@ -1141,6 +1156,7 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
 
 - (void)toxCoreLoopInBackground:(BOOL)inBackground {
     
+    TXCSingleton *singleton = [TXCSingleton sharedSingleton];
     Tox *toxInstance = [[TXCSingleton sharedSingleton] toxCoreInstance];
     
     //code to check if node connection has changed, if so notify the app
@@ -1159,13 +1175,13 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
         self.on = 0;
     }
     // If we haven't been connected for over two seconds, bootstrap to another node.
-    if (self.on == 0 && self.lastAttemptedConnect < time(0)+2) {
-        int num = rand() % [self.dhtNodes count];
-        unsigned char *binary_string = hex_string_to_bin((char *)[self.dhtNodes[num][@"key"] UTF8String]);
+    if (self.on == 0 && singleton.lastAttemptedConnect < time(0)+2) {
+        int num = rand() % [singleton.dhtNodeList count];
+        unsigned char *binary_string = hex_string_to_bin((char *)[singleton.dhtNodeList[num][@"key"] UTF8String]);
         tox_bootstrap_from_address([[TXCSingleton sharedSingleton] toxCoreInstance],
-                                   [self.dhtNodes[num][@"ip"] UTF8String],
+                                   [singleton.dhtNodeList[num][@"ip"] UTF8String],
                                    TOX_ENABLE_IPV6_DEFAULT,
-                                   htons(atoi([self.dhtNodes[num][@"port"] UTF8String])),
+                                   htons(atoi([singleton.dhtNodeList[num][@"port"] UTF8String])),
                                    binary_string); //actual connection
         free(binary_string);
     }

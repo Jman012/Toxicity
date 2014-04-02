@@ -3,7 +3,7 @@
 //  Toxicity
 //
 //  Created by James Linnell on 8/25/13.
-//  Copyright (c) 2013 JamesTech. All rights reserved.
+//  Copyright (c) 2014 James Linnell. All rights reserved.
 //
 
 #import "TXCFriendCell.h"
@@ -122,6 +122,7 @@
     self.friendIdentifier = [groupObject.groupPulicKey copy];
     [self configureBackroundColor];
     [self configureLabelsWithGroupObject:groupObject];
+    self.statusIndicatorImageView.hidden = YES;
 }
 
 - (void)configureCellWithFriendObject:(TXCFriendObject *)friendObject
@@ -129,6 +130,7 @@
     self.friendIdentifier = [friendObject.publicKey copy];
     [self configureBackroundColor];
     [self configureLabelsWithFriendObject:friendObject];
+    self.statusIndicatorImageView.hidden = NO;
     [self setupStatusIndicatorImageViewWithFriendObject:friendObject];
 }
 
