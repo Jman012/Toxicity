@@ -1265,17 +1265,7 @@ int friendNumForID(NSString *theKey) {
     if (friendListCount > 0) {
         for (int i = 0; i < friendListCount; i++) {
             uint8_t tempKey[TOX_CLIENT_ID_SIZE];
-            int ret = tox_get_client_id([[TXCSingleton sharedSingleton] toxCoreInstance], i, tempKey);
-
-            // Critical: Tox doesn't move friends in the friendlist to fill gaps
-            // so we need to know smartly move over the blanks.
-            if (ret == -1) {
-                friendListCount++;
-                if (friendListCount > 256) {
-                    return -1;
-                }
-                continue;
-            }
+            tox_get_client_id([[TXCSingleton sharedSingleton] toxCoreInstance], friendList[i], tempKey);
             
             if (memcmp(newKey, tempKey, TOX_CLIENT_ID_SIZE) == 0) { // True
                 free(newKey);
