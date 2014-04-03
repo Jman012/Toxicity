@@ -57,7 +57,7 @@ int friendNumForID(NSString *theKey);
 - (void)acceptFriendRequests:(NSArray *)theKeysToAccept;
 - (void)acceptGroupInvites:(NSArray *)theKeysToAccept;
 - (int)deleteFriend:(NSString*)friendKey;
-- (int)deleteGroupchat:(int)theGroupNumber;
+- (int)deleteGroupchat:(NSInteger)theGroupNumber;
 
 - (void)configureNavigationControllerDesign:(UINavigationController *)navController;
 

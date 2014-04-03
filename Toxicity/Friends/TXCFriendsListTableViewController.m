@@ -41,6 +41,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 
 @implementation TXCFriendsListTableViewController
 
+#pragma mark - View controller lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 #warning
@@ -78,7 +80,6 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     
     [self.settingsButton setTarget:self];
     [self.settingsButton setAction:@selector(settingsButtonPushed)];
-    
     
     [self updateRequestsButton];
     
@@ -132,6 +133,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - Private methods
+
 - (IBAction)requestsButtonPushed:(id)sender {
     TXCRequestsTableViewController *requestsVC = [[TXCRequestsTableViewController alloc] init];
     [self.navigationController pushViewController:requestsVC animated:YES];
@@ -156,14 +159,12 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [self.tableView reloadData];
 }
 
-
-
 - (void)updateRequestsButton {
     //update the name of the button
-    int countRequests = [[[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys] count];
-    int countInvites = [[[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys] count];
+    NSUInteger countRequests = [[[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys] count];
+    NSUInteger countInvites = [[[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys] count];
     if (countRequests > 0 || countInvites > 0) {
-        self.navigationItem.rightBarButtonItem.title = [NSString stringWithFormat:@"Requests (%d)", countRequests + countInvites];
+        self.navigationItem.rightBarButtonItem.title = [NSString stringWithFormat:@"Requests (%u)", countRequests + countInvites];
     } else {
         self.navigationItem.rightBarButtonItem.title = @"Requests";
     }
@@ -254,7 +255,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     if (!cell) {
         cell = [[TXCFriendCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
-    if (indexPath.section) {
+    if (indexPath.section == 1) {
+        // Friends
         TXCFriendObject *friendObject = self.mainFriendList[indexPath.row];
         if (self.numberOfLastMessageAuthor == indexPath.row) {
             cell.lastMessage = self.lastMessage;
@@ -290,7 +292,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             }
         }];
         
-    } else {
+    } else if (indexPath.section == 0){
+        // Groups
         TXCGroupObject *groupObject = [[TXCSingleton sharedSingleton] groupList][indexPath.row];
         
         if (self.numberOfLastMessageAuthor == indexPath.row) {
@@ -349,12 +352,12 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
         if (indexPath.section == 0) {
             
             //group delete
-            int num = [ourDelegate deleteGroupchat:indexPath.row];
+            NSInteger num = [ourDelegate deleteGroupchat:indexPath.row];
             
             if (num == 0) {
                 [self.tableView beginUpdates];
                 
-                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                 
                 [[TXCSingleton sharedSingleton].groupList removeObjectAtIndex:indexPath.row];
                 [[TXCSingleton sharedSingleton].groupMessages removeObjectAtIndex:indexPath.row];
@@ -371,19 +374,21 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
                 [alert show];
             }
             
-        } else {
+        } else if (indexPath.section == 1) {
             
             //friend delete
             TXCFriendObject *tempFriend = self.mainFriendList[indexPath.row];
+            NSLog(@"IndexPath Section: %d Row: %d\nList count: %d Frien: %@", indexPath.section, indexPath.row, [self.mainFriendList count], tempFriend);
             int num = [ourDelegate deleteFriend:tempFriend.publicKey];
             
             if (num == 0) {
                 [self.tableView beginUpdates];
                 
-                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                 
                 [[TXCSingleton sharedSingleton].mainFriendList removeObjectAtIndex:indexPath.row];
                 [[TXCSingleton sharedSingleton].mainFriendMessages removeObjectAtIndex:indexPath.row];
+                self.mainFriendList = [[TXCSingleton sharedSingleton] mainFriendList];
                 
                 //save in user defaults
                 [TXCSingleton saveFriendListInUserDefaults];

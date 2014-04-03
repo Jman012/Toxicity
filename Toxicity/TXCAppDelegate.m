@@ -695,7 +695,7 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 }
 
 - (int)deleteFriend:(NSString*)friendKey {
-    
+
     int friendNum = friendNumForID(friendKey);
     if (friendNum == -1) {
         return -1;
@@ -715,7 +715,7 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     
 }
 
-- (int)deleteGroupchat:(int)theGroupNumber {
+- (int)deleteGroupchat:(NSInteger)theGroupNumber {
     __block int num = 0;
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     dispatch_async(self.toxMainThread, ^{
@@ -1100,57 +1100,41 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
 #pragma mark - Thread methods
 
 - (void)killToxThreadInBackground:(BOOL)inBackground {
-    switch (inBackground) {
-        case NO:
-            NSLog(@"Killing main thread");
-            if (self.toxMainThreadState != TXCThreadState_killed) {
-                self.toxMainThreadState = TXCThreadState_waitingToKill;
-            }
-            break;
+    if (!inBackground) {
+        NSLog(@"Killing main thread");
+        if (self.toxMainThreadState != TXCThreadState_killed) {
+            self.toxMainThreadState = TXCThreadState_waitingToKill;
+        }
             
-        case YES:
-            NSLog(@"Killing background thread");
-            if (self.toxBackgroundThreadState != TXCThreadState_killed) {
-                self.toxBackgroundThreadState = TXCThreadState_waitingToKill;
-            }
-            
-        default:
-            break;
+    } else {
+        NSLog(@"Killing background thread");
+        if (self.toxBackgroundThreadState != TXCThreadState_killed) {
+            self.toxBackgroundThreadState = TXCThreadState_waitingToKill;
+        }
     }
 }
 
 - (void)startToxThreadInBackground:(BOOL)inBackground {
-    
-
-    switch (inBackground) {
-        case NO: {
-            if (self.toxMainThreadState == TXCThreadState_running) {
-                NSLog(@"Trying to start main thread while it's already running.");
-                return;
-            }
-            NSLog(@"Starting main thread");
-            self.toxMainThreadState = TXCThreadState_running;
-            dispatch_async(self.toxMainThread, ^{
-                [self toxCoreLoopInBackground:NO];
-            });
-            break;
+    if (!inBackground) {
+        if (self.toxMainThreadState == TXCThreadState_running) {
+            NSLog(@"Trying to start main thread while it's already running.");
+            return;
         }
-            
-        case YES: {
-            if (self.toxBackgroundThreadState == TXCThreadState_running) {
-                NSLog(@"Trying to start background thread while it's already running.");
-                return;
-            }
-            NSLog(@"Starting background thread");
-            self.toxBackgroundThreadState = TXCThreadState_running;
-            dispatch_async(self.toxBackgroundThread, ^{
-                [self toxCoreLoopInBackground:YES];
-            });
-            break;
+        NSLog(@"Starting main thread");
+        self.toxMainThreadState = TXCThreadState_running;
+        dispatch_async(self.toxMainThread, ^{
+            [self toxCoreLoopInBackground:NO];
+        });
+    } else {
+        if (self.toxBackgroundThreadState == TXCThreadState_running) {
+            NSLog(@"Trying to start background thread while it's already running.");
+            return;
         }
-            
-        default:
-            break;
+        NSLog(@"Starting background thread");
+        self.toxBackgroundThreadState = TXCThreadState_running;
+        dispatch_async(self.toxBackgroundThread, ^{
+            [self toxCoreLoopInBackground:YES];
+        });
     }
 }
 
@@ -1193,46 +1177,37 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
         tox_wait_cleanup(toxInstance, self.toxWaitData);
     }
     // Run tox_do
-    int a = time(0);
+    time_t a = time(0);
     tox_do([[TXCSingleton sharedSingleton] toxCoreInstance]);
     if (time(0) - a > 1) {
         NSLog(@"tox_do took more than %lu seconds!", time(0) - a);
     }
 
     // Keep going
-    switch (inBackground) {
-        case NO: {
-            if (self.toxMainThreadState == TXCThreadState_running || self.toxMainThreadState == TXCThreadState_killed) {
-                dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(33333 * NSEC_PER_USEC));
-                dispatch_after(waitTime, self.toxMainThread, ^{
-                    [self toxCoreLoopInBackground:NO];
-                });
-            } else if (self.toxMainThreadState == TXCThreadState_waitingToKill) {
-                // Kill ourself
-                NSLog(@"Main thread killed");
-                self.toxMainThreadState = TXCThreadState_killed;
-                return;
-            }
-            break;
+    if (!inBackground) {
+        if (self.toxMainThreadState == TXCThreadState_running || self.toxMainThreadState == TXCThreadState_killed) {
+            dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(33333 * NSEC_PER_USEC));
+            dispatch_after(waitTime, self.toxMainThread, ^{
+                [self toxCoreLoopInBackground:NO];
+            });
+        } else if (self.toxMainThreadState == TXCThreadState_waitingToKill) {
+            // Kill ourself
+            NSLog(@"Main thread killed");
+            self.toxMainThreadState = TXCThreadState_killed;
+            return;
         }
-            
-        case YES: {
-            if (self.toxBackgroundThreadState == TXCThreadState_running || self.toxBackgroundThreadState == TXCThreadState_killed) {
-                dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(50000 * NSEC_PER_USEC));
-                dispatch_after(waitTime, self.toxBackgroundThread, ^{
-                    [self toxCoreLoopInBackground:YES];
-                });
-            } else if (self.toxBackgroundThreadState == TXCThreadState_waitingToKill) {
-                // Kill ourself
-                NSLog(@"Background thread killed");
-                self.toxBackgroundThreadState = TXCThreadState_killed;
-                return;
-            }
-            break;
+    } else {
+        if (self.toxBackgroundThreadState == TXCThreadState_running || self.toxBackgroundThreadState == TXCThreadState_killed) {
+            dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(50000 * NSEC_PER_USEC));
+            dispatch_after(waitTime, self.toxBackgroundThread, ^{
+                [self toxCoreLoopInBackground:YES];
+            });
+        } else if (self.toxBackgroundThreadState == TXCThreadState_waitingToKill) {
+            // Kill ourself
+            NSLog(@"Background thread killed");
+            self.toxBackgroundThreadState = TXCThreadState_killed;
+            return;
         }
-            
-        default:
-            break;
     }
     
     
@@ -1290,7 +1265,18 @@ int friendNumForID(NSString *theKey) {
     if (friendListCount > 0) {
         for (int i = 0; i < friendListCount; i++) {
             uint8_t tempKey[TOX_CLIENT_ID_SIZE];
-            tox_get_client_id([[TXCSingleton sharedSingleton] toxCoreInstance], i, tempKey);
+            int ret = tox_get_client_id([[TXCSingleton sharedSingleton] toxCoreInstance], i, tempKey);
+
+            // Critical: Tox doesn't move friends in the friendlist to fill gaps
+            // so we need to know smartly move over the blanks.
+            if (ret == -1) {
+                friendListCount++;
+                if (friendListCount > 256) {
+                    return -1;
+                }
+                continue;
+            }
+            
             if (memcmp(newKey, tempKey, TOX_CLIENT_ID_SIZE) == 0) { // True
                 free(newKey);
                 return i;

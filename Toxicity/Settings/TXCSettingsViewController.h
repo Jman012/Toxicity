@@ -11,7 +11,6 @@
 
 @interface TXCSettingsViewController : UITableViewController
 
-@property (nonatomic, strong) NSMutableArray *dhtNodeList;
 @property (nonatomic, strong) UITextField *statusTextField;
 @property (nonatomic, strong) UITextField *nameTextField;
 

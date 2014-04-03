@@ -176,7 +176,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 {
     if ([self.selectedRequests count] > 0 || [self.selectedInvites count] > 0) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Accept"
-                                                            message:[NSString stringWithFormat:@"Are you sure you want to accept %d requests/invites?", [self.selectedRequests count] + [self.selectedInvites count]]
+                                                            message:[NSString stringWithFormat:@"Are you sure you want to accept %u requests/invites?", [self.selectedRequests count] + [self.selectedInvites count]]
                                                            delegate:self
                                                   cancelButtonTitle:@"Yes"
                                                   otherButtonTitles:@"No", nil];
@@ -189,7 +189,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 {
     if ([self.selectedRequests count] > 0 || [self.selectedInvites count] > 0) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Reject"
-                                                            message:[NSString stringWithFormat:@"Are you sure you want to reject %d requests/invites?", [self.selectedRequests count] + [self.selectedInvites count]]
+                                                            message:[NSString stringWithFormat:@"Are you sure you want to reject %u requests/invites?", [self.selectedRequests count] + [self.selectedInvites count]]
                                                            delegate:self
                                                   cancelButtonTitle:@"Yes"
                                                   otherButtonTitles:@"No", nil];
@@ -379,8 +379,8 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 #pragma mark - Misc methods
 
 - (void)updateAcceptAndRejectButtons {
-    self.acceptButton.title = [NSString stringWithFormat:@"Accept (%d)", [self.selectedRequests count] + [self.selectedInvites count]];
-    self.rejectButton.title = [NSString stringWithFormat:@"Reject (%d)", [self.selectedRequests count] + [self.selectedInvites count]];
+    self.acceptButton.title = [NSString stringWithFormat:@"Accept (%u)", [self.selectedRequests count] + [self.selectedInvites count]];
+    self.rejectButton.title = [NSString stringWithFormat:@"Reject (%u)", [self.selectedRequests count] + [self.selectedInvites count]];
 }
 
 #pragma mark - End Methods

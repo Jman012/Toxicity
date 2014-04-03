@@ -10,7 +10,6 @@
 #import "InputCell.h"
 #import "StatusCell.h"
 #import "TXCQRCodeViewController.h"
-#import "TXCNewDHTNodeViewController.h"
 #import "TXCSingleton.h"
 #import "TXCAppDelegate.h"
 
@@ -42,7 +41,6 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.dhtNodeList = [TXCSingleton sharedSingleton].dhtNodeList;
 }
 
 #pragma mark - Actions
@@ -63,108 +61,6 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
     }
     return [NSString stringWithUTF8String:convertedKey];
 }
-
-- (void)addDHTServer:(NSNotification *)notification {
-    
-    if ([notification.userInfo[@"editing"] isEqualToString:@"yes"]) {
-                
-        NSIndexPath *path = notification.userInfo[@"indexpath"];
-        TXCDHTNodeObject *tempDHT = _dhtNodeList[path.row - 1];
-        tempDHT.dhtName = notification.userInfo[@"dht_name"];
-        tempDHT.dhtIP = notification.userInfo[@"dht_ip"];
-        tempDHT.dhtPort = notification.userInfo[@"dht_port"];
-        tempDHT.dhtKey = notification.userInfo[@"dht_key"];
-        
-        [self.tableView reloadData];
-        
-        NSLog(@"Saving dhts");
-        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        [[TXCSingleton sharedSingleton].dhtNodeList enumerateObjectsUsingBlock:^(TXCDHTNodeObject *arrayDHT, NSUInteger idx, BOOL *stop) {
-            NSData *data = [NSKeyedArchiver archivedDataWithRootObject:arrayDHT.copy];
-            [array addObject:data];
-        }];
-        [prefs setObject:array forKey:@"dht_node_list"];
-        [prefs synchronize];
-        
-    } else {
-        
-        [self.tableView beginUpdates];
-        
-        TXCDHTNodeObject *tempDHT = [[TXCDHTNodeObject alloc] init];
-        tempDHT.dhtName = notification.userInfo[@"dht_name"];
-        tempDHT.dhtIP = notification.userInfo[@"dht_ip"];
-        tempDHT.dhtPort = notification.userInfo[@"dht_port"];
-        tempDHT.dhtKey = notification.userInfo[@"dht_key"];
-        tempDHT.connectionStatus = ToxDHTNodeConnectionStatus_NotConnected;
-        [_dhtNodeList addObject:tempDHT];
-        
-        NSArray *paths = @[[NSIndexPath indexPathForRow:_dhtNodeList.count inSection:2]];
-        [self.tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationAutomatic];
-        
-        [self.tableView endUpdates];
-        
-        NSLog(@"Saving dhts");
-        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        [[TXCSingleton sharedSingleton].dhtNodeList enumerateObjectsUsingBlock:^(TXCDHTNodeObject *arrayDHT, NSUInteger idx, BOOL *stop) {
-            NSData *data = [NSKeyedArchiver archivedDataWithRootObject:arrayDHT.copy];
-            [array addObject:data];
-        }];
-        [prefs setObject:array forKey:@"dht_node_list"];
-        [prefs synchronize];
-    }
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(addDHTServer:)
-                                                 name:ToxNewDHTNodeViewControllerNotificatiobNewDHT
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(dhtConnected:)
-                                                 name:ToxAppDelegateNotificationDHTConnected
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(dhtDisconnected:)
-                                                 name:ToxAppDelegateNotificationDHTDisconnected
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didStartDHTNodeConnection:)
-                                                 name:@"DidStartDHTNodeConnection"
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didFailToConnect:)
-                                                 name:@"DHTFailedToConnect"
-                                               object:nil];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)dhtConnected:(NSNotification *)notification {
-    [self.tableView reloadData];
-}
-
-- (void)dhtDisconnected:(NSNotification *)notification {
-    [self.tableView reloadData];
-}
-
-- (void)didStartDHTNodeConnection:(NSNotification *)notification {
-    [self.tableView reloadData];
-}
-
-- (void)didFailToConnect:(NSNotification *)notification {
-    [self.tableView reloadData];
-}
-
-
 
 - (IBAction)saveButtonPushed:(id)sender {
     if (![self.nameTextField.text isEqualToString:[TXCSingleton sharedSingleton].userNick]) {
@@ -214,10 +110,6 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
         CellIdentifier = @"settingsStatusCell";
     } else if (indexPath.section == 1) {
         CellIdentifier = @"settingsCopyIDCell";
-    } else if (indexPath.section == 2 && indexPath.row == 0) {
-        CellIdentifier = @"settingsNewDHTCell";
-    } else if (indexPath.section == 2 && indexPath.row >= 1) {
-        CellIdentifier = @"settingsDHTCell";
     }
 
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
@@ -296,49 +188,6 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
     return cell;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 2 && indexPath.row > 0) {
-        [tableView cellForRowAtIndexPath:indexPath].showsReorderControl = YES;
-        
-        return YES;
-    }
-    
-    return NO;
-}
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 2 && indexPath.row > 0) {
-        return YES;
-    }
-    
-    return NO;
-}
-
-- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
-}
-
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-    
-    TXCDHTNodeObject *tempDHT = [[self.dhtNodeList objectAtIndex:(fromIndexPath.row - 1)] copy];
-    
-    [self.dhtNodeList removeObjectAtIndex:(fromIndexPath.row - 1)];
-    
-    [self.dhtNodeList insertObject:tempDHT atIndex:(toIndexPath.row - 1)];
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle != UITableViewCellEditingStyleDelete)
-        return;
-
-    [tableView beginUpdates];
-
-    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [self.dhtNodeList removeObjectAtIndex:(indexPath.row - 1)];
-
-    [tableView endUpdates];
-}
-
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -349,73 +198,10 @@ extern NSString *const ToxAppDelegateNotificationDHTDisconnected ;
 
     } else if (indexPath.section == 1 && indexPath.row == 1) {
         [self performSegueWithIdentifier:QRCodeViewControllerIdentifier sender:self];
-    } else if (indexPath.section == 2 && indexPath.row == 0) {
-        //new dht connection
-
-        //get our new dht viewcontroller
-        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-        TXCNewDHTNodeViewController *newDHTViewCont = [sb instantiateViewControllerWithIdentifier:@"NewDHTView"];
-
-        //compile an array of the names of nodes already in our list
-        NSMutableArray *names = [[NSMutableArray alloc] init];
-        [self.dhtNodeList enumerateObjectsUsingBlock:^(TXCDHTNodeObject *tempDHT, NSUInteger idx, BOOL *stop) {
-            [names addObject:tempDHT.dhtName.copy];
-        }];
-
-        //pass along the lsit of names. prevents multiples
-        [newDHTViewCont setNamesAlreadyPresent:names];
-
-        [self.navigationController pushViewController:newDHTViewCont animated:YES];
     }
 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-}
-
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section != 2 && indexPath.row == 0)
-        return;
-    
-    //edit dht connection
-    
-    //get our new dht viewcontroller
-    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-    TXCNewDHTNodeViewController *newDHTViewCont = [sb instantiateViewControllerWithIdentifier:@"NewDHTView"];
-    
-    //compile an array of the names of nodes already in our list. remove the name about to be edited
-    NSIndexSet *indexSet = [self.dhtNodeList indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-        TXCDHTNodeObject *node = (TXCDHTNodeObject *)obj;
-        return ![node.dhtName isEqualToString:[tableView cellForRowAtIndexPath:indexPath].textLabel.text];
-    }];
-    NSArray *names = [self.dhtNodeList objectsAtIndexes:indexSet];
-
-    TXCDHTNodeObject *tempDHT = self.dhtNodeList[indexPath.row - 1];
-    //pass along the lsit of names. prevents multiples
-    newDHTViewCont.namesAlreadyPresent = names;
-    
-    newDHTViewCont.editingMode = YES;
-    newDHTViewCont.pathToEdit = indexPath;
-    newDHTViewCont.alreadyName = tempDHT.dhtName.copy;
-    newDHTViewCont.alreadyIP = tempDHT.dhtIP.copy;
-    newDHTViewCont.alreadyPort = tempDHT.dhtPort.copy;
-    newDHTViewCont.alreadyKey = tempDHT.dhtKey.copy;
-    
-    [self.navigationController pushViewController:newDHTViewCont animated:YES];
-}
-
-- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
-    //Only lets moveable rows in the second section, and only and row not the first in the second section.
-    
-    if (sourceIndexPath.section != proposedDestinationIndexPath.section) {
-        NSInteger row = 1;
-        if (sourceIndexPath.section < proposedDestinationIndexPath.section) {
-            row = [tableView numberOfRowsInSection:sourceIndexPath.section] - 1;
-        }
-        return [NSIndexPath indexPathForRow:row inSection:sourceIndexPath.section];
-    }
-    
-    return [NSIndexPath indexPathForRow:(proposedDestinationIndexPath.row ? proposedDestinationIndexPath.row : 1)
-                              inSection:sourceIndexPath.section];
 }
 
 #pragma mark - Text field delegate

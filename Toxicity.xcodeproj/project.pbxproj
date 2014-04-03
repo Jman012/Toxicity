@@ -105,7 +105,6 @@
 		B9B9C6DF17D59E2F006BF8AC /* status-yellow-navbar.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D717D59E2F006BF8AC /* status-yellow-navbar.png */; };
 		B9B9C6E017D59E2F006BF8AC /* status-yellow-navbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B9B9C6D817D59E2F006BF8AC /* status-yellow-navbar@2x.png */; };
 		B9BB99DE17B0E38900A1ACEC /* TXCFriendsListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99DD17B0E38900A1ACEC /* TXCFriendsListTableViewController.m */; };
-		B9BB99E317B0E39200A1ACEC /* TXCNewDHTNodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E017B0E39200A1ACEC /* TXCNewDHTNodeViewController.m */; };
 		B9BB99E417B0E39200A1ACEC /* TXCSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E217B0E39200A1ACEC /* TXCSettingsViewController.m */; };
 		B9BB99E817B0E41F00A1ACEC /* TXCSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BB99E717B0E41F00A1ACEC /* TXCSingleton.m */; };
 		B9BB9A5B17B377BF00A1ACEC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9BB9A5A17B377BF00A1ACEC /* AudioToolbox.framework */; };
@@ -342,8 +341,6 @@
 		B9B9C6D817D59E2F006BF8AC /* status-yellow-navbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "status-yellow-navbar@2x.png"; path = "Images/status-yellow-navbar@2x.png"; sourceTree = "<group>"; };
 		B9BB99DC17B0E38900A1ACEC /* TXCFriendsListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCFriendsListTableViewController.h; path = Friends/TXCFriendsListTableViewController.h; sourceTree = "<group>"; };
 		B9BB99DD17B0E38900A1ACEC /* TXCFriendsListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCFriendsListTableViewController.m; path = Friends/TXCFriendsListTableViewController.m; sourceTree = "<group>"; };
-		B9BB99DF17B0E39200A1ACEC /* TXCNewDHTNodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCNewDHTNodeViewController.h; path = Settings/TXCNewDHTNodeViewController.h; sourceTree = "<group>"; };
-		B9BB99E017B0E39200A1ACEC /* TXCNewDHTNodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCNewDHTNodeViewController.m; path = Settings/TXCNewDHTNodeViewController.m; sourceTree = "<group>"; };
 		B9BB99E117B0E39200A1ACEC /* TXCSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCSettingsViewController.h; path = Settings/TXCSettingsViewController.h; sourceTree = "<group>"; };
 		B9BB99E217B0E39200A1ACEC /* TXCSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TXCSettingsViewController.m; path = Settings/TXCSettingsViewController.m; sourceTree = "<group>"; };
 		B9BB99E617B0E41F00A1ACEC /* TXCSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TXCSingleton.h; path = Singleton/TXCSingleton.h; sourceTree = "<group>"; };
@@ -741,8 +738,6 @@
 			isa = PBXGroup;
 			children = (
 				E6C97FDE18C33231007368F9 /* Cells */,
-				B9BB99DF17B0E39200A1ACEC /* TXCNewDHTNodeViewController.h */,
-				B9BB99E017B0E39200A1ACEC /* TXCNewDHTNodeViewController.m */,
 				B9044EBB18DD609300031DA5 /* TXCQRCodeViewController.h */,
 				B9044EBC18DD609300031DA5 /* TXCQRCodeViewController.m */,
 				B9BB99E117B0E39200A1ACEC /* TXCSettingsViewController.h */,
@@ -1122,7 +1117,6 @@
 				B9D2FF3C18EA93DF000D8F30 /* RegexKitLite.m in Sources */,
 				B9044EB618DD606400031DA5 /* StatusCell.m in Sources */,
 				B9BB99DE17B0E38900A1ACEC /* TXCFriendsListTableViewController.m in Sources */,
-				B9BB99E317B0E39200A1ACEC /* TXCNewDHTNodeViewController.m in Sources */,
 				B9BB99E417B0E39200A1ACEC /* TXCSettingsViewController.m in Sources */,
 				B9BB99E817B0E41F00A1ACEC /* TXCSingleton.m in Sources */,
 				B9BB9A5E17B4B20100A1ACEC /* TXCFriendChatViewController.m in Sources */,
