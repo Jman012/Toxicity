@@ -51,7 +51,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="t8h-MQ-IUc">
+                                        <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="t8h-MQ-IUc">
                                             <rect key="frame" x="14" y="8" width="293" height="29"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segments>
@@ -64,6 +64,10 @@
                                             </connections>
                                         </segmentedControl>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="t8h-MQ-IUc" secondAttribute="trailing" constant="13" id="YbT-Ul-6KT"/>
+                                        <constraint firstItem="t8h-MQ-IUc" firstAttribute="leading" secondItem="WgU-kV-lms" secondAttribute="leading" constant="14" id="n3Q-YT-Lz5"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="segmentedControl" destination="t8h-MQ-IUc" id="dXa-cX-yjh"/>
