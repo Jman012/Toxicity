@@ -98,7 +98,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Settings" id="TXU-fr-5SP">
-                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="save" id="Sez-j0-kSx">
+                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="save" id="Sez-j0-kSx">
                             <connections>
                                 <action selector="saveButtonPushed:" destination="AXn-cl-0UB" id="iul-Bg-Hto"/>
                             </connections>
@@ -304,12 +304,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DnX-Uz-f9S">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DnX-Uz-f9S">
                                 <rect key="frame" x="15" y="139" width="290" height="290"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="DnX-Uz-f9S" secondAttribute="centerY" id="m4y-XD-PlH"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="2C7-ZQ-Tph"/>
                     <connections>
