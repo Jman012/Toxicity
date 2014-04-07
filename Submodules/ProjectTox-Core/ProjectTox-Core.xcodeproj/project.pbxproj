@@ -21,7 +21,6 @@
 		B9DABC0C18E53B3600B2A6B2 /* onion_announce.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBD418E53B3600B2A6B2 /* onion_announce.c */; };
 		B9DABC0D18E53B3600B2A6B2 /* onion_client.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBD618E53B3600B2A6B2 /* onion_client.c */; };
 		B9DABC0E18E53B3600B2A6B2 /* ping.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBD818E53B3600B2A6B2 /* ping.c */; };
-		B9DABC0F18E53B3600B2A6B2 /* TCP_server.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBDA18E53B3600B2A6B2 /* TCP_server.c */; };
 		B9DABC1018E53B3600B2A6B2 /* tox.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBDC18E53B3600B2A6B2 /* tox.c */; };
 		B9DABC1118E53B3600B2A6B2 /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = B9DABBDE18E53B3600B2A6B2 /* util.c */; };
 		B9DABE9D18E53EDA00B2A6B2 /* libsodium.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9DABE9918E53D1D00B2A6B2 /* libsodium.a */; };
@@ -102,8 +101,6 @@
 		B9DABBD718E53B3600B2A6B2 /* onion_client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = onion_client.h; sourceTree = "<group>"; };
 		B9DABBD818E53B3600B2A6B2 /* ping.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ping.c; sourceTree = "<group>"; };
 		B9DABBD918E53B3600B2A6B2 /* ping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ping.h; sourceTree = "<group>"; };
-		B9DABBDA18E53B3600B2A6B2 /* TCP_server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TCP_server.c; sourceTree = "<group>"; };
-		B9DABBDB18E53B3600B2A6B2 /* TCP_server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCP_server.h; sourceTree = "<group>"; };
 		B9DABBDC18E53B3600B2A6B2 /* tox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tox.c; sourceTree = "<group>"; };
 		B9DABBDD18E53B3600B2A6B2 /* tox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tox.h; sourceTree = "<group>"; };
 		B9DABBDE18E53B3600B2A6B2 /* util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = util.c; sourceTree = "<group>"; };
@@ -191,8 +188,6 @@
 				B9DABBD718E53B3600B2A6B2 /* onion_client.h */,
 				B9DABBD818E53B3600B2A6B2 /* ping.c */,
 				B9DABBD918E53B3600B2A6B2 /* ping.h */,
-				B9DABBDA18E53B3600B2A6B2 /* TCP_server.c */,
-				B9DABBDB18E53B3600B2A6B2 /* TCP_server.h */,
 				B9DABBDC18E53B3600B2A6B2 /* tox.c */,
 				B9DABBDD18E53B3600B2A6B2 /* tox.h */,
 				B9DABBDE18E53B3600B2A6B2 /* util.c */,
@@ -304,7 +299,6 @@
 				B9DABC0C18E53B3600B2A6B2 /* onion_announce.c in Sources */,
 				B9DABC0318E53B3600B2A6B2 /* friend_requests.c in Sources */,
 				B9DABC0518E53B3600B2A6B2 /* LAN_discovery.c in Sources */,
-				B9DABC0F18E53B3600B2A6B2 /* TCP_server.c in Sources */,
 				B9DABC0E18E53B3600B2A6B2 /* ping.c in Sources */,
 				B9DABC0A18E53B3600B2A6B2 /* network.c in Sources */,
 				B9DABC0D18E53B3600B2A6B2 /* onion_client.c in Sources */,
