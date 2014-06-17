@@ -44,7 +44,7 @@
     }
     
     // Plain Tox address
-    if ([self.originalInput isMatchedByRegex:@"^[0-9A-Fa-f]+$"] && [self.originalInput length] == TOX_FRIEND_ADDRESS_SIZE) {
+    if ([self.originalInput isMatchedByRegex:@"^[0-9A-Fa-f]+$"] && [self.originalInput length] == TOX_FRIEND_ADDRESS_SIZE*2) {
         TXCFriendAddressError error = [TXCFriendAddress friendAddressIsValid:self.originalInput];
         if (error == TXCFriendAddressError_None){
             self.resolvedAddress = [self.originalInput copy];

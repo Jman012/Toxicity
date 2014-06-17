@@ -35,8 +35,6 @@ typedef NS_ENUM(NSUInteger, TXCLocalNotification) {
 
 // Tox loop stuff
 @property (nonatomic, assign) int on;
-@property (nonatomic, assign) uint8_t *toxWaitData;
-@property (nonatomic, assign) uint16_t toxWaitBufferSize;
 
 // Tox thread stuff
 @property (nonatomic, strong) dispatch_queue_t toxMainThread;
@@ -54,8 +52,11 @@ int friendNumForID(NSString *theKey);
 - (void)userStatusTypeChanged;
 - (void)addFriend:(NSString *)theirKey;
 - (BOOL)sendMessage:(TXCMessageObject *)theMessage;
-- (void)acceptFriendRequests:(NSArray *)theKeysToAccept;
-- (void)acceptGroupInvites:(NSArray *)theKeysToAccept;
+
+// Returns true if accepting the request or invite worked
+- (BOOL)acceptFriendRequest:(NSString *)theKeyToAccept;
+- (BOOL)acceptGroupInvite:(NSString *)theKeyToAccept;
+
 - (int)deleteFriend:(NSString*)friendKey;
 - (int)deleteGroupchat:(NSInteger)theGroupNumber;
 

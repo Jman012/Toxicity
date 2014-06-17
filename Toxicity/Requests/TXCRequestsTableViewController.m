@@ -110,13 +110,6 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [self.tableView registerClass:[TXCFriendCell class] forCellReuseIdentifier:@"RequestFriendCell"];
     self.groupInvitesHeader = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
     self.friendRequestsHeader = [[TXCFriendListHeader alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
-
-    
-    
-    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeToPopView)];
-    swipeRight.cancelsTouchesInView = NO;
-    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.view addGestureRecognizer:swipeRight];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -267,45 +260,43 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
 - (void)handleAlertViewAcceptRequests:(UIAlertView *)alertView
 {
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
-
     [self.tableView beginUpdates];
     
     __block NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-    [self.selectedRequests enumerateObjectsUsingBlock:^(NSString *requestID, NSUInteger idx, BOOL *stop) {
-        [self.arrayOfRequests enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            if ([requestID isEqualToString:[self.arrayOfRequests objectAtIndex:idx]]) {
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:1]];
-            }
-        }];
-    }];
-    
     [self.selectedInvites enumerateObjectsUsingBlock:^(NSString *inviteID, NSUInteger idx, BOOL *stop) {
-        [self.arrayOfInvites enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [[self.arrayOfInvites copy] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             if ([inviteID isEqualToString:[self.arrayOfInvites objectAtIndex:idx]]) {
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:0]];
+                if ([ourDelegate acceptGroupInvite:inviteID]) {
+                    // Only remove the thing if it was a success
+                    [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:0]];
+                    [self.selectedInvites removeObject:inviteID];
+                }
+            }
+        }];
+    }];
+    [self.selectedRequests enumerateObjectsUsingBlock:^(NSString *requestID, NSUInteger idx, BOOL *stop) {
+        [[self.arrayOfRequests copy] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([requestID isEqualToString:[self.arrayOfRequests objectAtIndex:idx]]) {
+                if ([ourDelegate acceptFriendRequest:requestID]) {
+                    [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:idx inSection:1]];
+                    [self.selectedInvites removeObject:requestID];
+                }
             }
         }];
     }];
     
-    if ([self.selectedRequests count] > 0) {
-        [ourDelegate acceptFriendRequests:self.selectedRequests];
-        self.selectedRequests = nil;
-        self.selectedRequests = [[NSMutableArray alloc] init];
-        self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
-    }
-    if ([self.selectedInvites count] > 0) {
-        [ourDelegate acceptGroupInvites:self.selectedInvites];
-        self.selectedInvites = nil;
-        self.selectedInvites = [[NSMutableArray alloc] init];
-        self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
-    }
-    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
+    self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
+    self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
     
+    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
     
     [self.tableView endUpdates];
     
     if ([self.arrayOfInvites count] == 0) {
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    if ([self.arrayOfRequests count] == 0) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
     
     [self updateAcceptAndRejectButtons];
@@ -316,39 +307,39 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     [self.tableView beginUpdates];
     
     NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
-    for (NSString *requestID in self.selectedRequests) {
-        for (int i = 0; i < [self.arrayOfRequests count]; i++) {
-            if ([requestID isEqualToString:[self.arrayOfRequests objectAtIndex:i]]) {
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:1]];
-            }
-        }
-        [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeObjectForKey:requestID];
-    }
-    
     for (NSString *inviteID in self.selectedInvites) {
         for (int i = 0; i < [self.arrayOfInvites count]; i++) {
             if ([inviteID isEqualToString:[self.arrayOfInvites objectAtIndex:i]]) {
                 [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:0]];
             }
         }
-        [[[TXCSingleton sharedSingleton] pendingGroupInvites] removeObjectForKey:inviteID];
+    }
+    for (NSString *requestID in self.selectedRequests) {
+        for (int i = 0; i < [self.arrayOfRequests count]; i++) {
+            if ([requestID isEqualToString:[self.arrayOfRequests objectAtIndex:i]]) {
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForItem:i inSection:1]];
+            }
+        }
     }
     
-    if ([self.selectedRequests count] > 0) {
-        self.selectedRequests = nil;
-        self.selectedRequests = [[NSMutableArray alloc] init];
-        self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
-    }
-    if ([self.selectedInvites count] > 0) {
-        self.selectedInvites = nil;
-        self.selectedInvites = [[NSMutableArray alloc] init];
-        self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
-    }
+    [[[TXCSingleton sharedSingleton] pendingGroupInvites] removeAllObjects];
+    [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeAllObjects];
+    
+    [self.selectedInvites removeAllObjects];
+    [self.selectedRequests removeAllObjects];
+    
+    self.arrayOfInvites = [[[TXCSingleton sharedSingleton] pendingGroupInvites] allKeys];
+    self.arrayOfRequests = [[[TXCSingleton sharedSingleton] pendingFriendRequests] allKeys];
+
     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
     
     
     [self.tableView endUpdates];
     
+    
+    if ([self.arrayOfInvites count] == 0) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
     if ([self.arrayOfRequests count] == 0) {
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
     }

@@ -41,10 +41,6 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     self.toxBackgroundThread = dispatch_queue_create("com.Jman.ToxicityBG", DISPATCH_QUEUE_SERIAL);
     self.toxBackgroundThreadState = TXCThreadState_killed;
     
-    self.toxWaitData = NULL;
-    self.toxWaitBufferSize = tox_wait_data_size();
-    self.toxWaitData = malloc(self.toxWaitBufferSize);
-    
     
     UILocalNotification *locationNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if (locationNotification) {
@@ -590,108 +586,105 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     }
 }
 
-- (void)acceptFriendRequests:(NSArray *)theKeysToAccept {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    dispatch_async(self.toxMainThread, ^{
+- (BOOL)acceptFriendRequest:(NSString *)theKeyToAccept
+{
+    __block BOOL success = FALSE;
+    dispatch_sync(self.toxMainThread, ^{
         
-        [theKeysToAccept enumerateObjectsUsingBlock:^(NSString* arrayKey, NSUInteger idx, BOOL *stop) {
-            NSData *data = [[[[TXCSingleton sharedSingleton] pendingFriendRequests] objectForKey:arrayKey] copy];
-            
-            uint8_t *key = (uint8_t *)[data bytes];
-            
-            int num = tox_add_friend_norequest([[TXCSingleton sharedSingleton] toxCoreInstance], key);
-            
-            switch (num) {
-                case -1: {
-                    NSLog(@"Accepting request failed");
+        NSData *data = [[[[TXCSingleton sharedSingleton] pendingFriendRequests] objectForKey:theKeyToAccept] copy];
+        
+        uint8_t *key = (uint8_t *)[data bytes];
+        
+        int num = tox_add_friend_norequest([[TXCSingleton sharedSingleton] toxCoreInstance], key);
+        
+        switch (num) {
+            case -1: {
+                NSLog(@"Accepting friend request failed");
+                dispatch_async(dispatch_get_main_queue(), ^() {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unknown Error"
                                                                         message:[NSString stringWithFormat:@"[Error Code: %d] There was an unknown error with accepting that ID.", num]
                                                                        delegate:nil
                                                               cancelButtonTitle:@"Okay"
                                                               otherButtonTitles:nil];
                     [alertView show];
-                    break;
-                }
-                    
-                default: //added friend successfully
-                {
-                    //friend added through accept request
-                    TXCFriendObject *tempFriend = [[TXCFriendObject alloc] init];
-                    [tempFriend setPublicKey:[arrayKey substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
-                    NSLog(@"new friend key: %@", [tempFriend publicKey]);
-                    [tempFriend setNickname:@""];
-                    [tempFriend setStatusMessage:@"Accepted..."];
-                    
-                    [[[TXCSingleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
-                    [[[TXCSingleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
-                    
-                    //save in user defaults
-                    [TXCSingleton saveFriendListInUserDefaults];
-                    
-                    //remove from the pending requests
-                    [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeObjectForKey:arrayKey];
-                    
-                    [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationFriendAdded object:nil];
-                    
-                    break;
-                }
+                });
+                break;
             }
-
-        }];
-        
-        dispatch_semaphore_signal(semaphore);
-    });
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    [prefs setObject:[[TXCSingleton sharedSingleton] pendingFriendRequests] forKey:@"pending_requests_list"];
-}
-
-- (void)acceptGroupInvites:(NSArray *)theKeysToAccept {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    dispatch_async(self.toxMainThread, ^{
-        for (NSString *arrayKey in theKeysToAccept) {
-            
-            NSData *data = [[[[TXCSingleton sharedSingleton] pendingGroupInvites] objectForKey:arrayKey] copy];
-            NSNumber *friendNumOfGroupKey = [[[TXCSingleton sharedSingleton] pendingGroupInviteFriendNumbers] objectForKey:arrayKey];
-            
-            uint8_t *key = (uint8_t *)[data bytes];
-            int num = tox_join_groupchat([[TXCSingleton sharedSingleton] toxCoreInstance], [friendNumOfGroupKey integerValue], key);
-
-            switch (num) {
-                case -1: {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        NSLog(@"Accepting group invite failed");
-                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unknown Error"
-                                                                            message:[NSString stringWithFormat:@"[Error Code: %d] There was an unkown error with accepting that Group", num]
-                                                                           delegate:nil
-                                                                  cancelButtonTitle:@"Okay"
-                                                                  otherButtonTitles:nil];
-                        [alertView show];
-                    });
-                    break;
-                }
-                    
-                default: {
-                    TXCGroupObject *tempGroup = [[TXCGroupObject alloc] init];
-                    [tempGroup setGroupPulicKey:arrayKey];
-                    [[[TXCSingleton sharedSingleton] groupList] insertObject:tempGroup atIndex:num];
-                    [[[TXCSingleton sharedSingleton] groupMessages] insertObject:[NSArray array] atIndex:num];
-                    
-                    [TXCSingleton saveGroupListInUserDefaults];
-                    
-                    [[[TXCSingleton sharedSingleton] pendingGroupInvites] removeObjectForKey:arrayKey];
-                    [[[TXCSingleton sharedSingleton] pendingGroupInviteFriendNumbers] removeObjectForKey:arrayKey];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationGroupAdded object:nil];
-                    
-                    break;
-                }
+                
+            default:
+            {
+                // Friend was accepted
+                TXCFriendObject *tempFriend = [[TXCFriendObject alloc] init];
+                [tempFriend setPublicKey:[theKeyToAccept substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
+                NSLog(@"new friend key: %@", [tempFriend publicKey]);
+                [tempFriend setNickname:@""];
+                [tempFriend setStatusMessage:@"Accepted..."];
+                
+                [[[TXCSingleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
+                [[[TXCSingleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
+                
+                //save in user defaults
+                [TXCSingleton saveFriendListInUserDefaults];
+                
+                //remove from the pending requests
+                [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeObjectForKey:theKeyToAccept];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationFriendAdded object:nil];
+                
+                NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+                [prefs setObject:[[TXCSingleton sharedSingleton] pendingFriendRequests] forKey:@"pending_requests_list"];
+                
+                success = TRUE;
+                break;
             }
         }
-        dispatch_semaphore_signal(semaphore);
     });
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     
+    return success;
+}
+
+- (BOOL)acceptGroupInvite:(NSString *)theKeyToAccept
+{
+    __block BOOL success = FALSE;
+    dispatch_sync(self.toxMainThread, ^{
+        NSData *data = [[[[TXCSingleton sharedSingleton] pendingGroupInvites] objectForKey:theKeyToAccept] copy];
+        NSNumber *friendNumOfGroupKey = [[[TXCSingleton sharedSingleton] pendingGroupInviteFriendNumbers] objectForKey:theKeyToAccept];
+        
+        uint8_t *key = (uint8_t *)[data bytes];
+        int num = tox_join_groupchat([[TXCSingleton sharedSingleton] toxCoreInstance], [friendNumOfGroupKey integerValue], key);
+        
+        switch (num) {
+            case -1: {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"Accepting group invite failed");
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unknown Error"
+                                                                        message:[NSString stringWithFormat:@"[Error Code: %d] There was an unkown error with accepting that Group", num]
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"Okay"
+                                                              otherButtonTitles:nil];
+                    [alertView show];
+                });
+                break;
+            }
+                
+            default: {
+                TXCGroupObject *tempGroup = [[TXCGroupObject alloc] init];
+                [tempGroup setGroupPulicKey:theKeyToAccept];
+                [[[TXCSingleton sharedSingleton] groupList] insertObject:tempGroup atIndex:num];
+                [[[TXCSingleton sharedSingleton] groupMessages] insertObject:[NSArray array] atIndex:num];
+                
+                [TXCSingleton saveGroupListInUserDefaults];
+                [[[TXCSingleton sharedSingleton] pendingGroupInvites] removeObjectForKey:theKeyToAccept];
+                [[[TXCSingleton sharedSingleton] pendingGroupInviteFriendNumbers] removeObjectForKey:theKeyToAccept];
+                [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationGroupAdded object:nil];
+                
+                
+                break;
+            }
+        }
+    });
+    
+    return success;
 }
 
 - (int)deleteFriend:(NSString*)friendKey {
@@ -731,7 +724,7 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
 
 #pragma mark - Tox Core Callback Functions
 
-void print_request(Tox *tox, uint8_t *public_key, uint8_t *data, uint16_t length, void *userdata) {
+void print_request(Tox *tox, const uint8_t *public_key, const uint8_t *data, uint16_t length, void *userdata) {
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Friend Request! From:");
         
@@ -1143,15 +1136,15 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     TXCSingleton *singleton = [TXCSingleton sharedSingleton];
     Tox *toxInstance = [[TXCSingleton sharedSingleton] toxCoreInstance];
     
-    //code to check if node connection has changed, if so notify the app
-    if (self.on == 0 && tox_isconnected([[TXCSingleton sharedSingleton] toxCoreInstance])) {
+    // Code to check if node connection has changed, if so notify the app
+    if (self.on == 0 && tox_isconnected(toxInstance)) {
         NSLog(@"DHT Connected!");
         dispatch_sync(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationDHTConnected object:nil];
         });
         self.on = 1;
     }
-    if (self.on == 1 && !tox_isconnected([[TXCSingleton sharedSingleton] toxCoreInstance])) {
+    if (self.on == 1 && !tox_isconnected(toxInstance)) {
         NSLog(@"DHT Disconnected!");
         dispatch_sync(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:ToxAppDelegateNotificationDHTDisconnected object:nil];
@@ -1162,7 +1155,7 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     if (self.on == 0 && singleton.lastAttemptedConnect < time(0)+2) {
         int num = rand() % [singleton.dhtNodeList count];
         unsigned char *binary_string = hex_string_to_bin((char *)[singleton.dhtNodeList[num][@"key"] UTF8String]);
-        tox_bootstrap_from_address([[TXCSingleton sharedSingleton] toxCoreInstance],
+        tox_bootstrap_from_address(toxInstance,
                                    [singleton.dhtNodeList[num][@"ip"] UTF8String],
                                    TOX_ENABLE_IPV6_DEFAULT,
                                    htons(atoi([singleton.dhtNodeList[num][@"port"] UTF8String])),
@@ -1170,15 +1163,9 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
         free(binary_string);
     }
     
-    
-    // Call Wait Execute for up to a second
-    if (tox_wait_prepare(toxInstance, self.toxWaitData) == 1) {
-        tox_wait_execute(self.toxWaitData, 1, 0);
-        tox_wait_cleanup(toxInstance, self.toxWaitData);
-    }
     // Run tox_do
     time_t a = time(0);
-    tox_do([[TXCSingleton sharedSingleton] toxCoreInstance]);
+    tox_do(toxInstance);
     if (time(0) - a > 1) {
         NSLog(@"tox_do took more than %lu seconds!", time(0) - a);
     }
@@ -1186,7 +1173,9 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     // Keep going
     if (!inBackground) {
         if (self.toxMainThreadState == TXCThreadState_running || self.toxMainThreadState == TXCThreadState_killed) {
-            dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(33333 * NSEC_PER_USEC));
+            
+            // Get the needed time from tox_do_interval
+            dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(tox_do_interval(toxInstance) * NSEC_PER_MSEC));
             dispatch_after(waitTime, self.toxMainThread, ^{
                 [self toxCoreLoopInBackground:NO];
             });
@@ -1198,7 +1187,9 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
         }
     } else {
         if (self.toxBackgroundThreadState == TXCThreadState_running || self.toxBackgroundThreadState == TXCThreadState_killed) {
-            dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(50000 * NSEC_PER_USEC));
+            
+            // Get the needed time from tox_do_interval, and multiply by 5 for background execution
+            dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(tox_do_interval(toxInstance) * NSEC_PER_MSEC * 5));
             dispatch_after(waitTime, self.toxBackgroundThread, ^{
                 [self toxCoreLoopInBackground:YES];
             });
@@ -1215,7 +1206,7 @@ void print_groupnamelistchange(Tox *m, int groupnumber, int peernumber, uint8_t 
     if (self.on) {
         //print when the number of connected clients changes
         static int lastCount = 0;
-        Messenger *m = (Messenger *)[[TXCSingleton sharedSingleton] toxCoreInstance];
+        Messenger *m = (Messenger *)toxInstance;
         uint32_t i;
         uint64_t temp_time = time(0);
         uint16_t count = 0;
