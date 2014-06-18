@@ -26,7 +26,6 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 @interface TXCFriendChatViewController ()
 
 @property (nonatomic, strong) NSMutableArray *mainFriendList;
-@property (nonatomic, strong) NSMutableArray *mainFriendMessages;
 @property (nonatomic, strong) TXCFriendObject *friendInfo;
 @property (nonatomic, strong) NSMutableArray *messages;
 @property (nonatomic, strong) NSIndexPath *friendIndex;
@@ -46,9 +45,8 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
         self.friendIndex = theIndex;
         
         self.mainFriendList = [TXCSingleton sharedSingleton].mainFriendList;
-        self.mainFriendMessages = [TXCSingleton sharedSingleton].mainFriendMessages;
         
-        self.messages = [[self.mainFriendMessages objectAtIndex:self.friendIndex.row] mutableCopy];
+        self.messages = [[self.mainFriendList objectAtIndex:self.friendIndex.row] messages];
         
         self.friendInfo = [self.mainFriendList objectAtIndex:self.friendIndex.row];
         
@@ -118,7 +116,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [TXCSingleton sharedSingleton].mainFriendMessages[self.friendIndex.row] = self.messages.mutableCopy;
+
     [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -198,10 +196,10 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
         //text:"/me h" the action would be "h"
         if ([[text substringToIndex:4] isEqualToString:@"/me "]) {
             tempMessage.message = [[NSString alloc] initWithFormat:@"* %@", [text substringFromIndex:4]];
-            tempMessage.actionMessage = YES;
+            tempMessage.type = MessageType_Action;
         } else {
             tempMessage.message = [text copy];
-            tempMessage.actionMessage = NO;
+            tempMessage.type = MessageType_Regular;
         }
     } else {
         tempMessage.message = [text copy];
@@ -212,7 +210,7 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
     
     [JSMessageSoundEffect playMessageSentSound];
     
-    tempMessage.groupMessage = NO;
+    tempMessage.family = MessageFamily_Friend;
     
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[UIApplication sharedApplication].delegate;
     BOOL success = [ourDelegate sendMessage:tempMessage];
@@ -220,8 +218,9 @@ extern NSString *const TXCToxAppDelegateNotificationFriendUserStatusChanged;
         tempMessage.didFailToSend = YES;
     }
     
-    //add the message after we know if it failed or not
+    // Add the message
     [self.messages addObject:tempMessage];
+    
     [self finishSend];
     [self scrollToBottomAnimated:YES];
 }

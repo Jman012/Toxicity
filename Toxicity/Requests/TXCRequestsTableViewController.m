@@ -554,15 +554,15 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
     if (indexPath.section == 0) {
         //group invite
         TXCGroupObject *groupObject = [[TXCGroupObject alloc] init];
-        groupObject.groupPulicKey = self.arrayOfInvites[indexPath.row];
+        groupObject.groupPublicKey = self.arrayOfInvites[indexPath.row];
         
         [cell configureCellWithGroupObject:groupObject];
         
         
         cell.avatarImageView.image = [TXCSingleton sharedSingleton].defaultAvatarImage;
-        [[TXCSingleton sharedSingleton] avatarImageForKey:groupObject.groupPulicKey type:AvatarType_Friend finishBlock:^(UIImage *avatarImage) {
+        [[TXCSingleton sharedSingleton] avatarImageForKey:groupObject.groupPublicKey type:AvatarType_Friend finishBlock:^(UIImage *avatarImage) {
             if (cell) {
-                if ([cell.friendIdentifier isEqualToString:groupObject.groupPulicKey]) {
+                if ([cell.friendIdentifier isEqualToString:groupObject.groupPublicKey]) {
                     cell.avatarImageView.image = avatarImage;
                 } else {
                     //this could have taken any amount of time to accomplish (either right from cache had to download a new one
@@ -579,7 +579,7 @@ extern NSString *const TXCToxAppDelegateNotificationGroupInviteReceived;
             } else {
                 TXCFriendCell *theCell = (TXCFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
                 if (theCell) {
-                    if ([theCell.friendIdentifier isEqualToString:groupObject.groupPulicKey]) {
+                    if ([theCell.friendIdentifier isEqualToString:groupObject.groupPublicKey]) {
                         theCell.avatarImageView.image = avatarImage;
                     }
                 }

@@ -10,4 +10,21 @@
 
 @implementation TXCMessageObject
 
+- (id)initWithMessage:(NSString *)message origin:(MessageOrigin)origin family:(MessageFamily)family type:(MessageType)type senderName:(NSString *)senderName senderKey:(NSString *)senderKey recipientKey:(NSString *)recipientKey
+{
+    self = [super init];
+    if (self) {
+        self.message = message;
+        self.origin = origin;
+        self.family = family;
+        self.type = type;
+        self.senderName = senderName;
+        self.senderKey = senderKey;
+        self.recipientKey = recipientKey;
+        
+        self.didFailToSend = FALSE;
+    }
+    return self;
+}
+
 @end

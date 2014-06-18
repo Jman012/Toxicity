@@ -10,17 +10,14 @@
 
 @implementation TXCGroupObject
 
-@synthesize groupPulicKey, groupMembers, groupName;
-
-- (id)init {
+- (id)initWithPublicKey:(NSString *)key name:(NSString *)name {
     self = [super init];
     if (self) {
         
-        groupPulicKey = @"";
-        
-        groupMembers = [[NSMutableArray alloc] init];
-        
-        groupName = @"";
+        self.groupPublicKey = key;
+        self.groupName = name;
+        self.groupMembers = [[NSMutableArray alloc] init];
+        self.messages = [[NSMutableArray alloc] init];
         
     }
     return self;

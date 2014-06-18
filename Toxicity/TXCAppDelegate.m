@@ -252,7 +252,6 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
         [tempFriend setConnectionType:TXCToxFriendConnectionStatus_None];
         
         [[[TXCSingleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:i];
-        [[[TXCSingleton sharedSingleton] mainFriendMessages] insertObject:[NSMutableArray array] atIndex:i];
     }
 
     
@@ -383,7 +382,8 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
         sprintf(&convertedKey[pos] ,"%02X", ourAddress1[i] & 0xff);
     }
     NSLog(@"Our Address: %s", convertedKey);
-    NSLog(@"Our id: %@", [[NSString stringWithUTF8String:convertedKey] substringToIndex:63]);
+    [TXCSingleton sharedSingleton].selfPublicKey = [[NSString stringWithUTF8String:convertedKey] substringToIndex:63];
+    NSLog(@"Our id: %@", [[TXCSingleton sharedSingleton] selfPublicKey]);
 }
 
 #pragma mark - End Application Delegation
@@ -473,13 +473,14 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
     //organize our message data
     NSString *theirKey = theMessage.recipientKey;
     NSString *messageToSend = theMessage.message;
-    BOOL isGroupMessage = theMessage.isGroupMessage;
-    BOOL isActionMessage = theMessage.isActionMessage;
+    MessageFamily messageFamily = theMessage.family;
+    MessageType messageType = theMessage.type;
     __block NSInteger friendNum = -1;
-    if (isGroupMessage) {
+    
+    if (messageFamily == MessageFamily_Group) {
         [[[TXCSingleton sharedSingleton] groupList] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             TXCGroupObject *tempGroup = [[[TXCSingleton sharedSingleton] groupList] objectAtIndex:idx];
-            if ([theirKey isEqualToString:tempGroup.groupPulicKey]) {
+            if ([theirKey isEqualToString:tempGroup.groupPublicKey]) {
                 friendNum = idx;
                 *stop = YES;
             }
@@ -509,8 +510,8 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
         int num;
         char *utf8Message = (char *)[messageToSend UTF8String];
         
-        if (isGroupMessage == NO) { //chat message
-            if (isActionMessage) {
+        if (messageFamily == MessageFamily_Friend) { //chat message
+            if (messageType == MessageType_Action) {
                 char *utf8FormattedMessage = (char *)[[messageToSend substringFromIndex:2] UTF8String];
                 num = tox_send_action([[TXCSingleton sharedSingleton] toxCoreInstance], friendNum, (uint8_t *)utf8FormattedMessage, strlen(utf8FormattedMessage) + 1);
             } else {
@@ -568,14 +569,12 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
         default: //added friend successfully
         {
             //add friend to singleton array, for use throughout the app
-            TXCFriendObject *tempFriend = [[TXCFriendObject alloc] init];
-            [tempFriend setPublicKeyWithNoSpam:theirKey];
-            [tempFriend setPublicKey:[theirKey substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
+            TXCFriendObject *tempFriend = [[TXCFriendObject alloc] initWithPublicKey:[theirKey substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]
+                                                                                name:@""
+                                                                       statusMessage:@"Sending request..."];
             NSLog(@"new friend key: %@", [tempFriend publicKey]);
-            [tempFriend setStatusMessage:@"Sending request..."];
             
             [[[TXCSingleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
-            [[[TXCSingleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
             
             //save in user defaults
             [TXCSingleton saveFriendListInUserDefaults];
@@ -614,19 +613,17 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
             default:
             {
                 // Friend was accepted
-                TXCFriendObject *tempFriend = [[TXCFriendObject alloc] init];
-                [tempFriend setPublicKey:[theKeyToAccept substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]];
+                TXCFriendObject *tempFriend = [[TXCFriendObject alloc] initWithPublicKey:[theKeyToAccept substringToIndex:(TOX_CLIENT_ID_SIZE * 2)]
+                                                                                    name:@""
+                                                                           statusMessage:@"Accepted..."];
                 NSLog(@"new friend key: %@", [tempFriend publicKey]);
-                [tempFriend setNickname:@""];
-                [tempFriend setStatusMessage:@"Accepted..."];
                 
                 [[[TXCSingleton sharedSingleton] mainFriendList] insertObject:tempFriend atIndex:num];
-                [[[TXCSingleton sharedSingleton] mainFriendMessages] insertObject:[NSArray array] atIndex:num];
                 
-                //save in user defaults
+                // Save in user defaults
                 [TXCSingleton saveFriendListInUserDefaults];
                 
-                //remove from the pending requests
+                // Remove from the pending requests
                 [[[TXCSingleton sharedSingleton] pendingFriendRequests] removeObjectForKey:theKeyToAccept];
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationFriendAdded object:nil];
@@ -668,17 +665,19 @@ NSString *const TXCToxAppDelegateUserDefaultsToxData = @"TXCToxData";
             }
                 
             default: {
-                TXCGroupObject *tempGroup = [[TXCGroupObject alloc] init];
-                [tempGroup setGroupPulicKey:theKeyToAccept];
+                TXCGroupObject *tempGroup = [[TXCGroupObject alloc] initWithPublicKey:theKeyToAccept
+                                                                                 name:@""];
+                
                 [[[TXCSingleton sharedSingleton] groupList] insertObject:tempGroup atIndex:num];
-                [[[TXCSingleton sharedSingleton] groupMessages] insertObject:[NSArray array] atIndex:num];
                 
                 [TXCSingleton saveGroupListInUserDefaults];
+                
                 [[[TXCSingleton sharedSingleton] pendingGroupInvites] removeObjectForKey:theKeyToAccept];
                 [[[TXCSingleton sharedSingleton] pendingGroupInviteFriendNumbers] removeObjectForKey:theKeyToAccept];
+                
                 [[NSNotificationCenter defaultCenter] postNotificationName:TXCToxAppDelegateNotificationGroupAdded object:nil];
                 
-                
+                success = TRUE;
                 break;
             }
         }
@@ -784,8 +783,8 @@ void print_groupinvite(Tox *tox, int friendnumber, uint8_t *group_public_key, vo
         
         BOOL alreadyInThisGroup = NO;
         for (TXCGroupObject *tempGroup in [[TXCSingleton sharedSingleton] groupList]) {
-            if ([theConvertedKey isEqualToString:[tempGroup groupPulicKey]]) {
-                NSLog(@"The group we were invited to is one we're already in! %@", [tempGroup groupPulicKey]);
+            if ([theConvertedKey isEqualToString:[tempGroup groupPublicKey]]) {
+                NSLog(@"The group we were invited to is one we're already in! %@", [tempGroup groupPublicKey]);
                 alreadyInThisGroup = YES;
                 break;
             }
@@ -814,14 +813,13 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
     dispatch_sync(dispatch_get_main_queue(), ^{
         NSLog(@"Message from [%d]: %s", friendnumber, string);
         
-        TXCMessageObject *theMessage = [[TXCMessageObject alloc] init];
-        theMessage.message = [NSString stringWithUTF8String:(char *)string];
-        theMessage.senderName = [[TXCSingleton sharedSingleton] userNick];
-        theMessage.origin = MessageLocation_Them;
-        theMessage.didFailToSend = NO;
-        theMessage.groupMessage = NO;
-        theMessage.actionMessage = NO;
-        [theMessage setSenderKey:[[[[TXCSingleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber] publicKey]];
+        TXCMessageObject *theMessage = [[TXCMessageObject alloc] initWithMessage:[NSString stringWithUTF8String:(char *)string]
+                                                                          origin:MessageLocation_Me
+                                                                          family:MessageFamily_Friend
+                                                                            type:MessageType_Regular
+                                                                      senderName:[[TXCSingleton sharedSingleton] userNick]
+                                                                       senderKey:[[[[TXCSingleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber] publicKey]
+                                                                    recipientKey:[[TXCSingleton sharedSingleton] selfPublicKey]];
         
         
         // If the message coming through is not to the currently opened chat window, then fire a notification
@@ -829,11 +827,10 @@ void print_message(Tox *m, int friendnumber, uint8_t * string, uint16_t length, 
             [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 1) ||
             [[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground ||
             [[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive) {
-            NSMutableArray *tempMessages = [[[[TXCSingleton sharedSingleton] mainFriendMessages] objectAtIndex:friendnumber] mutableCopy];
-            [tempMessages addObject:theMessage];
             
-            // Add message to singleton
-            [[TXCSingleton sharedSingleton] mainFriendMessages][friendnumber] = [tempMessages copy];
+            // Add message to the friend object in the singleton
+            NSMutableArray *tempMessages = [[[[TXCSingleton sharedSingleton] mainFriendList] objectAtIndex:friendnumber] messages];
+            [tempMessages addObject:theMessage];
             
             // Fire a local notification for the message
             UILocalNotification *friendMessageNotification = [[UILocalNotification alloc] init];
@@ -866,29 +863,24 @@ void print_groupmessage(Tox *tox, int groupnumber, int friendgroupnumber, uint8_
         NSString *theirName = [NSString stringWithUTF8String:(const char *)theirNameC];
         NSString *theirMessage = [NSString stringWithUTF8String:(const char *)message];
         
-        TXCMessageObject *theMessage = [[TXCMessageObject alloc] init];
-        theMessage.message = theirMessage;
-        theMessage.senderName = theirName;
-        if ([theirName isEqualToString:[[TXCSingleton sharedSingleton] userNick]]) {
-            theMessage.origin = MessageLocation_Me;
-        } else {
-            theMessage.origin = MessageLocation_Them;
-        }
-        theMessage.didFailToSend = NO;
-        theMessage.actionMessage = NO;
-        theMessage.groupMessage = YES;
-        theMessage.senderKey = [[[[TXCSingleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPulicKey];
+        TXCMessageObject *theMessage = [[TXCMessageObject alloc] initWithMessage:theirMessage
+                                                                          origin:[theirName isEqualToString:[[TXCSingleton sharedSingleton] userNick]] ? MessageLocation_Me : MessageLocation_Them
+                                                                          family:MessageFamily_Group
+                                                                            type:MessageType_Regular
+                                                                      senderName:theirName
+                                                                       senderKey:[[[[TXCSingleton sharedSingleton] groupList] objectAtIndex:groupnumber] groupPublicKey]
+                                                                    recipientKey:[[TXCSingleton sharedSingleton] selfPublicKey]];
+        
         //add to singleton
         //if the message coming through is not to the currently opened chat window, then uialertview it
         if ((groupnumber != [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] row] &&
             [[[TXCSingleton sharedSingleton] currentlyOpenedFriendNumber] section] != 0) ||
             [[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground ||
             [[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive) {
-            NSMutableArray *tempMessages = [[[[TXCSingleton sharedSingleton] groupMessages] objectAtIndex:groupnumber] mutableCopy];
-            [tempMessages addObject:theMessage];
-
+            
             // Add message to singleton
-            [[TXCSingleton sharedSingleton] groupMessages][groupnumber] = [tempMessages copy];
+            NSMutableArray *tempMessages = [[[[TXCSingleton sharedSingleton] groupList] objectAtIndex:groupnumber] messages];
+            [tempMessages addObject:theMessage];
             
             // Fire a local notification for the message
             UILocalNotification *groupMessageNotification = [[UILocalNotification alloc] init];

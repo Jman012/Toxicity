@@ -119,7 +119,7 @@
 
 - (void)configureCellWithGroupObject:(TXCGroupObject *)groupObject
 {
-    self.friendIdentifier = [groupObject.groupPulicKey copy];
+    self.friendIdentifier = [groupObject.groupPublicKey copy];
     [self configureBackroundColor];
     [self configureLabelsWithGroupObject:groupObject];
     self.statusIndicatorImageView.hidden = YES;

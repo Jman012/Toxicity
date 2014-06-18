@@ -11,17 +11,29 @@
 typedef NS_ENUM(NSUInteger, MessageOrigin) {
     MessageLocation_Me,
     MessageLocation_Them
-} ;
+};
+
+typedef NS_ENUM(NSUInteger, MessageFamily) {
+    MessageFamily_Friend,
+    MessageFamily_Group
+};
+
+typedef NS_ENUM(NSUInteger, MessageType) {
+    MessageType_Regular,
+    MessageType_Action
+};
 
 @interface TXCMessageObject : NSObject
 
-@property (nonatomic, copy) NSString *message;
-@property (nonatomic, assign) MessageOrigin  origin;
-@property (nonatomic, assign, getter = isDidFailToSend) BOOL didFailToSend;
-@property (nonatomic, assign, getter = isGroupMessage) BOOL groupMessage;
-@property (nonatomic, assign, getter = isActionMessage) BOOL actionMessage;
-@property (nonatomic, copy) NSString *recipientKey;
-@property (nonatomic, copy) NSString *senderKey;
-@property (nonatomic, copy) NSString *senderName;
+@property (nonatomic, strong) NSString *message;
+@property (nonatomic, assign) MessageOrigin origin;
+@property (nonatomic, assign) BOOL didFailToSend;
+@property (nonatomic, assign) MessageFamily family;
+@property (nonatomic, assign) MessageType type;
+@property (nonatomic, strong) NSString *recipientKey;
+@property (nonatomic, strong) NSString *senderKey;
+@property (nonatomic, strong) NSString *senderName;
+
+- (id)initWithMessage:(NSString *)message origin:(MessageOrigin)origin family:(MessageFamily)family type:(MessageType)type senderName:(NSString *)senderName senderKey:(NSString *)senderKey recipientKey:(NSString *)recipientKey;
 
 @end

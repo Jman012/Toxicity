@@ -33,6 +33,7 @@ typedef enum {
 @property (nonatomic, strong) NSIndexPath *currentlyOpenedFriendNumber;
 
 @property (nonatomic, assign) Tox *toxCoreInstance;
+@property (nonatomic, strong) NSString *selfPublicKey;
 
 @property (nonatomic, strong) UIImage *defaultAvatarImage;
 @property (nonatomic, strong) NSCache *avatarImageCache;
@@ -40,7 +41,6 @@ typedef enum {
 @property (nonatomic, strong) NSMutableArray *groupList;
 @property (nonatomic, strong) NSMutableDictionary *pendingGroupInvites;
 @property (nonatomic, strong) NSMutableDictionary *pendingGroupInviteFriendNumbers;
-@property (nonatomic, strong) NSMutableArray *groupMessages;
 
 
 + (TXCSingleton *)sharedSingleton;

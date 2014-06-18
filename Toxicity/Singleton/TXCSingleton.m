@@ -15,7 +15,7 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
 
 - (id)init
 {
-    if ( self = [super init] )
+    if (self = [super init])
     {
         self.dhtNodeList = [[NSMutableArray alloc] init];
         [self loadNodesFromFile];
@@ -29,7 +29,6 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
         self.pendingFriendRequests = [[NSMutableDictionary alloc] init];
         
         self.mainFriendList = [[NSMutableArray alloc] init];
-        self.mainFriendMessages = [[NSMutableArray alloc] init];
         
         self.defaultAvatarImage = [UIImage imageNamed:@"default-avatar"];
         self.avatarImageCache = [[NSCache alloc] init];
@@ -37,7 +36,6 @@ extern NSString *const TXCToxAppDelegateUserDefaultsToxData;
         self.groupList = [[NSMutableArray alloc] init];
         self.pendingGroupInvites = [[NSMutableDictionary alloc] init];
         self.pendingGroupInviteFriendNumbers = [[NSMutableDictionary alloc] init];
-        self.groupMessages = [[NSMutableArray alloc] init];
         
         //if -1, no chat windows open
         self.currentlyOpenedFriendNumber = [NSIndexPath indexPathForItem:-1 inSection:-1];

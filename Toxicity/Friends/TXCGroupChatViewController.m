@@ -19,7 +19,6 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 @interface TXCGroupChatViewController ()
 
 @property (nonatomic, strong) NSMutableArray *mainGroupList;
-@property (nonatomic, strong) NSMutableArray *mainGroupMessages;
 @property (nonatomic, strong) TXCGroupObject *groupInfo;
 @property (nonatomic, strong) NSMutableArray *messages;
 @property (nonatomic, strong) NSIndexPath *friendIndex;
@@ -45,9 +44,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
         self.friendIndex = theIndex;
         
         self.mainGroupList = [[TXCSingleton sharedSingleton] groupList];
-        self.mainGroupMessages = [[TXCSingleton sharedSingleton] groupMessages];
-        
-        self.messages = [[self.mainGroupMessages objectAtIndex:self.friendIndex.row] mutableCopy];
+        self.messages = [[self.mainGroupList objectAtIndex:self.friendIndex.row] messages];
         
         self.groupInfo = [self.mainGroupList objectAtIndex:self.friendIndex.row];
         
@@ -64,7 +61,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
     self.sender = kSenderMe;
 
     if (!self.groupInfo.groupName.length) {
-        self.title = self.groupInfo.groupPulicKey;
+        self.title = self.groupInfo.groupPublicKey;
     } else {
         self.title = self.groupInfo.groupName;
     }
@@ -83,7 +80,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 - (void)viewDidDisappear:(BOOL)animated {
     NSLog(@"view did disappear");
     [super viewDidDisappear:animated];
-    [TXCSingleton sharedSingleton].groupMessages[self.friendIndex.row] = self.messages.mutableCopy;
+
     [[TXCSingleton sharedSingleton] setCurrentlyOpenedFriendNumber:[NSIndexPath indexPathForItem:-1 inSection:-1]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -92,7 +89,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 
 - (void)updateUserInfo {
     if (!self.groupInfo.groupName.length)
-        self.title = self.groupInfo.groupPulicKey;
+        self.title = self.groupInfo.groupPublicKey;
     else
         self.title = self.groupInfo.groupName;
     
@@ -102,7 +99,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 - (void)newMessage:(NSNotification *)notification {
     TXCMessageObject *receivedMessage = [notification object];
     
-    if ([receivedMessage.senderKey isEqualToString:self.groupInfo.groupPulicKey]) {
+    if ([receivedMessage.senderKey isEqualToString:self.groupInfo.groupPublicKey]) {
         [self.tableView beginUpdates];
         
         [self.messages addObject:receivedMessage];
@@ -125,7 +122,7 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
 - (void)didSendText:(NSString *)text fromSender:(NSString *)sender onDate:(NSDate *)date
 {
     TXCMessageObject *tempMessage = [[TXCMessageObject alloc] init];
-    tempMessage.recipientKey = self.groupInfo.groupPulicKey;
+    tempMessage.recipientKey = self.groupInfo.groupPublicKey;
     
     if ([text length] >= 5) {
         //only check for the "/me " if the message is 5 or more characters in length.
@@ -134,17 +131,17 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
         //text:"/me h" the action would be "h"
         if ([[text substringToIndex:4] isEqualToString:@"/me "]) {
             tempMessage.message = [[NSString alloc] initWithFormat:@"* %@", [text substringFromIndex:4]];
-            tempMessage.actionMessage = YES;
+            tempMessage.type = MessageType_Action;
         } else {
             tempMessage.message = [text copy];
-            tempMessage.actionMessage = NO;
+            tempMessage.type = MessageType_Regular;
         }
     } else {
         tempMessage.message = [text copy];
     }
     tempMessage.origin = MessageLocation_Me;
     tempMessage.didFailToSend = NO;
-    tempMessage.groupMessage = YES;
+    tempMessage.family = MessageFamily_Group;
     
     TXCAppDelegate *ourDelegate = (TXCAppDelegate *)[[UIApplication sharedApplication] delegate];
     BOOL success = [ourDelegate sendMessage:tempMessage];
@@ -152,8 +149,8 @@ extern NSString *const TXCToxAppDelegateNotificationNewMessage;
         tempMessage.didFailToSend = YES;
     }
     
-    //add the message after we know if it failed or not
-//    [messages addObject:tempMessage];
+    // Add the message
+    [self.messages addObject:tempMessage];
     
     [self finishSend];
 }
