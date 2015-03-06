@@ -1,3 +1,5 @@
+##### As of current, this client is not maintained. If you are looking for a Tox client for iOS, please see [Dvor's 'Antidote' client.](https://github.com/dvor/Antidote)
+
 Toxicity
 ========
 
